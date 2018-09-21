@@ -8,6 +8,7 @@ const Colors ={
     navBg:"#4A4A4A",
     bgHeader:"#FA6509",
     colorSearch:"#949494",
-    colorLine:'#d3d3d3'
+    colorLine:'#d3d3d3',
+    colorEdittext:'#4a4a4a'
 }
 export default Colors;
