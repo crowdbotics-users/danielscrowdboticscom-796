@@ -5,7 +5,7 @@ const Colors ={
     orange:'#fa6509',
     backgroundLogin:'#4A90E2',
     transparent:'transparent',
-    navBg:"#313131",
+    navBg:"#4A4A4A",
     bgHeader:"#FA6509",
     colorSearch:"#949494",
 }

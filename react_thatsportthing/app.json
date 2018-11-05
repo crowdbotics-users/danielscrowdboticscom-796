@@ -1,4 +1,6 @@
 {
   "name": "ThatSportThing",
-  "displayName": "ThatSportThing"
+  "displayName": "ThatSportThing",
+  "expo": {
+    "sdkVersion": "18.0.0"}
 }

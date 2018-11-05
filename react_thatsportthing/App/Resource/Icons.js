@@ -19,6 +19,14 @@ const Icons ={
     ic_comment:require('./Icon/ic_comment.png'),
     ic_share:require('./Icon/ic_share.png'),
     ic_search:require('./Icon/ic_search.png'),
+    ic_home:require('./Icon/ic_home.png'),
+    ic_account_settings:require('./Icon/ic_account_settings.png'),
+    ic_friends:require('./Icon/ic_friends.png'),
+    ic_logout:require('./Icon/ic_logout.png'),
+    ic_photos:require('./Icon/ic_photos.png'),
+    ic_posts:require('./Icon/ic_posts.png'),
+    ic_profile:require('./Icon/ic_profile.png'),
+    ic_videos:require('./Icon/ic_videos.png'),
 
 }
 export default Icons;

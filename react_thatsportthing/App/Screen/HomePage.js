@@ -10,6 +10,7 @@ import Color from "../Resource/Colors";
 import DrawerContent from "../Compoments/DrawerContent";
 
 import StreamScreen from "./StreamScreen";
+import { TabContent } from "../Compoments/TabContent";
  const StreamScreenNavigator = createStackNavigator({
     StreamScreen: {
     screen: StreamScreen,
@@ -162,6 +163,7 @@ const LogoutNavigator = createStackNavigator({
 export default HomePage = createDrawerNavigator(
   {
     StreamScreen: { screen: StreamScreenNavigator },
+    TabContent:{screen:TabContent}
     /*  Home: { screen: HomeNavigator },
     AddNewPost: { screen: AddNewPostNavigator },
     MyPost: { screen: MyPostNavigator },
@@ -175,7 +177,7 @@ export default HomePage = createDrawerNavigator(
    
   },
   {
-    initialRouteName: 'StreamScreen',
+    initialRouteName: 'TabContent',
     contentComponent: DrawerContent,
     drawerPosition: "left",
     drawerOpenRoute: "DrawerOpen",
