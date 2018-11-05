@@ -20,7 +20,7 @@ import styles from "../Resource/Styles";
 import ImagePicker from 'react-native-image-crop-picker';
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
-class FriendsPostScreen extends Component {
+class PostScreen extends Component {
   static navigationOptions = {
     header: null
   };
@@ -78,8 +78,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         },
         {
           name: "JOHN SCHUFFER",
@@ -88,8 +87,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         },
         {
           name: "JOHN SCHUFFER",
@@ -98,8 +96,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         },
         {
           name: "JOHN SCHUFFER",
@@ -108,8 +105,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         },
         {
           name: "JOHN SCHUFFER",
@@ -118,8 +114,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         },
         {
           name: "JOHN SCHUFFER",
@@ -128,8 +123,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         },
         {
           name: "JOHN SCHUFFER",
@@ -138,8 +132,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         },
         {
           name: "JOHN SCHUFFER",
@@ -148,8 +141,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         },
         {
           name: "JOHN SCHUFFER",
@@ -158,8 +150,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         },
         {
           name: "JOHN SCHUFFER",
@@ -168,8 +159,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         }
       ]
     };
@@ -289,7 +279,6 @@ class FriendsPostScreen extends Component {
           >
             {data.description}
           </Text>
-          <Image resizeMode='contain' source={data.player_image} style={{height:200}}/>
           <View
             style={[
               styles.row,
@@ -327,6 +316,7 @@ class FriendsPostScreen extends Component {
             <Text
               style={{
                 flex: 1,
+
                 color: Colors.black,
                 fontFamily: "OpenSans-SemiBold",
                 fontSize: 12
@@ -553,7 +543,7 @@ class FriendsPostScreen extends Component {
                 showsVerticalScrollIndicator={false}
                 alwaysBounceVertical={false}
                 bounces={false}
-                style={{ marginTop: 8,marginLeft:8,marginRight:8 }}
+                style={{ marginTop: 8 }}
                 dataSource={ds.cloneWithRows(this.state.dataSource1)}
                 renderRow={this.renderRow2.bind(this)}
               />
@@ -622,4 +612,4 @@ const customstyles = StyleSheet.create({
   },
   editText: { color: Colors.white, fontSize: 18 }
 });
-export default FriendsPostScreen;
+export default PostScreen;

@@ -17,10 +17,10 @@ import {
 import Colors from "../Resource/Colors";
 import Icons from "../Resource/Icons";
 import styles from "../Resource/Styles";
-import ImagePicker from 'react-native-image-crop-picker';
+import ImagePicker from "react-native-image-crop-picker";
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
-class FriendsPostScreen extends Component {
+class SearchScreen extends Component {
   static navigationOptions = {
     header: null
   };
@@ -28,11 +28,11 @@ class FriendsPostScreen extends Component {
     super(props);
     this.state = {
       isLoading: true,
-      activeColor:Colors.orange,
-      activeTextColor:Colors.white,
-      inactiveColor:Colors.white,
-      inactiveTextColor:Colors.backgroundLogin,
-      avatarSource: '',
+      activeColor: Colors.orange,
+      activeTextColor: Colors.white,
+      inactiveColor: Colors.white,
+      inactiveTextColor: Colors.backgroundLogin,
+      avatarSource: "",
       dataSource: [
         {
           companyname: "ADIDAS",
@@ -78,8 +78,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         },
         {
           name: "JOHN SCHUFFER",
@@ -88,8 +87,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         },
         {
           name: "JOHN SCHUFFER",
@@ -98,8 +96,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         },
         {
           name: "JOHN SCHUFFER",
@@ -108,8 +105,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         },
         {
           name: "JOHN SCHUFFER",
@@ -118,8 +114,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         },
         {
           name: "JOHN SCHUFFER",
@@ -128,8 +123,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         },
         {
           name: "JOHN SCHUFFER",
@@ -138,8 +132,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         },
         {
           name: "JOHN SCHUFFER",
@@ -148,8 +141,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         },
         {
           name: "JOHN SCHUFFER",
@@ -158,8 +150,7 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         },
         {
           name: "JOHN SCHUFFER",
@@ -168,13 +159,12 @@ class FriendsPostScreen extends Component {
           time: "1:32 PM ",
           likes: "123",
           commnets: "12",
-          image: Icons.messi,
-          player_image:Icons.player
+          image: Icons.messi
         }
       ]
     };
   }
-  pickSingle(cropit, circular=true) {
+  pickSingle(cropit, circular = true) {
     ImagePicker.openPicker({
       width: 300,
       height: 300,
@@ -183,23 +173,30 @@ class FriendsPostScreen extends Component {
       compressImageMaxWidth: 640,
       compressImageMaxHeight: 640,
       compressImageQuality: 0.5,
-      includeExif: true,
-    }).then(image => {
-      this.setState({
-        avatarSource: image.path
+      includeExif: true
+    })
+      .then(image => {
+        this.setState({
+          avatarSource: image.path
+        });
+        this.setState({
+          image: {
+            uri: image.path,
+            width: image.width,
+            height: image.height,
+            mime: image.mime
+          },
+          images: null
+        });
+      })
+      .catch(e => {
+        console.log(e);
+        alert(e.message ? e.message : e);
       });
-      this.setState({
-        image: {uri: image.path, width: image.width, height: image.height, mime: image.mime},
-        images: null
-      });
-    }).catch(e => {
-      console.log(e);
-      alert(e.message ? e.message : e);
-    });
   }
-  componentWillMount(){
+  componentWillMount() {
     this.setState({
-      isLoading:false,
+      isLoading: false
     });
   }
   renderRow(data) {
@@ -212,9 +209,7 @@ class FriendsPostScreen extends Component {
       </View>
     );
   }
-  changeButtonColor(){
-
-  }
+  changeButtonColor() {}
   renderRow2(data) {
     return (
       <SafeAreaView>
@@ -289,7 +284,6 @@ class FriendsPostScreen extends Component {
           >
             {data.description}
           </Text>
-          <Image resizeMode='contain' source={data.player_image} style={{height:200}}/>
           <View
             style={[
               styles.row,
@@ -327,6 +321,7 @@ class FriendsPostScreen extends Component {
             <Text
               style={{
                 flex: 1,
+
                 color: Colors.black,
                 fontFamily: "OpenSans-SemiBold",
                 fontSize: 12
@@ -361,9 +356,14 @@ class FriendsPostScreen extends Component {
   render() {
     return (
       <SafeAreaView>
-        <ScrollView bounces={false} showsVerticalScrollIndicator={false} alwaysBounceVertical={false}   nestedScrollEnabled={true}>
+        <ScrollView
+          bounces={false}
+          showsVerticalScrollIndicator={false}
+          alwaysBounceVertical={false}
+          nestedScrollEnabled={true}
+        >
           <View>
-          <ImageBackground source={Icons.toolbarbg} style={{ height: 200 }}>
+            <ImageBackground source={Icons.toolbarbg} style={{ height: 200 }}>
               <View
                 style={{
                   backgroundColor: "#00000050",
@@ -392,7 +392,11 @@ class FriendsPostScreen extends Component {
                 }}
               >
                 <Image
-                  source={this.state.avatarSource==""?Icons.messi:{uri:this.state.avatarSource}}
+                  source={
+                    this.state.avatarSource == ""
+                      ? Icons.messi
+                      : { uri: this.state.avatarSource }
+                  }
                   style={{
                     width: 98,
                     height: 98,
@@ -443,30 +447,30 @@ class FriendsPostScreen extends Component {
                     </Text>
                   </View>
                   <TouchableOpacity onPress={() => this.pickSingle(true)}>
-                  <View
-                    style={{
-                      width: 30,
-                      height: 30,
-                      backgroundColor: Colors.white,
-                      borderRadius: 15,
-                      margin: 5,
-                      alignSelf: "center",
-                      justifyContent: "center",
-                      alignContent: "center"
-                    }}
-                  >
-                    <Image
-                      source={Icons.ic_pencil}
-                      style={{ width: 15, height: 15, alignSelf: "center" }}
-                    />
-                  </View>
+                    <View
+                      style={{
+                        width: 30,
+                        height: 30,
+                        backgroundColor: Colors.white,
+                        borderRadius: 15,
+                        margin: 5,
+                        alignSelf: "center",
+                        justifyContent: "center",
+                        alignContent: "center"
+                      }}
+                    >
+                      <Image
+                        source={Icons.ic_pencil}
+                        style={{ width: 15, height: 15, alignSelf: "center" }}
+                      />
+                    </View>
                   </TouchableOpacity>
                 </View>
               </View>
             </ImageBackground>
           </View>
-          <View >
-          <View
+          <View>
+            <View
               style={{
                 height: 80,
                 backgroundColor: "#BABABA",
@@ -474,9 +478,12 @@ class FriendsPostScreen extends Component {
                 alignContent: "center"
               }}
             >
-          <ActivityIndicator color={Colors.white} style={{display:this.state.isLoading?'flex':'none'}}/>
+              <ActivityIndicator
+                color={Colors.white}
+                style={{ display: this.state.isLoading ? "flex" : "none" }}
+              />
               <ListView
-                style={{display:this.state.isLoading?'none':'flex'}}
+                style={{ display: this.state.isLoading ? "none" : "flex" }}
                 horizontal={true}
                 showsVerticalScrollIndicator={false}
                 alwaysBounceVertical={false}
@@ -497,63 +504,61 @@ class FriendsPostScreen extends Component {
               </Text>
             </View>
           </View>
-          <View >
-
+          <View>
             <View style={{ backgroundColor: "#414141" }}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center"
-                }}
-              >
-                <View style={customstyles.buttonView}>
-                  <TouchableOpacity>
-                    <View style={customstyles.backbutton}>
-                      <Text
-                        style={[
-                          customstyles.backbuttonText,
-                          { fontFamily: "JosefinSans-Bold" }
-                        ]}
-                      >
-                        STREAM
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-                <View style={customstyles.buttonView}>
-                  <TouchableOpacity>
-                    <View style={customstyles.centerbutton}>
-                      <Text
-                        style={[
-                          customstyles.centerbuttonText,
-                          { fontFamily: "JosefinSans-Bold" }
-                        ]}
-                      >
-                        FRIENDS
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-                <View style={customstyles.buttonView}>
-                  <TouchableOpacity>
-                    <View style={customstyles.button}>
-                      <Text
-                        style={[
-                          customstyles.buttonText,
-                          { fontFamily: "JosefinSans-Bold" }
-                        ]}
-                      >
-                        SEARCH
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
+              <View>
+                <View
+                  style={{
+                    backgroundColor: "#313131",
+                    flexDirection: "row",
+                    padding: 10,
+                    borderColor: Colors.colorSearch,
+                    margin: 10,
+                    borderRadius: 5
+                  }}
+                >
+                  <Image
+                    source={Icons.ic_search}
+                    style={{ width: 24, height: 24, marginRight: 5 }}
+                  />
+                  <TextInput
+                    returnKeyType="done"
+                    placeholder="Search.."
+                    style={{
+                      color: Colors.colorSearch,
+                      flex: 1,
+                      marginLeft: 5,
+                      fontSize: 14,
+                      fontFamily: "OpenSans-SemiBold"
+                    }}
+                    placeholderTextColor={Colors.colorSearch}
+                  />
                 </View>
               </View>
+              <View style={{ position: "relative" ,marginBottom:10}}>
+                <View style={{ position: "relative" }}>
+                  <View
+                    style={{
+                      height: 2,
+                      width: "100%",
+                      backgroundColor: Colors.bgHeader
+                    }}
+                  />
+                </View>
+                <View style={{ position: "absolute",alignSelf:'center',bottom:-10,justifyContent:'center',alignContent:'center' }}>
+                  <View style={{backgroundColor:Colors.bgHeader,borderRadius:10,justifyContent:'center',alignContent:'center',flexDirection:'row',alignItems:'center'}}>
+                  <Image source={Icons.ic_down_arrow_white} style={{width:15,height:9,margin:3}}/>
+                  <Text style={{color:Colors.white,padding:1,margin:1}}>Advanced Search</Text>
+                  <Image source={Icons.ic_down_arrow_white} style={{width:15,height:9,margin:3}}/>
+                  </View>
+                </View>
+              </View>
+
               <ListView
                 showsVerticalScrollIndicator={false}
                 alwaysBounceVertical={false}
                 bounces={false}
-                style={{ marginTop: 8,marginLeft:8,marginRight:8 }}
+                style={{ marginTop: 8,marginStart:8,marginEnd:8 }}
                 dataSource={ds.cloneWithRows(this.state.dataSource1)}
                 renderRow={this.renderRow2.bind(this)}
               />
@@ -622,4 +627,4 @@ const customstyles = StyleSheet.create({
   },
   editText: { color: Colors.white, fontSize: 18 }
 });
-export default FriendsPostScreen;
+export default SearchScreen;

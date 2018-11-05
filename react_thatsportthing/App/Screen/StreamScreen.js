@@ -353,23 +353,11 @@ class StreamScreen extends Component {
       <SafeAreaView>
         <ScrollView bounces={false} showsVerticalScrollIndicator={false} alwaysBounceVertical={false}   nestedScrollEnabled={true}>
           <View>
-          <ImageBackground source={Icons.toolbarbg} style={{ height: 200 }}>
-              <View
-                style={{
-                  backgroundColor: "#00000050",
-                  height: 50,
-                  position: "relative"
-                }}
-              />
-              <Image
-                source={Icons.logo_white}
-                style={{
-                  width: 46,
-                  height: 30,
-                  margin: 15,
-                  position: "absolute"
-                }}
-              />
+          <ImageBackground source={Icons.toolbarbg} style={{ height: 180 ,backgroundColor:Colors.black}}>
+              <View style={{backgroundColor:Colors.black,flexDirection:'row',flex:1}}>
+              <View style={{flex:1,backgroundColor:Colors.bgHeader}}>
+              
+              <ImageBackground resizeMode='cover' source={Icons.toolbarbg} style={{height:180,justifyContent:'center'}}>
               <View
                 style={{
                   width: 100,
@@ -393,18 +381,10 @@ class StreamScreen extends Component {
                   }}
                 />
               </View>
+              </ImageBackground>
+              </View>
+              <View style={{flex:1}}>
               <View
-                style={{
-                  backgroundColor: "#00000050",
-                  height: 45,
-                  marginTop: 5,
-                  justifyContent: "center"
-                }}
-              >
-                <View
-                  style={{ flexDirection: "row", justifyContent: "center" }}
-                >
-                  <View
                     style={{
                       flex: 1,
                       justifyContent: "center",
@@ -432,26 +412,7 @@ class StreamScreen extends Component {
                       FOOTBALL PLAYER
                     </Text>
                   </View>
-                  <TouchableOpacity onPress={() => this.pickSingle(true)}>
-                  <View
-                    style={{
-                      width: 30,
-                      height: 30,
-                      backgroundColor: Colors.white,
-                      borderRadius: 15,
-                      margin: 5,
-                      alignSelf: "center",
-                      justifyContent: "center",
-                      alignContent: "center"
-                    }}
-                  >
-                    <Image
-                      source={Icons.ic_pencil}
-                      style={{ width: 15, height: 15, alignSelf: "center" }}
-                    />
-                  </View>
-                  </TouchableOpacity>
-                </View>
+              </View>
               </View>
             </ImageBackground>
           </View>
@@ -543,7 +504,7 @@ class StreamScreen extends Component {
                 showsVerticalScrollIndicator={false}
                 alwaysBounceVertical={false}
                 bounces={false}
-                style={{ marginTop: 8 }}
+                style={{ marginTop: 8,marginLeft:8,marginRight:8 }}
                 dataSource={ds.cloneWithRows(this.state.dataSource1)}
                 renderRow={this.renderRow2.bind(this)}
               />

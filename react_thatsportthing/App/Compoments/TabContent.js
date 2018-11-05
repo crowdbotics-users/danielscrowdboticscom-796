@@ -1,13 +1,49 @@
 import React, { Component } from "react";
-import { TabNavigator, createStackNavigator,createTabNavigator,createMaterialTopTabNavigator,Dimensions } from "react-navigation";
+import {
+  TabNavigator,
+  createStackNavigator,
+  createTabNavigator,
+  createMaterialTopTabNavigator,
+  Dimensions
+} from "react-navigation";
 import Color from "../Resource/Colors";
 
 import StreamScreen from "../Screen/StreamScreen";
 import TabBarCompoment from "./TabBarCompoment";
+import FriendsPostScreen from "../Screen/FriendsPostScreen";
+import SearchScreen from "../Screen/SearchScreen";
+import PostScreen from "../Screen/PostScreen";
+import PictureScreen from "../Screen/PictureScreen";
+import FriendsScreen from "../Screen/FriendsScreen";
 
 const StreamNavigator = createStackNavigator({
   Stream: {
     screen: StreamScreen
+  }
+});
+const FriendsPostNavigator = createStackNavigator({
+  "Friend's Post": {
+    screen: FriendsPostScreen
+  }
+});
+const SearchNavigator = createStackNavigator({
+  Search: {
+    screen: SearchScreen
+  }
+});
+const PostNavigator = createStackNavigator({
+  Posts: {
+    screen: PostScreen
+  }
+});
+const PicturesNavigator = createStackNavigator({
+  Pictures: {
+    screen: PictureScreen
+  }
+});
+const FriendsNavigator = createStackNavigator({
+  Friends: {
+    screen: FriendsScreen
   }
 });
 export const TabContent = createMaterialTopTabNavigator(
@@ -16,19 +52,19 @@ export const TabContent = createMaterialTopTabNavigator(
       screen: StreamNavigator
     },
     "Friend's Post": {
-      screen: StreamNavigator
+      screen: FriendsPostNavigator
     },
     Search: {
-      screen: StreamNavigator
+      screen: SearchNavigator
     },
     Posts: {
-      screen: StreamNavigator
+      screen: PostNavigator
     },
     Pictures: {
-      screen: StreamNavigator
+      screen: PicturesNavigator
     },
     Friends: {
-      screen: StreamNavigator
+      screen: FriendsNavigator
     }
   },
   {
@@ -38,11 +74,10 @@ export const TabContent = createMaterialTopTabNavigator(
     // tabBarComponent: TabBarCompoment,
     tabBarOptions: {
       tabStyle: {
-          marginLeft:5,
-          marginRight:5,
-          borderRadius:10,
-          backgroundColor:Color.white
-          
+        marginLeft: 5,
+        marginRight: 5,
+        borderRadius: 10,
+        backgroundColor: Color.white
       },
       scrollEnabled: true,
       activeTintColor: Color.bgHeader,
@@ -60,30 +95,7 @@ export const TabContent = createMaterialTopTabNavigator(
         borderBottomColor: Color.transparent,
         borderBottomWidth: 0,
         marginBottom: 0
+      }
     }
-    }
-    /* tabBarOptions: {
-            upperCaseLabel: true,
-            indicatorStyle: {
-                borderBottomColor: Color.transparent,
-                borderBottomWidth: 0,
-                marginBottom: 0
-            },
-            scrollEnabled: true,
-            activeTintColor: Color.bgHeader,
-            inactiveTintColor: Color.black,
-            pressColor: Color.bgHeader,
-            style: {
-
-                backgroundColor: '#4A4A4A',
-            },
-            labelStyle: {
-                fontSize: 14,
-                color: Color.black,
-                fontFamily:'OpenSans-SemiBold'
-            },
-            activeBackgroundColor: Color.bgHeader,
-            inactiveBackgroundColor: Color.transparent,
-        } */
   }
 );

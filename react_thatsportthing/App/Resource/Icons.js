@@ -7,6 +7,7 @@ const Icons ={
     ic_pencil:require('./Icon/pencil.png'),
     toolbarbg:require('./Images/toolbarbg.jpg'),
     messi:require('./Images/messi.png'),
+    player:require('./Images/player.png'),
     logo:require('./Images/logo.png'),
     logo_white:require('./Images/logo_white.png'),
     ball1:require('./Icon/ball1.png'),
@@ -27,6 +28,7 @@ const Icons ={
     ic_posts:require('./Icon/ic_posts.png'),
     ic_profile:require('./Icon/ic_profile.png'),
     ic_videos:require('./Icon/ic_videos.png'),
+    ic_down_arrow_white:require('./Icon/ic_down_arrow_white.png'),
 
 }
 export default Icons;

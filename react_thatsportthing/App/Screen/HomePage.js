@@ -11,6 +11,7 @@ import DrawerContent from "../Compoments/DrawerContent";
 
 import StreamScreen from "./StreamScreen";
 import { TabContent } from "../Compoments/TabContent";
+import HomeTabScreen from "./HomeTabScreen";
  const StreamScreenNavigator = createStackNavigator({
     StreamScreen: {
     screen: StreamScreen,
@@ -33,137 +34,17 @@ import { TabContent } from "../Compoments/TabContent";
     })
   }
 });
-/*
-const HomeNavigator = createStackNavigator({
-  Home: {
-    screen: HomeScreen,
-    navigationOptions: ({ navigation }) => ({
-      headerLeft: (
-        <DrawerIcon navigationProps={navigation} title={"Home"} />
-      ),
-      headerStyle: {
-        backgroundColor: Color.colorPrimary
-      }
-    })
-  }
-});
-const AddNewPostNavigator = createStackNavigator({
-  AddNewPost: {
-    screen: AddNewPost,
-    navigationOptions: ({ navigation }) => ({
-      headerLeft: (
-        <DrawerIcon navigationProps={navigation} title={"Add New Post"} />
-      ),
-      headerStyle: {
-        backgroundColor: Color.colorPrimary
-      }
-    })
-  }
-});
-
-const MoreCategoryNavigator = createStackNavigator({
-  AddNewPost: {
-    screen: MoreCategoryScreen,
-    navigationOptions: ({ navigation }) => ({
-    
-      headerStyle: {
-        backgroundColor: Color.colorPrimary
-      }
-    })
-  }
-});
 
 
-const MyPostNavigator = createStackNavigator({
-  MyPost: {
-    screen: MyPost,
-    navigationOptions: ({ navigation }) => ({
-      headerLeft: <DrawerIcon navigationProps={navigation} title={"My Post"} />,
-      headerStyle: {
-        backgroundColor: Color.colorPrimary
-      }
-    })
-  }
-});
-const ProfileNavigator = createStackNavigator({
-  Profile: {
-    screen: Profile,
-    navigationOptions: ({ navigation }) => ({
-      headerLeft: <DrawerIcon navigationProps={navigation} title={"Profile"} />,
-      headerStyle: {
-        backgroundColor: Color.colorPrimary
-      }
-    })
-  }
-});
-const RateUsNavigator = createStackNavigator({
-  RateUs: {
-    screen: RateUs,
-    navigationOptions: ({ navigation }) => ({
-      headerLeft: <DrawerIcon navigationProps={navigation} title={"Rate Us"} />,
-      headerStyle: {
-        backgroundColor: Color.colorPrimary
-      }
-    })
-  }
-});
-const AboutUsNavigator = createStackNavigator({
-  AboutUs: {
-    screen: AboutUs,
-    navigationOptions: ({ navigation }) => ({
-      headerLeft: (
-        <DrawerIcon navigationProps={navigation} title={"About Us"} />
-      ),
-      headerStyle: {
-        backgroundColor: Color.colorPrimary
-      }
-    })
-  }
-});
-const TermsNavigator = createStackNavigator({
-  TermsAndConditions: {
-    screen: TermsAndConditions,
-    navigationOptions: ({ navigation }) => ({
-      headerLeft: (
-        <DrawerIcon
-          navigationProps={navigation}
-          title={"Terms And Conditions"}
-        />
-      ),
-      headerStyle: {
-        backgroundColor: Color.colorPrimary
-      }
-    })
-  }
-});
-const LegalNavigator = createStackNavigator({
-  Legal: {
-    screen: Legal,
-    navigationOptions: ({ navigation }) => ({
-      headerLeft: <DrawerIcon navigationProps={navigation} title={"Legal"} />,
-      headerStyle: {
-        backgroundColor: Color.colorPrimary
-      }
-    })
-  }
-});
-const LogoutNavigator = createStackNavigator({
-  Logout: {
-    screen: Logout,
-    navigationOptions: ({ navigation }) => ({
-      headerLeft: <DrawerIcon navigationProps={navigation} />,
-      headerStyle: {
-        backgroundColor: Color.colorPrimary
-      }
-    })
-  }
-}); */
+
 
 
 export default HomePage = createDrawerNavigator(
   {
     StreamScreen: { screen: StreamScreenNavigator },
-    TabContent:{screen:TabContent}
+    TabContent:{screen:TabContent},
+    HomeTabScreen:{screen:HomeTabScreen},
+    
     /*  Home: { screen: HomeNavigator },
     AddNewPost: { screen: AddNewPostNavigator },
     MyPost: { screen: MyPostNavigator },

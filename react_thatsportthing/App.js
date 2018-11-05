@@ -17,6 +17,7 @@ import SignUp3 from "./App/Screen/SignUpScreen3";
 import StreamScreen from "./App/Screen/StreamScreen";
 import HomePage from "./App/Screen/HomePage";
 
+
 const App = createStackNavigator(
   {
     LoginType: { screen: LoginType },
@@ -25,6 +26,7 @@ const App = createStackNavigator(
     SignUp2: { screen: SignUp2 },
     SignUp3: { screen: SignUp3 },
     StreamScreen: { screen: StreamScreen },
+    
     HomePage: {
       screen: HomePage,
       navigationOptions: {
@@ -33,7 +35,7 @@ const App = createStackNavigator(
     }
   },
   {
-    initialRouteName: "HomePage",
+    initialRouteName: "Login",
     headerMode: "float",
     navigationOptions: {
       gesturesEnabled: false,
