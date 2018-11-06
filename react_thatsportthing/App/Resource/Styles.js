@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
   },
   row:{flexDirection:'row'},
   column:{flexDirection:'column'},
+  icon:{width:24,height:24}
 });
 
 export default styles;

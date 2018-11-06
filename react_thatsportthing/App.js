@@ -29,13 +29,13 @@ const App = createStackNavigator(
     
     HomePage: {
       screen: HomePage,
-      navigationOptions: {
-        header: null
+      navigationOptions:{
+        header:null
       }
     }
   },
   {
-    initialRouteName: "Login",
+    initialRouteName: "LoginType",
     headerMode: "float",
     navigationOptions: {
       gesturesEnabled: false,
