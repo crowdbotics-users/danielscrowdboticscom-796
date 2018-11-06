@@ -162,7 +162,7 @@ class SignUpScreen3 extends Component {
           </View>
         </View>
         <View style={styles.uploadTypeSelectView}>
-        <TouchableOpacity onPress={() => this.pickSingle(true)}>
+        <TouchableOpacity >
           <View style={styles.galleryView}>
             <Image
               style={{ height: 60, width: 60 }}
@@ -172,7 +172,7 @@ class SignUpScreen3 extends Component {
           </View>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => this.pickSingleWithCamera(true)}>
+          <TouchableOpacity >
           <View style={styles.cameraView}>
             <Image
               style={{ height: 60, width: 60, alignItems: "center" }}
