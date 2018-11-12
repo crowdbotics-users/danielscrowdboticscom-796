@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Linking,
-  TextInput
+  TextInput,Platform
 } from "react-native";
 import { NavigationActions } from "react-navigation";
 import PropTypes from "prop-types";
@@ -211,9 +211,12 @@ class DrawerContent extends Component {
         <View>
           <View
             style={{
+              justifyContent:'center',
+              alignContent:'center',
+              alignItems:'center',
               backgroundColor: "#313131",
               flexDirection: "row",
-              padding: 10,
+              padding: Platform.OS=="android"?0:10,
               borderColor: Color.colorSearch,
               margin: 10,
               borderRadius: 5
@@ -221,18 +224,20 @@ class DrawerContent extends Component {
           >
             <Image
               source={Icons.ic_search}
-              style={{ width: 24, height: 24, marginRight: 5 }}
+              style={{ width: 24, height: 24, marginRight: 5,marginLeft:10 }}
             />
             <TextInput
               returnKeyType="done"
               placeholder="Search.."
               style={{
+                padding:Platform.OS=="android"?5:0,
                 color: Color.colorSearch,
                 flex: 1,
                 marginLeft: 5,
                 fontSize: 14,
                 fontFamily: "OpenSans-SemiBold"
               }}
+              underlineColorAndroid={Color.transparent}
               placeholderTextColor={Color.colorSearch}
             />
           </View>

@@ -7,7 +7,8 @@ import {
   Text,
   Dimensions,
   Image,
-  StatusBar
+  StatusBar,
+  Platform
 } from "react-native";
 import Icons from "../Resource/Icons";
 import Colors from "../Resource/Colors";
@@ -27,7 +28,11 @@ class LoginTypeScreen extends Component {
     const height = Dimensions.get("screen").height;
     return (
       <View>
-        <StatusBar backgroundColor="blue" barStyle="light-content" translucent={true} />
+        <StatusBar
+          backgroundColor="blue"
+          barStyle="light-content"
+          translucent={true}
+        />
         <ImageBackground
           imageStyle={{ resizeMode: "contain" }}
           style={{ width: width, height: height, justifyContent: "center" }}
@@ -81,6 +86,7 @@ const styles = StyleSheet.create({
     shadowColor: Colors.black,
     shadowOpacity: 0.3,
     shadowRadius: 1,
+    elevation: 2,
     shadowOffset: {
       height: 1,
       width: 0.3
@@ -91,7 +97,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     backgroundColor: Colors.white,
     width: Dimensions.get("screen").width,
-
+    marginBottom: Platform.OS == "android" ? 30 : 0,
     bottom: "5%"
   },
   buttonTopView: {
