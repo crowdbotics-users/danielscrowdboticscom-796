@@ -199,6 +199,6 @@ const styles = StyleSheet.create({
     paddingRight: "15%",
     color: Colors.orange
   },
-  editText: { color: Colors.white, fontSize: 18 }
+  editText: { color: Colors.white, fontSize: 18,padding:0 }
 });
 export default SignUpScreen1;

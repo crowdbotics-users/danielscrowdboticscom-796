@@ -56,7 +56,7 @@ class SignUpScreen1 extends Component {
               placeholder={"User name"}
               placeholderTextColor={Colors.white}
               selectionColor={Colors.white}
-              underlineColorAndroid={Colors.white}
+              underlineColorAndroid={Colors.transparent}
             />
             <Text
               style={[
@@ -86,7 +86,7 @@ class SignUpScreen1 extends Component {
               placeholder={"Password"}
               placeholderTextColor={Colors.white}
               selectionColor={Colors.white}
-              underlineColorAndroid={Colors.white}
+              underlineColorAndroid={Colors.transparent}
             />
             <Text
               style={[
@@ -221,6 +221,6 @@ const styles = StyleSheet.create({
     paddingRight: "15%",
     color: Colors.orange
   },
-  editText: { color: Colors.white, fontSize: 18 }
+  editText: { color: Colors.white, fontSize: 18,padding:0 }
 });
 export default SignUpScreen1;

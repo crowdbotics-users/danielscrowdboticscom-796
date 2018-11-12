@@ -84,7 +84,7 @@ class LoginScreen extends Component {
               placeholder={"Password"}
               placeholderTextColor={Colors.white}
               selectionColor={Colors.white}
-              underlineColorAndroid={Colors.white}
+              underlineColorAndroid={Colors.transparent}
             />
           </View>
           <Text style={[styles.editText, styles.labelName,{fontFamily:'OpenSans-SemiBold'}]}>PASSWORD</Text>
@@ -161,6 +161,6 @@ const styles = StyleSheet.create({
     color: Colors.backgroundLogin
   }
   ,
-  editText: { color: Colors.white, fontSize: 18 }
+  editText: { color: Colors.white, fontSize: 18,padding:0 }
 });
 export default LoginScreen;

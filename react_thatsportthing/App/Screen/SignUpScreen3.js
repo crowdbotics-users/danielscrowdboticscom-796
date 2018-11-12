@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import Colors from "../Resource/Colors";
 import Icons from "../Resource/Icons";
-// import ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 
 class SignUpScreen3 extends Component {
@@ -34,64 +33,7 @@ class SignUpScreen3 extends Component {
   doBack(){
     this.props.navigation.goBack();
   }
-  imageClick() {
-    const options = {
-      quality: 1.0,
-      maxWidth: 500,
-      maxHeight: 500,
-      storageOptions: {
-        skipBackup: true
-      }
-    };
-
-    ImagePicker.launchImageLibrary(options, (response) => {
-
-
-      if (response.didCancel) {
-        console.log('User cancelled photo picker');
-      }
-      else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      }
-      else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      }
-      else {
-        this.setState({
-          avatarSource: response.uri
-        });
-      }
-    });
-  }
-  cameraClick() {
-    const options = {
-      quality: 1.0,
-      maxWidth: 500,
-      maxHeight: 500,
-      storageOptions: {
-        skipBackup: true
-      }
-    };
-
-    ImagePicker.launchCamera(options, (response) => {
-
-
-      if (response.didCancel) {
-        console.log('User cancelled photo picker');
-      }
-      else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      }
-      else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      }
-      else {
-        this.setState({
-          avatarSource: response.uri
-        });
-      }
-    });
-  }
+   
   pickSingleWithCamera(cropping) {
     ImagePicker.openCamera({
       cropping: cropping,
@@ -103,12 +45,17 @@ class SignUpScreen3 extends Component {
       compressImageQuality: 0.5,
       includeExif: true,
     }).then(image => {
-      console.log('received image', image);
+      this.setState({
+        avatarSource: image.path
+      });
       this.setState({
         image: {uri: image.path, width: image.width, height: image.height},
         images: null
       });
-    }).catch(e => alert(e));
+    }).catch(e => {
+      console.log("pickSingleWithCamera",e);
+      
+    });
   }
   pickSingle(cropit, circular=true) {
     ImagePicker.openPicker({
@@ -129,8 +76,8 @@ class SignUpScreen3 extends Component {
         images: null
       });
     }).catch(e => {
-      console.log(e);
-      alert(e.message ? e.message : e);
+      console.log("pickSingle",e);
+      
     });
   }
 

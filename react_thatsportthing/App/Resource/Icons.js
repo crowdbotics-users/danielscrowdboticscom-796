@@ -6,6 +6,7 @@ const Icons ={
     ic_upload_image:require('./Icon/add_circle.png'),
     ic_pencil:require('./Icon/pencil.png'),
     toolbarbg:require('./Images/toolbarbg.jpg'),
+    bg_username:require('./Images/bg_username.png'),
     messi:require('./Images/messi.png'),
     player:require('./Images/player.png'),
     logo:require('./Images/logo.png'),

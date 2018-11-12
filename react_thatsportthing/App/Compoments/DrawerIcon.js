@@ -35,7 +35,7 @@ class HamburgerIcon extends Component {
             fontSize: 14
           }}
         >
-          That SPORTS THING
+          THAT SPORTS THING
         </Text>
       </View>
     );
