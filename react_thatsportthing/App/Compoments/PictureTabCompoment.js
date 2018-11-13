@@ -14,19 +14,32 @@ class PictureTabCompoment extends Component {
   render() {
     return (
       <View>
-        <View style={this.props.tabActive?customstyles.activeTab:customstyles.InactiveTab}>
-          <Text style={this.props.tabActive?customstyles.activeTabText:customstyles.InactiveTabText}>{this.props.tabTitle}</Text>
+        <View
+          style={
+            this.props.tabActive
+              ? picturetabstyles.activeTab
+              : picturetabstyles.InactiveTab
+          }
+        >
+          <Text
+            style={
+              this.props.tabActive
+                ? picturetabstyles.activeTabText
+                : picturetabstyles.InactiveTabText
+            }
+          >
+            {this.props.tabTitle}
+          </Text>
         </View>
       </View>
     );
   }
 }
 
-const customstyles = StyleSheet.create({
+const picturetabstyles = StyleSheet.create({
   activeTab: {
     backgroundColor: Colors.bgHeader,
-
-  //  width: Dimensions.get("screen").width / 2.5,
+    // width: Dimensions.get("screen").width / 3,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 8,
@@ -41,7 +54,7 @@ const customstyles = StyleSheet.create({
   },
   InactiveTab: {
     backgroundColor: Colors.navBg,
-  //  width: Dimensions.get("screen").width / 2.5,
+    // width: Dimensions.get("screen").width / 3,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 8,

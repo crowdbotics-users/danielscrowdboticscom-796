@@ -18,9 +18,9 @@ class SignUpScreen1 extends Component {
     this.state = {
       fullName: "",
       EmailAddress: "",
-      dateOfBirth: 'DATE OF BIRTH',
-      isDateTimePickerVisible:false,
-      isDateTimePickerVisible:false
+      dateOfBirth: "DATE OF BIRTH",
+      isDateTimePickerVisible: false,
+      isDateTimePickerVisible: false
     };
     Moment.locale();
   }
@@ -32,9 +32,41 @@ class SignUpScreen1 extends Component {
 
   doRedirect(screen) {
     const { navigate } = this.props.navigation;
-    navigate(screen);
+    
+    if (this.state.fullName == "") {
+      this.refs.name.focus();
+      alert("Enter Name");
+    } else if (this.state.EmailAddress == "") {
+      this.refs.email.focus();
+      alert("Enter Email Address");
+    }else if (!this.doValidEmail(this.state.EmailAddress)) {
+      this.refs.email.focus();
+      alert("Enter Valid Email Address");
+    }else if(this.state.dateOfBirth=="DATE OF BIRTH" || this.state.dateOfBirth==""){
+      this.refs.bdate.focus();
+      alert("Select Birthdate");
+    }else{
+      const userData1 = {
+        name: this.state.fullName,
+        email: this.state.EmailAddress,
+        bdate: this.state.dateOfBirth
+      };
+     
+      navigate(screen, { userData1: userData1 });
+    }
+    
   }
-  doBack(){
+  doValidEmail(email) {
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (reg.test(email) === false) {
+      console.log("Email is Not Correct");
+      return false;
+    } else {
+      console.log("Email is Correct");
+      return true;
+    }
+  }
+  doBack() {
     this.props.navigation.goBack();
   }
   _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
@@ -42,7 +74,6 @@ class SignUpScreen1 extends Component {
   _hideDateTimePicker = () => this.setState({ isDateTimePickerVisible: false });
 
   _handleDatePicked = date => {
-    
     this.setState({ dateOfBirth: Moment(date).format("DD/MM/YYYY") });
     this._hideDateTimePicker();
   };
@@ -50,16 +81,22 @@ class SignUpScreen1 extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.logo}>
-          <Image style={styles.logoImage} resizeMode="contain" resizeMethod="auto" source={Icons.logo_white} />
+          <Image
+            style={styles.logoImage}
+            resizeMode="contain"
+            resizeMethod="auto"
+            source={Icons.logo_white}
+          />
         </View>
         <View style={styles.textField}>
           <View>
             <TextInput
+            ref={"name"}
               onChangeText={fullName => this.setState({ fullName: fullName })}
               style={[
                 styles.editText,
                 {
-                  fontFamily:'OpenSans-Bold',
+                  fontFamily: "OpenSans-Bold",
                   borderBottomColor: Colors.white,
                   borderBottomWidth: 1,
                   paddingBottom: 5
@@ -70,19 +107,29 @@ class SignUpScreen1 extends Component {
               placeholderTextColor={Colors.white}
               selectionColor={Colors.white}
               underlineColorAndroid={Colors.transparent}
+              returnKeyType='next'
             />
-            <Text style={[styles.editText, styles.labelName,{fontFamily:'OpenSans-SemiBold'}]}>FULL NAME</Text>
+            <Text
+              style={[
+                styles.editText,
+                styles.labelName,
+                { fontFamily: "OpenSans-SemiBold" }
+              ]}
+            >
+              FULL NAME
+            </Text>
           </View>
 
           <View style={{ marginTop: "10%" }}>
             <TextInput
+             ref={"email"}
               onChangeText={EmailAddress =>
                 this.setState({ EmailAddress: EmailAddress })
               }
               style={[
                 styles.editText,
                 {
-                  fontFamily:'OpenSans-Bold',
+                  fontFamily: "OpenSans-Bold",
                   borderBottomColor: Colors.white,
                   borderBottomWidth: 1,
                   paddingBottom: 5
@@ -93,54 +140,97 @@ class SignUpScreen1 extends Component {
               placeholderTextColor={Colors.white}
               selectionColor={Colors.white}
               underlineColorAndroid={Colors.transparent}
+              returnKeyType='done'
             />
-            <Text style={[styles.editText, styles.labelName,{fontFamily:'OpenSans-SemiBold'}]}>
+            <Text
+              style={[
+                styles.editText,
+                styles.labelName,
+                { fontFamily: "OpenSans-SemiBold" }
+              ]}
+            >
               EMAIL ADDRESS
             </Text>
           </View>
 
           <View style={{ marginTop: "10%" }}>
-            <TouchableOpacity onPress={this._showDateTimePicker} style={[
+            <TouchableOpacity
+
+              onPress={this._showDateTimePicker}
+              style={[
                 styles.editText,
                 {
-                  
                   borderBottomColor: Colors.white,
                   borderBottomWidth: 1,
                   paddingBottom: 5
                 }
-              ]}>
-            <Text
-            style={{color:Colors.white,fontFamily:'OpenSans-Bold',fontSize: 18}}
-              
-            
-              editable={false}
-              placeholder={"DATE OF BIRTH"}
-              placeholderTextColor={Colors.white}
-              selectionColor={Colors.white}
-              underlineColorAndroid={Colors.transparent}
-            >{this.state.dateOfBirth}</Text>
+              ]}
+            >
+              <Text
+               ref={"bdate"}
+                style={{
+                  color: Colors.white,
+                  fontFamily: "OpenSans-Bold",
+                  fontSize: 18
+                }}
+                editable={false}
+                placeholder={"DATE OF BIRTH"}
+                placeholderTextColor={Colors.white}
+                selectionColor={Colors.white}
+                underlineColorAndroid={Colors.transparent}
+              >
+                {this.state.dateOfBirth}
+              </Text>
             </TouchableOpacity>
-            <Text style={[styles.editText, styles.labelName,{fontFamily:'OpenSans-SemiBold'}]}>DATE OF BIRTH</Text>
+            <Text
+              style={[
+                styles.editText,
+                styles.labelName,
+                { fontFamily: "OpenSans-SemiBold" }
+              ]}
+            >
+              DATE OF BIRTH
+            </Text>
             <DateTimePicker
-                isVisible={this.state.isDateTimePickerVisible}
-                onConfirm={this._handleDatePicked}
-                onCancel={this._hideDateTimePicker}
-              />
+              isVisible={this.state.isDateTimePickerVisible}
+              onConfirm={this._handleDatePicked}
+              maximumDate={new Date()}
+              onCancel={this._hideDateTimePicker}
+            />
           </View>
-          
         </View>
-        <View style={{ flexDirection: "row", justifyContent: "center",marginBottom:30 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            marginBottom: 30
+          }}
+        >
           <View style={styles.buttonView}>
             <TouchableOpacity onPress={this.doBack.bind(this)}>
               <View style={styles.backbutton}>
-                <Text style={[styles.buttonText,{fontFamily:'JosefinSans-Bold'}]}>BACK</Text>
+                <Text
+                  style={[
+                    styles.buttonText,
+                    { fontFamily: "JosefinSans-Bold" }
+                  ]}
+                >
+                  BACK
+                </Text>
               </View>
             </TouchableOpacity>
           </View>
           <View style={styles.buttonView}>
             <TouchableOpacity onPress={this.doRedirect.bind(this, "SignUp2")}>
               <View style={styles.button}>
-                <Text style={[styles.nextbuttonText,{fontFamily:'JosefinSans-Bold'}]}>NEXT</Text>
+                <Text
+                  style={[
+                    styles.nextbuttonText,
+                    { fontFamily: "JosefinSans-Bold" }
+                  ]}
+                >
+                  NEXT
+                </Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -154,7 +244,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.orange,
     flex: 1
   },
-  logo: { marginTop: 50,marginLeft:30 },
+  logo: { marginTop: 50, marginLeft: 30 },
   logoImage: { height: 90, width: 137 },
   textField: {
     flex: 1,
@@ -167,22 +257,22 @@ const styles = StyleSheet.create({
   button: {
     marginBottom: "10%",
     backgroundColor: Colors.white,
-    marginLeft:10,
-   width:Dimensions.get('screen').width/2,
+    marginLeft: 10,
+    width: Dimensions.get("screen").width / 2,
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10
   },
   backbutton: {
     marginBottom: "10%",
-    marginRight:10,
-    borderWidth:2,
-    width:Dimensions.get('screen').width/2,
-    borderColor:Colors.white,
+    marginRight: 10,
+    borderWidth: 2,
+    width: Dimensions.get("screen").width / 2,
+    borderColor: Colors.white,
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10
   },
   buttonText: {
-    textAlign:'center',
+    textAlign: "center",
     fontSize: 18,
     paddingBottom: 25,
     paddingTop: 25,
@@ -191,7 +281,7 @@ const styles = StyleSheet.create({
     color: Colors.white
   },
   nextbuttonText: {
-    textAlign:'center',
+    textAlign: "center",
     fontSize: 18,
     paddingBottom: 25,
     paddingTop: 25,
@@ -199,6 +289,6 @@ const styles = StyleSheet.create({
     paddingRight: "15%",
     color: Colors.orange
   },
-  editText: { color: Colors.white, fontSize: 18,padding:0 }
+  editText: { color: Colors.white, fontSize: 18, padding: 0 }
 });
 export default SignUpScreen1;

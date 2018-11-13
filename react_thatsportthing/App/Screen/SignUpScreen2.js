@@ -15,9 +15,9 @@ class SignUpScreen1 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      fullName: "",
-      EmailAddress: "",
-      dateOfBirth: ""
+      userName: "",
+      password: "",
+      cpassword: ""
     };
   }
   static navigationOptions = {
@@ -28,7 +28,30 @@ class SignUpScreen1 extends Component {
 
   doRedirect(screen) {
     const { navigate } = this.props.navigation;
-    navigate(screen);
+    const { userData1 } = this.props.navigation.state.params;
+    if (this.state.userName == "") {
+      this.refs.username.focus();
+      alert("Enter User Name");
+    } else if (this.state.password == "") {
+      this.refs.password.focus();
+      alert("Enter Password");
+    }else if (this.state.cpassword == "") {
+      this.refs.cpassword.focus();
+      alert("Enter Confirm Password");
+    }else if(this.state.password!=this.state.cpassword){
+      this.refs.cpassword.focus();
+      alert("Password does not match");
+    }else{
+      const userData2={
+        name:userData1.name,
+        email:userData1.email,
+        bdate:userData1.bdate,
+        username:this.state.userName,
+        password:this.state.password,
+        cpassword:this.state.cpassword,
+      }
+      navigate(screen, { userData2: userData2 });
+    }
   }
   doBack() {
     this.props.navigation.goBack();
@@ -42,6 +65,7 @@ class SignUpScreen1 extends Component {
         <View style={styles.textField}>
           <View>
             <TextInput
+            ref={"username"}
               onChangeText={username => this.setState({ userName: username })}
               style={[
                 styles.editText,
@@ -52,11 +76,13 @@ class SignUpScreen1 extends Component {
                   paddingBottom: 5
                 }
               ]}
+              value={this.state.userName}
               keyboardType="ascii-capable"
               placeholder={"User name"}
               placeholderTextColor={Colors.white}
               selectionColor={Colors.white}
               underlineColorAndroid={Colors.transparent}
+              returnKeyType="next"
             />
             <Text
               style={[
@@ -71,6 +97,7 @@ class SignUpScreen1 extends Component {
 
           <View style={{ marginTop: "10%" }}>
             <TextInput
+            ref={"password"}
               onChangeText={password => this.setState({ password: password })}
               style={[
                 styles.editText,
@@ -81,12 +108,14 @@ class SignUpScreen1 extends Component {
                   paddingBottom: 5
                 }
               ]}
+              value={this.state.password}
               keyboardType="ascii-capable"
               secureTextEntry={true}
               placeholder={"Password"}
               placeholderTextColor={Colors.white}
               selectionColor={Colors.white}
               underlineColorAndroid={Colors.transparent}
+              returnKeyType="next"
             />
             <Text
               style={[
@@ -101,8 +130,9 @@ class SignUpScreen1 extends Component {
 
           <View style={{ marginTop: "10%" }}>
             <TextInput
+            ref={"cpassword"}
               onChangeText={ConfirmPassword =>
-                this.setState({ ConfirmPassword: ConfirmPassword })
+                this.setState({ cpassword: ConfirmPassword })
               }
               style={[
                 styles.editText,
@@ -113,12 +143,14 @@ class SignUpScreen1 extends Component {
                   paddingBottom: 5
                 }
               ]}
+              value={this.state.cpassword}
               keyboardType="ascii-capable"
               secureTextEntry={true}
               placeholder={"Confirm Password"}
               placeholderTextColor={Colors.white}
               selectionColor={Colors.white}
               underlineColorAndroid={Colors.transparent}
+              returnKeyType="done"
             />
             <Text
               style={[

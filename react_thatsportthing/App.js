@@ -16,8 +16,19 @@ import SignUp2 from "./App/Screen/SignUpScreen2";
 import SignUp3 from "./App/Screen/SignUpScreen3";
 import StreamScreen from "./App/Screen/StreamScreen";
 import HomePage from "./App/Screen/HomePage";
+import HomeTabScreen from "./App/Screen/HomeTabScreen";
+import ProfileScreen from "./App/Screen/ProfileScreen";
 
-
+const HomePageNavigator = createStackNavigator({
+  HomeTabScreen: {
+    screen: HomeTabScreen
+  }
+});
+const ProfileScreenNavigator = createStackNavigator({
+  ProfileScreen: {
+    screen: ProfileScreen
+  }
+});
 const App = createStackNavigator(
   {
     LoginType: { screen: LoginType },
@@ -26,6 +37,8 @@ const App = createStackNavigator(
     SignUp2: { screen: SignUp2 },
     SignUp3: { screen: SignUp3 },
     StreamScreen: { screen: StreamScreen },
+    HomeTabScreen: { screen: HomePageNavigator },
+    ProfileScreen: { screen: ProfileScreenNavigator },
     
     HomePage: {
       screen: HomePage,

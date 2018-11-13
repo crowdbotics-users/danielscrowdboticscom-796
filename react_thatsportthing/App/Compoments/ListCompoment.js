@@ -16,6 +16,9 @@ import styles from "../Resource/Styles";
 import Icons from "../Resource/Icons";
 
 class ListCompoment extends Component {
+  doRedirect(data){
+    this.props.navigation.navigate("ProfileScreen",{data:data});
+  }
   renderStream(data) {
     return (
       <SafeAreaView>
@@ -56,16 +59,18 @@ class ListCompoment extends Component {
                 }}
               />
             </View>
-            <Text
-              style={{
-                flex: 1,
-                color: Colors.black,
-                fontFamily: "OpenSans-SemiBold",
-                fontSize: 13
-              }}
-            >
-              {data.name}
-            </Text>
+            <TouchableOpacity onPress={()=>this.doRedirect(data)} style={{flex: 1,}}>
+              <Text
+                style={{
+                  
+                  color: Colors.black,
+                  fontFamily: "OpenSans-SemiBold",
+                  fontSize: 13
+                }}
+              >
+                {data.name}
+              </Text>
+            </TouchableOpacity>
             <Text
               style={{
                 color: Colors.black,
@@ -149,13 +154,170 @@ class ListCompoment extends Component {
       </SafeAreaView>
     );
   }
+  renderFriends(data) {
+    return (
+      <SafeAreaView>
+        <View
+          style={[
+            styles.column,
+            styles.card,
+            { alignItems: "center", marginBottom: 8, borderRadius: 10 }
+          ]}
+        >
+          <View
+            style={[
+              styles.row,
+              { justifyContent: "center", alignItems: "center", flex: 1 }
+            ]}
+          >
+            <View style={{ flex: 1 }}>
+              <View
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: 40,
+                  backgroundColor: "#F8F6F7",
+                  alignSelf: "center",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  marginLeft: 8
+                }}
+              >
+                <Image
+                  source={data.image}
+                  style={{
+                    width: 74,
+                    height: 74,
+                    borderRadius: 37,
+                    borderWidth: 1.5,
+                    borderColor: "#D1D0D0",
+                    alignSelf: "center"
+                  }}
+                />
+              </View>
+            </View>
+            <View style={{ flex: 3 }}>
+              <Text
+                style={{
+                  color: Colors.black,
+                  fontFamily: "OpenSans-SemiBold",
+                  fontSize: 13
+                }}
+              >
+                {data.name}
+              </Text>
+              <Text
+                style={{
+                  color: "#6C6C6C",
+                  fontFamily: "OpenSans-SemiBold",
+                  fontSize: 12
+                }}
+              >
+                {data.location}
+              </Text>
+              <Text
+                style={{
+                  color: Colors.black,
+                  fontFamily: "OpenSans-SemiBold",
+                  fontSize: 12
+                }}
+              >
+                {data.username}
+              </Text>
+              <View
+                style={[
+                  styles.row,
+                  {
+                    alignItems: "center"
+                  }
+                ]}
+              >
+                <TouchableOpacity style={{ flex: 1 }}>
+                  <Text
+                    style={{
+                      color: Colors.black,
+                      fontFamily: "OpenSans-SemiBold",
+                      fontSize: 11
+                    }}
+                  >
+                    {data.friendstatus == 1
+                      ? "+ Send Request"
+                      : data.friendstatus == 2
+                      ? "Unfriend"
+                      : "+ Send Request"}
+                  </Text>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    borderEndWidth: 1,
+                    borderEndColor: Colors.black,
+                    height: 10
+                  }}
+                />
+
+                <TouchableOpacity>
+                  <Text
+                    style={{
+                      color: Colors.black,
+                      fontFamily: "OpenSans-SemiBold",
+                      fontSize: 11,
+                      marginStart: 8,
+                      marginEnd: 8
+                    }}
+                  >
+                    Send Message
+                  </Text>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    borderEndWidth: 1,
+                    borderEndColor: Colors.black,
+                    height: 10
+                  }}
+                />
+                <TouchableOpacity>
+                  <Text
+                    style={{
+                      color: Colors.black,
+                      fontFamily: "OpenSans-SemiBold",
+                      fontSize: 11,
+                      marginStart: 8,
+                      marginEnd: 8
+                    }}
+                  >
+                    {data.followstatus == 1
+                      ? "Follow"
+                      : data.followstatus == 2
+                      ? "UnFollow"
+                      : "Follow"}
+                  </Text>
+                </TouchableOpacity>
+                <Image
+                  source={Icons.ic_share}
+                  style={{
+                    width: 20,
+                    height: 20,
+                    marginStart: 8,
+                    marginEnd: 8
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
   renderPictures(data) {
     return (
       <View style={Liststyles.GridViewBlockStyle}>
         <Image
           resizeMode="contain"
           resizeMethod="scale"
-          style={{ width: Dimensions.get("screen").width / 3,height:Dimensions.get('screen').width/3 }}
+          style={{
+            width: Dimensions.get("screen").width / 3,
+            height: Dimensions.get("screen").width / 3
+          }}
           source={Icons.ic_player}
         />
       </View>
@@ -169,6 +331,7 @@ class ListCompoment extends Component {
             showsVerticalScrollIndicator={false}
             alwaysBounceVertical={false}
             bounces={false}
+            nestedScrollEnabled={false}
             numColumns={this.props.columns}
             style={{ marginTop: 8, marginLeft: 8, marginRight: 8 }}
             data={this.props.data}
@@ -184,11 +347,28 @@ class ListCompoment extends Component {
             showsVerticalScrollIndicator={false}
             alwaysBounceVertical={false}
             bounces={false}
+            nestedScrollEnabled={false}
             numColumns={this.props.columns}
             style={{ marginTop: 8, marginLeft: 8, marginRight: 8 }}
             data={this.props.data}
             renderItem={({ item, index }) => this.renderPictures(item)}
             key={"v"}
+          />
+        </View>
+      );
+    } else if (this.props.tabTitle == "Crew") {
+      return (
+        <View>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            alwaysBounceVertical={false}
+            bounces={false}
+            nestedScrollEnabled={false}
+            numColumns={this.props.columns}
+            style={{ marginTop: 8, marginLeft: 8, marginRight: 8 }}
+            data={this.props.data}
+            renderItem={({ item, index }) => this.renderFriends(item)}
+            keyExtractor={item => item}
           />
         </View>
       );
@@ -199,6 +379,7 @@ class ListCompoment extends Component {
             showsVerticalScrollIndicator={false}
             alwaysBounceVertical={false}
             bounces={false}
+            nestedScrollEnabled={false}
             numColumns={this.props.columns}
             style={{ marginTop: 8, marginLeft: 8, marginRight: 8 }}
             data={this.props.data}
@@ -235,6 +416,7 @@ const Liststyles = StyleSheet.create({
 ListCompoment.propTypes = {
   tabTitle: PropTypes.string,
   columns: PropTypes.number,
-  data: PropTypes.object
+  data: PropTypes.object,
+  navigation:PropTypes.object
 };
 export default ListCompoment;

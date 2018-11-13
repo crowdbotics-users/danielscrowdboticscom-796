@@ -21,7 +21,7 @@ class BannerCompoment extends Component {
     };
   }
   render() {
-    if (this.props.tabTitle == "Posts" || this.props.tabTitle=="Pictures") {
+    if (this.props.tabTitle == "Posts" || this.props.tabTitle=="Pictures" || this.props.tabTitle=="Crew") {
       return (
         <View>
           <ImageBackground source={Icons.toolbarbg} style={{ height: 180 }}>

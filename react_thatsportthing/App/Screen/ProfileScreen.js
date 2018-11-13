@@ -23,14 +23,22 @@ import ImagePicker from "react-native-image-crop-picker";
 import TabCompoment from "../Compoments/TabCompoment";
 import HamburgerIcon from "../Compoments/DrawerIcon";
 import ListCompoment from "../Compoments/ListCompoment";
-import { ViewPager } from "rn-viewpager";
+import {
+  PagerTabIndicator,
+  PagerTitleIndicator,
+  PagerDotIndicator,
+  ViewPager
+} from "rn-viewpager";
 import BannerCompoment from "../Compoments/BannerCompoment";
+import ProfileTabCompoment from "../Compoments/ProfileTabCompoment";
 import PictureTabCompoment from "../Compoments/PictureTabCompoment";
-import hometabstyles from "../Resource/hometabstyles";
-
+import tabstyles from "../Resource/tabstyles";
+import friendstabstyles from "../Resource/friendstabstyles";
+import picturetabstyles from "../Resource/picturetabstyles";
+import Strings from '../Resource/Strings';
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
-class HomeTabScreen extends Component {
+class ProfileScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
 
@@ -42,12 +50,17 @@ class HomeTabScreen extends Component {
     super(props);
 
     this.state = {
-      currentTab: 0,
-      tabTitle: "Stream",
+      tabTitle: "Posts",
       columnCount: 1,
-      isStreamActive: true,
-      isFriendsPostActive: false,
-      isSearchActive: false,
+      isAllFriends: true,
+      isMutualFriends: false,
+      isFollowersActive: false,
+      isPostActive: true,
+      isPicturesActive: false,
+      isFriendsActive: false,
+      isAllPhotosVideoActive: true,
+      isPhotosActive: false,
+      isVideoActive: false,
       isLoading: true,
       activeColor: Colors.orange,
       activeTextColor: Colors.white,
@@ -245,53 +258,85 @@ class HomeTabScreen extends Component {
       <View style={[styles.row, { alignItems: "center" }]}>
         <Image
           source={data.image}
-          style={{ width: 50, height: 50, margin: 5 }}
+          style={{ width: 35, height: 35, marginLeft: 5, marginRight: 5 }}
         />
       </View>
     );
   }
 
-  doChangeTab(tabName) {
-    if (tabName == "stream") {
+  doPictureChangeTab(tabName) {
+    if (tabName == "allphotosvideo") {
       this.setState({
-        tabTitle: "Stream",
+        isAllPhotosVideoActive: true,
+        isPhotosActive: false,
+        isVideoActive: false
+      });
+    } else if (tabName == "photos") {
+      this.setState({
+        isAllPhotosVideoActive: false,
+        isPhotosActive: true,
+        isVideoActive: false
+      });
+    } else if (tabName == "videos") {
+      this.setState({
+        isAllPhotosVideoActive: false,
+        isPhotosActive: false,
+        isVideoActive: true
+      });
+    }
+  }
+  doFriendsChangeTab(tabName) {
+    if (tabName == "allfriends") {
+      this.setState({
+        isAllFriends: true,
+        isMutualFriends: false,
+        isFollowersActive: false
+      });
+    } else if (tabName == "mutualfriends") {
+      this.setState({
+        isAllFriends: false,
+        isMutualFriends: true,
+        isFollowersActive: false
+      });
+    } else if (tabName == "followers") {
+      this.setState({
+        isAllFriends: false,
+        isMutualFriends: false,
+        isFollowersActive: true
+      });
+    }
+  }
+  doChangeTab(tabName) {
+    if (tabName == "posts") {
+      this.setState({
+        tabTitle: "Posts",
         columnCount: 1,
-        isStreamActive: true,
-        isFriendsPostActive: false,
-        isSearchActive: false
+        isPostActive: true,
+        isPicturesActive: false,
+        isFriendsActive: false
       });
       this.refs.viewPager.setPage(0);
-    } else if (tabName == "friendspost") {
+    } else if (tabName == "pictures") {
       this.setState({
-        tabTitle: "Friends's Post",
-        columnCount: 1,
-        isStreamActive: false,
-        isFriendsPostActive: true,
-        isSearchActive: false
+        tabTitle: "Pictures",
+        columnCount: 3,
+        isPostActive: false,
+        isPicturesActive: true,
+        isFriendsActive: false
       });
       this.refs.viewPager.setPage(1);
-    } else if (tabName == "search") {
+    } else if (tabName == "friends") {
       this.setState({
-        tabTitle: "Search",
+        tabTitle: "Crew",
         columnCount: 1,
-        isStreamActive: false,
-        isFriendsPostActive: false,
-        isSearchActive: true
+        isPostActive: false,
+        isPicturesActive: false,
+        isFriendsActive: true
       });
       this.refs.viewPager.setPage(2);
     }
   }
 
-  renderFooter(data) {
-    return (
-      <View style={[styles.row, { alignItems: "center" }]}>
-        <Image
-          source={Icons.ic_add}
-          style={{ width: 50, height: 50, margin: 5 }}
-        />
-      </View>
-    );
-  }
   render() {
     return (
       <SafeAreaView>
@@ -310,10 +355,11 @@ class HomeTabScreen extends Component {
           <View>
             <View
               style={{
-                height: 80,
-                backgroundColor: "#BABABA",
+                height: 70,
+                backgroundColor: "#4A4A4A",
                 justifyContent: "center",
-                alignContent: "center"
+                alignContent: "center",
+                alignItems: "center"
               }}
             >
               <ActivityIndicator
@@ -328,14 +374,14 @@ class HomeTabScreen extends Component {
                 bounces={false}
                 dataSource={ds.cloneWithRows(this.state.dataSource)}
                 renderRow={this.renderRow.bind(this)}
-                renderFooter={this.renderFooter.bind(this)}
               />
               <Text
                 style={{
                   textAlign: "center",
                   color: Colors.white,
-                  fontSize: 11,
-                  fontFamily: "OpenSans-SemiBold"
+                  fontSize: 10,
+                  fontFamily: "OpenSans-SemiBold",
+                  marginBottom: 5
                 }}
               >
                 FAVORITE SPORTS
@@ -344,74 +390,69 @@ class HomeTabScreen extends Component {
           </View>
           <View>
             <View style={{ backgroundColor: "#414141" }}>
-              <ScrollView horizontal={true}>
-                <View style={{ flexDirection: "row", marginTop: 10 }}>
-                  <TouchableOpacity onPress={() => this.doChangeTab("stream")}>
+              <View style={{ flexDirection: "row", marginTop: 10 }}>
+                <TouchableOpacity onPress={() => this.doChangeTab("posts")}>
                   <View
                     style={
-                      this.state.isStreamActive
-                        ? hometabstyles.StreamActiveTab
-                        : hometabstyles.StreamInactiveTab
+                      this.state.isPostActive
+                        ? tabstyles.PostactiveTab
+                        : tabstyles.PostInactiveTab
                     }
                   >
                     <Text
                       style={
-                        this.state.isStreamActive
-                          ? hometabstyles.StreamActiveTabText
-                          : hometabstyles.StreamInactiveTabText
+                        this.state.isPostActive
+                          ? tabstyles.PostactiveTabText
+                          : tabstyles.PostInactiveTabText
                       }
                     >
-                      Stream
+                      Posts
                     </Text>
                   </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => this.doChangeTab("friendspost")}
-                  >
-                    <View
-                    style={
-                      this.state.isFriendsPostActive
-                        ? hometabstyles.FriendsPostActiveTab
-                        : hometabstyles.FriendsPostInactiveTab
-                    }
-                  >
-                    <Text
-                      style={
-                        this.state.isFriendsPostActive
-                          ? hometabstyles.FriendsPostActiveTabText
-                          : hometabstyles.FriendsPostInactiveTabText
-                      }
-                    >
-                      Friend's Post
-                    </Text>
-                  </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => this.doChangeTab("search")}>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.doChangeTab("pictures")}>
                   <View
                     style={
-                      this.state.isSearchActive
-                        ? hometabstyles.SearchActiveTab
-                        : hometabstyles.SearchInactiveTab
+                      this.state.isPicturesActive
+                        ? tabstyles.PictureactiveTab
+                        : tabstyles.PictureInactiveTab
                     }
                   >
                     <Text
                       style={
-                        this.state.isSearchActive
-                          ? hometabstyles.SearchActiveTabText
-                          : hometabstyles.SearchInactiveTabText
+                        this.state.isPicturesActive
+                          ? tabstyles.PictureactiveTabText
+                          : tabstyles.PictureInactiveTabText
                       }
                     >
-                     Search
+                      Pictures
                     </Text>
                   </View>
-                  </TouchableOpacity>
-                </View>
-              </ScrollView>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.doChangeTab("friends")}>
+                  <View
+                    style={
+                      this.state.isFriendsActive
+                        ? tabstyles.FriendsactiveTab
+                        : tabstyles.FriendsInactiveTab
+                    }
+                  >
+                    <Text
+                      style={
+                        this.state.isFriendsActive
+                          ? tabstyles.FriendsactiveTabText
+                          : tabstyles.FriendsInactiveTabText
+                      }
+                    >
+                      Friends
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
               <View style={{ flex: 1 }}>
                 <ViewPager
-                  scrollEnabled={false}
                   ref={"viewPager"}
-                  initialPage={this.state.currentTab}
                   style={{ flex: 1, height: Dimensions.get("screen").height }}
                 >
                   <View>
@@ -419,15 +460,89 @@ class HomeTabScreen extends Component {
                       tabTitle={this.state.tabTitle}
                       columns={this.state.columnCount}
                       data={this.state.dataSource1}
-                      navigation={this.props.navigation}
                     />
                   </View>
                   <View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignContent: "center",
+                        backgroundColor: "#313131",
+                        height: 40,
+                        alignItems: "center"
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.doPictureChangeTab("allphotosvideo")
+                        }
+                      >
+                        <View
+                          style={
+                            this.state.isAllPhotosVideoActive
+                              ? picturetabstyles.AllPhotosVideoActiveTab
+                              : picturetabstyles.AllPhotosVideoInactiveTab
+                          }
+                        >
+                          <Text
+                            style={
+                              this.state.isAllPhotosVideoActive
+                                ? picturetabstyles.AllPhotosVideoActiveTabText
+                                : picturetabstyles.AllPhotosVideoInactiveTabText
+                            }
+                          >
+                            {Strings.allphotosvideo}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => this.doPictureChangeTab("photos")}
+                      >
+                        <View
+                          style={
+                            this.state.isPhotosActive
+                              ? picturetabstyles.AlbumsActiveTab
+                              : picturetabstyles.AlbumsInactiveTab
+                          }
+                        >
+                          <Text
+                            style={
+                              this.state.isPhotosActive
+                                ? picturetabstyles.AlbumsActiveTabText
+                                : picturetabstyles.AlbumsInactiveTabText
+                            }
+                          >
+                            {Strings.albums}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => this.doPictureChangeTab("videos")}
+                      >
+                        <View
+                          style={
+                            this.state.isVideoActive
+                              ? picturetabstyles.TaggedActiveTab
+                              : picturetabstyles.TaggedInactiveTab
+                          }
+                        >
+                          <Text
+                            style={
+                              this.state.isVideoActive
+                                ? picturetabstyles.TaggedActiveTabText
+                                : picturetabstyles.TaggedInactiveTabText
+                            }
+                          >
+                           {Strings.tagged}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
                     <ListCompoment
                       tabTitle={this.state.tabTitle}
                       columns={this.state.columnCount}
                       data={this.state.dataSource1}
-                      navigation={this.props.navigation}
                     />
                   </View>
                   <View>
@@ -471,64 +586,82 @@ class HomeTabScreen extends Component {
                     </View>
                     <View
                       style={{
-                        position: "relative",
-                        marginTop: 20,
-                        marginBottom: 15
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignContent: "center",
+                        backgroundColor: "#313131",
+                        height: 40,
+                        alignItems: "center"
                       }}
                     >
-                      <View style={{ position: "relative" }}>
-                        <View
-                          style={{
-                            height: 2,
-                            width: "100%",
-                            backgroundColor: Colors.bgHeader
-                          }}
-                        />
-                      </View>
-                      <View
-                        style={{
-                          position: "absolute",
-                          alignSelf: "center",
-                          bottom: -10,
-                          justifyContent: "center",
-                          alignContent: "center"
-                        }}
+                      <TouchableOpacity
+                        onPress={() => this.doFriendsChangeTab("allfriends")}
                       >
                         <View
-                          style={{
-                            backgroundColor: Colors.bgHeader,
-                            borderRadius: 10,
-                            justifyContent: "center",
-                            alignContent: "center",
-                            flexDirection: "row",
-                            alignItems: "center"
-                          }}
+                          style={
+                            this.state.isAllFriends
+                              ? friendstabstyles.FriendsActiveTab
+                              : friendstabstyles.FriendsInactiveTab
+                          }
                         >
-                          <Image
-                            source={Icons.ic_down_arrow_white}
-                            style={{ width: 15, height: 9, margin: 3 }}
-                          />
                           <Text
-                            style={{
-                              color: Colors.white,
-                              padding: 1,
-                              margin: 1
-                            }}
+                            style={
+                              this.state.isAllFriends
+                                ? friendstabstyles.FriendsActiveTabText
+                                : friendstabstyles.FriendsInactiveTabText
+                            }
                           >
-                            Advanced Search
+                            All Friends
                           </Text>
-                          <Image
-                            source={Icons.ic_down_arrow_white}
-                            style={{ width: 15, height: 9, margin: 3 }}
-                          />
                         </View>
-                      </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => this.doFriendsChangeTab("mutualfriends")}
+                      >
+                        <View
+                          style={
+                            this.state.isMutualFriends
+                              ? friendstabstyles.MutualFriendsActiveTab
+                              : friendstabstyles.MutualFriendsInactiveTab
+                          }
+                        >
+                          <Text
+                            style={
+                              this.state.isMutualFriends
+                                ? friendstabstyles.MutualFriendsActiveTabText
+                                : friendstabstyles.MutualFriendsInactiveTabText
+                            }
+                          >
+                            Mutual Friends
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => this.doFriendsChangeTab("followers")}
+                      >
+                        <View
+                          style={
+                            this.state.isFollowersActive
+                              ? friendstabstyles.FollowersActiveTab
+                              : friendstabstyles.FollowersInactiveTab
+                          }
+                        >
+                          <Text
+                            style={
+                              this.state.isFollowersActive
+                                ? friendstabstyles.FollowersActiveTabText
+                                : friendstabstyles.FollowersInactiveTabText
+                            }
+                          >
+                            Followers
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
                     </View>
                     <ListCompoment
                       tabTitle={this.state.tabTitle}
                       columns={this.state.columnCount}
                       data={this.state.dataSource1}
-                      navigation={this.props.navigation}
                     />
                   </View>
                 </ViewPager>
@@ -540,4 +673,5 @@ class HomeTabScreen extends Component {
     );
   }
 }
-export default HomeTabScreen;
+
+export default ProfileScreen;
