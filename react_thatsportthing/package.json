@@ -13,6 +13,7 @@
     "react-native": "0.57.1",
     "react-native-easy-grid-view": "^0.1.1",
     "react-native-image-crop-picker": "^0.21.2",
+    "react-native-indicators": "^0.13.0",
     "react-native-modal-datetime-picker": "^6.0.0",
     "react-navigation": "^2.17.0",
     "rn-viewpager": "^1.2.9"

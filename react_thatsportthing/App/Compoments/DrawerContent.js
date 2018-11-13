@@ -9,7 +9,8 @@ import {
   Linking,
   TextInput,Platform
 } from "react-native";
-import { NavigationActions } from "react-navigation";
+import { NavigationActions, StackActions } from "react-navigation";
+
 import PropTypes from "prop-types";
 
 import styles from "../Resource/Styles";
@@ -43,8 +44,13 @@ class DrawerContent extends Component {
     this.props.navigation.dispatch(navigate);
     this.closeDrawer();
   };
-  doLogout() {
-    this.props.navigation.navigate("Login");
+  doLogout(screen) {
+    const resetAction = StackActions.reset({
+      index: 0,
+      key: null,
+      actions: [NavigationActions.navigate({ routeName: screen })]
+    });
+    this.props.navigation.dispatch(resetAction);
     this.closeDrawer();
   }
   doRateUs() {
@@ -62,6 +68,7 @@ class DrawerContent extends Component {
       isActiveAccountSettings: false,
       isActiveLogout: false
     });
+    this.closeDrawer();
   };
   doProfile = () => {
     this.setState({
@@ -74,6 +81,7 @@ class DrawerContent extends Component {
       isActiveAccountSettings: false,
       isActiveLogout: false
     });
+    this.closeDrawer();
   };
   doPosts = () => {
     this.setState({
@@ -86,6 +94,7 @@ class DrawerContent extends Component {
       isActiveAccountSettings: false,
       isActiveLogout: false
     });
+    this.closeDrawer();
   };
   doPhotos = () => {
     this.setState({
@@ -98,6 +107,7 @@ class DrawerContent extends Component {
       isActiveAccountSettings: false,
       isActiveLogout: false
     });
+    this.closeDrawer();
   };
   doVideos = () => {
     this.setState({
@@ -110,6 +120,7 @@ class DrawerContent extends Component {
       isActiveAccountSettings: false,
       isActiveLogout: false
     });
+    this.closeDrawer();
   };
   doFriends = () => {
     this.setState({
@@ -122,6 +133,7 @@ class DrawerContent extends Component {
       isActiveAccountSettings: false,
       isActiveLogout: false
     });
+    this.closeDrawer();
   };
   doAccountSetting = () => {
     this.setState({
@@ -134,6 +146,7 @@ class DrawerContent extends Component {
       isActiveAccountSettings: true,
       isActiveLogout: false
     });
+    this.closeDrawer();
   };
   closeDrawer = () => {
     this.props.navigation.closeDrawer();
@@ -147,7 +160,7 @@ class DrawerContent extends Component {
           {
             backgroundColor: Color.navBg,
             justifyContent: "flex-start",
-            marginTop: 20,
+            
             height: 200
           }
         ]}
@@ -498,7 +511,7 @@ class DrawerContent extends Component {
             </TouchableOpacity>
           </View>
           <View>
-            <TouchableOpacity onPress={this.doLogout.bind(this)}>
+            <TouchableOpacity onPress={()=>this.doLogout("LoginType")}>
               <View
                 style={{
                   backgroundColor: this.state.isActiveLogout

@@ -7,17 +7,21 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
-  SafeAreaView
+  SafeAreaView,
+  Modal,
+  ActivityIndicator
 } from "react-native";
 import Colors from "../Resource/Colors";
 import Icons from "../Resource/Icons";
 import ImagePicker from 'react-native-image-crop-picker';
+import ProgressCompoment from "../Compoments/ProgressCompoment";
 
 class SignUpScreen3 extends Component {
   constructor(props) {
     super(props);
     this.state = {
       avatarSource: '',
+      isProgress:false
     };
   }
   static navigationOptions = {
@@ -28,7 +32,23 @@ class SignUpScreen3 extends Component {
 
   doRedirect(screen) {
     const { navigate } = this.props.navigation;
-    navigate(screen);
+    const { userData2 } = this.props.navigation.state.params;
+    if(this.state.avatarSource==""){
+      alert("Select Picture");
+    }else{
+      this.openProgressbar();
+      setInterval((()=>{
+        this.hideProgressbar();
+        navigate(screen);
+      }),1000);
+    }
+    
+  }
+  openProgressbar = () => {
+    this.setState({ isProgress: true })
+  }
+  hideProgressbar = () => {
+    this.setState({ isProgress: false })
   }
   doBack(){
     this.props.navigation.goBack();
@@ -109,6 +129,7 @@ class SignUpScreen3 extends Component {
           </View>
         </View>
         <View style={styles.uploadTypeSelectView}>
+        <ProgressCompoment isProgress={this.state.isProgress}/>
         <TouchableOpacity onPress={() => this.pickSingle(true)}>
           <View style={styles.galleryView}>
             <Image
@@ -151,6 +172,7 @@ class SignUpScreen3 extends Component {
     );
   }
 }
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.orange,

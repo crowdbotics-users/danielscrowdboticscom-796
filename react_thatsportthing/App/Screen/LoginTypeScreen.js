@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import Icons from "../Resource/Icons";
 import Colors from "../Resource/Colors";
+import ProgressCompoment from "../Compoments/ProgressCompoment";
 
 class LoginTypeScreen extends Component {
   static navigationOptions = {
@@ -29,12 +30,12 @@ class LoginTypeScreen extends Component {
     return (
       <View>
         <StatusBar
-          backgroundColor="blue"
+          backgroundColor={Colors.bgHeader}
           barStyle="light-content"
           translucent={true}
         />
         <ImageBackground
-          imageStyle={{ resizeMode: "contain" }}
+          imageStyle={{ resizeMode: "cover" }}
           style={{ width: width, height: height, justifyContent: "center" }}
           source={Icons.ic_login_bg}
         >

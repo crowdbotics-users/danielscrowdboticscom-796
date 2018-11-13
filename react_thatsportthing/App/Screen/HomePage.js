@@ -8,6 +8,7 @@ import DrawerContent from "../Compoments/DrawerContent";
 import StreamScreen from "./StreamScreen";
 import { TabContent } from "../Compoments/TabContent";
 import HomeTabScreen from "./HomeTabScreen";
+import ProfileScreen from "./ProfileScreen";
 const StreamScreenNavigator = createStackNavigator({
   StreamScreen: { screen: StreamScreen }
 });
@@ -17,12 +18,17 @@ const HomePageNavigator = createStackNavigator({
     screen: HomeTabScreen
   }
 });
-
-export default (HomePage = createDrawerNavigator(
+const ProfileScreenNavigator = createStackNavigator({
+  ProfileScreen: {
+    screen: ProfileScreen
+  }
+});
+const HomePage = createDrawerNavigator(
   {
     StreamScreen: { screen: StreamScreenNavigator },
     TabContent: { screen: TabContent },
-    HomeTabScreen: { screen: HomePageNavigator }
+    HomeTabScreen: { screen: HomePageNavigator },
+    ProfileScreen: { screen: ProfileScreenNavigator }
   },
   {
     initialRouteName: "HomeTabScreen",
@@ -39,4 +45,6 @@ export default (HomePage = createDrawerNavigator(
       }
     }
   }
-));
+);
+
+export default HomePage;
