@@ -37,7 +37,7 @@ class SignUpScreen3 extends Component {
       alert("Select Picture");
     }else{
       this.openProgressbar();
-      setInterval((()=>{
+      setTimeout((()=>{
         this.hideProgressbar();
         navigate(screen);
       }),1000);
@@ -129,12 +129,8 @@ class SignUpScreen3 extends Component {
           </View>
         </View>
         <View style={styles.uploadTypeSelectView}>
-<<<<<<< HEAD
-        <TouchableOpacity >
-=======
         <ProgressCompoment isProgress={this.state.isProgress}/>
         <TouchableOpacity onPress={() => this.pickSingle(true)}>
->>>>>>> development
           <View style={styles.galleryView}>
             <Image
               style={{ height: 60, width: 60 }}
@@ -144,7 +140,7 @@ class SignUpScreen3 extends Component {
           </View>
           </TouchableOpacity>
 
-          <TouchableOpacity >
+          <TouchableOpacity onPress={() => this.pickSingleWithCamera(true)}>
           <View style={styles.cameraView}>
             <Image
               style={{ height: 60, width: 60, alignItems: "center" }}
