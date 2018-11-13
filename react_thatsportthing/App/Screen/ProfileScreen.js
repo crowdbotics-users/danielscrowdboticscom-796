@@ -460,6 +460,7 @@ class ProfileScreen extends Component {
                       tabTitle={this.state.tabTitle}
                       columns={this.state.columnCount}
                       data={this.state.dataSource1}
+                      navigation={this.props.navigation}
                     />
                   </View>
                   <View>
@@ -543,6 +544,7 @@ class ProfileScreen extends Component {
                       tabTitle={this.state.tabTitle}
                       columns={this.state.columnCount}
                       data={this.state.dataSource1}
+                      navigation={this.props.navigation}
                     />
                   </View>
                   <View>
@@ -662,6 +664,7 @@ class ProfileScreen extends Component {
                       tabTitle={this.state.tabTitle}
                       columns={this.state.columnCount}
                       data={this.state.dataSource1}
+                      navigation={this.props.navigation}
                     />
                   </View>
                 </ViewPager>
