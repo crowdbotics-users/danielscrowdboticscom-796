@@ -91,9 +91,10 @@ class HomeTabScreen extends Component {
           image: Icons.ball1
         }
       ],
+      filteredData:[],
       dataSource1: [
         {
-          name: "JOHN SCHUFFER",
+          name: "Mason SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -107,7 +108,7 @@ class HomeTabScreen extends Component {
           followstatus: 1
         },
         {
-          name: "JOHN SCHUFFER",
+          name: "Jacob SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -121,7 +122,7 @@ class HomeTabScreen extends Component {
           followstatus: 1
         },
         {
-          name: "JOHN SCHUFFER",
+          name: "William SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -135,7 +136,7 @@ class HomeTabScreen extends Component {
           followstatus: 1
         },
         {
-          name: "JOHN SCHUFFER",
+          name: "Ethan SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -149,7 +150,7 @@ class HomeTabScreen extends Component {
           followstatus: 1
         },
         {
-          name: "JOHN SCHUFFER",
+          name: "James SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -162,7 +163,7 @@ class HomeTabScreen extends Component {
           friendstatus: 1
         },
         {
-          name: "JOHN SCHUFFER",
+          name: "Alexander SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -176,7 +177,7 @@ class HomeTabScreen extends Component {
           followstatus: 1
         },
         {
-          name: "JOHN SCHUFFER",
+          name: "Michael SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -190,7 +191,7 @@ class HomeTabScreen extends Component {
           followstatus: 1
         },
         {
-          name: "JOHN SCHUFFER",
+          name: "Benjamin SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -204,7 +205,7 @@ class HomeTabScreen extends Component {
           followstatus: 1
         },
         {
-          name: "JOHN SCHUFFER",
+          name: "Elijah SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -218,7 +219,7 @@ class HomeTabScreen extends Component {
           followstatus: 1
         },
         {
-          name: "JOHN SCHUFFER",
+          name: "Daniel SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -292,15 +293,37 @@ class HomeTabScreen extends Component {
       </View>
     );
   }
+  searchText = (e) => {
+    let text = e.toLowerCase()
+    let trucks = this.state.dataSource1
+    let filteredName = trucks.filter((item) => {
+      return item.name.toLowerCase().match(text)
+    })
+    if (!text || text === '') {
+      this.setState({
+        filteredData: this.state.dataSource1
+      })
+    } else if (!Array.isArray(filteredName) && !filteredName.length) {
+      // set no data flag to true so as to render flatlist conditionally
+      this.setState({
+        noData: true
+      })
+    } else if (Array.isArray(filteredName)) {
+      this.setState({
+        noData: false,
+        filteredData: filteredName
+      })
+    }
+  }
   render() {
     return (
       <SafeAreaView>
-        <ScrollView
+         <ScrollView
           bounces={false}
           showsVerticalScrollIndicator={false}
           alwaysBounceVertical={false}
-          nestedScrollEnabled={true}
-        >
+          
+        > 
           <View>
             <BannerCompoment
               tabTitle={this.state.tabTitle}
@@ -313,7 +336,8 @@ class HomeTabScreen extends Component {
                 height: 80,
                 backgroundColor: "#BABABA",
                 justifyContent: "center",
-                alignContent: "center"
+                alignContent: "center",
+                alignItems:'center'
               }}
             >
               <ActivityIndicator
@@ -342,9 +366,9 @@ class HomeTabScreen extends Component {
               </Text>
             </View>
           </View>
-          <View>
-            <View style={{ backgroundColor: "#414141" }}>
-              <ScrollView horizontal={true}>
+          
+            <View style={{ backgroundColor: "#414141",flexDirection:'column'}}>
+             
                 <View style={{ flexDirection: "row", marginTop: 10 }}>
                   <TouchableOpacity onPress={() => this.doChangeTab("stream")}>
                   <View
@@ -406,13 +430,14 @@ class HomeTabScreen extends Component {
                   </View>
                   </TouchableOpacity>
                 </View>
-              </ScrollView>
-              <View style={{ flex: 1 }}>
-                <ViewPager
-                  scrollEnabled={false}
+      
+          
+               <View>
+               <ViewPager
+                 style={{height:Dimensions.get('screen').height}}
                   ref={"viewPager"}
                   initialPage={this.state.currentTab}
-                  style={{ flex: 1, height: Dimensions.get("screen").height }}
+                  
                 >
                   <View>
                     <ListCompoment
@@ -466,6 +491,7 @@ class HomeTabScreen extends Component {
                           }}
                           placeholderTextColor={Colors.colorSearch}
                           underlineColorAndroid={Colors.transparent}
+                          onChangeText={(text)=>this.searchText(text)}
                         />
                       </View>
                     </View>
@@ -527,15 +553,16 @@ class HomeTabScreen extends Component {
                     <ListCompoment
                       tabTitle={this.state.tabTitle}
                       columns={this.state.columnCount}
-                      data={this.state.dataSource1}
+                      data={this.state.filteredData.length>0?this.state.filteredData:this.state.dataSource1}
                       navigation={this.props.navigation}
                     />
                   </View>
                 </ViewPager>
-              </View>
+               </View>
+          
             </View>
-          </View>
-        </ScrollView>
+          
+      </ScrollView> 
       </SafeAreaView>
     );
   }

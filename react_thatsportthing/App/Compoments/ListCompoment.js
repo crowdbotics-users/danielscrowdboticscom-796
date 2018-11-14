@@ -14,10 +14,11 @@ import PropTypes from "prop-types";
 import Colors from "../Resource/Colors";
 import styles from "../Resource/Styles";
 import Icons from "../Resource/Icons";
+import GridView from "react-native-gridview";
 
 class ListCompoment extends Component {
-  doRedirect(data){
-    this.props.navigation.navigate("ProfileScreen",{data:data});
+  doRedirect(data) {
+    this.props.navigation.navigate("ProfileScreen", { data: data });
   }
   renderStream(data) {
     return (
@@ -59,10 +60,12 @@ class ListCompoment extends Component {
                 }}
               />
             </View>
-            <TouchableOpacity onPress={()=>this.doRedirect(data)} style={{flex: 1,}}>
+            <TouchableOpacity
+              onPress={() => this.doRedirect(data)}
+              style={{ flex: 1 }}
+            >
               <Text
                 style={{
-                  
                   color: Colors.black,
                   fontFamily: "OpenSans-SemiBold",
                   fontSize: 13
@@ -466,29 +469,36 @@ class ListCompoment extends Component {
             showsVerticalScrollIndicator={false}
             alwaysBounceVertical={false}
             bounces={false}
-            nestedScrollEnabled={false}
             numColumns={this.props.columns}
             style={{ marginTop: 8, marginLeft: 8, marginRight: 8 }}
             data={this.props.data}
             renderItem={({ item, index }) => this.renderStream(item)}
             keyExtractor={item => item}
+            nestedScrollEnabled={false}
           />
         </View>
       );
     } else if (this.props.tabTitle == "Pictures") {
+      const ds = new GridView.DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2
+      }).cloneWithRows(this.props.data);
       return (
         <View>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            alwaysBounceVertical={false}
-            bounces={false}
-            nestedScrollEnabled={false}
-            numColumns={this.props.columns}
-            style={{ marginTop: 8, marginLeft: 8, marginRight: 8 }}
-            data={this.props.data}
-            renderItem={({ item, index }) => this.renderPictures(item)}
-            key={"v"}
-          />
+          {this.props.noData ? (
+            <Text>NoData</Text>
+          ) : (
+            <GridView
+              showsVerticalScrollIndicator={false}
+              alwaysBounceVertical={false}
+              bounces={false}
+              itemsPerRow={this.props.columns}
+              style={{ marginTop: 8, marginLeft: 8, marginRight: 8 }}
+              data={this.props.data}
+              renderItem={({ item, index }) => this.renderPictures(item)}
+              key={"v"}
+              nestedScrollEnabled={false}
+            />
+          )}
         </View>
       );
     } else if (this.props.tabTitle == "Crew") {
@@ -498,12 +508,12 @@ class ListCompoment extends Component {
             showsVerticalScrollIndicator={false}
             alwaysBounceVertical={false}
             bounces={false}
-            nestedScrollEnabled={false}
             numColumns={this.props.columns}
             style={{ marginTop: 8, marginLeft: 8, marginRight: 8 }}
             data={this.props.data}
             renderItem={({ item, index }) => this.renderFriends(item)}
             keyExtractor={item => item}
+            nestedScrollEnabled={false}
           />
         </View>
       );
@@ -514,12 +524,12 @@ class ListCompoment extends Component {
             showsVerticalScrollIndicator={false}
             alwaysBounceVertical={false}
             bounces={false}
-            nestedScrollEnabled={false}
             numColumns={this.props.columns}
             style={{ marginTop: 8, marginLeft: 8, marginRight: 8 }}
             data={this.props.data}
             renderItem={({ item, index }) => this.renderPost(item)}
             keyExtractor={item => item}
+            nestedScrollEnabled={false}
           />
         </View>
       );
@@ -538,8 +548,9 @@ const Liststyles = StyleSheet.create({
     justifyContent: "center",
     flex: 1,
     alignItems: "center",
-    marginStart: 5,
-    backgroundColor: Colors.transparent
+    backgroundColor: Colors.transparent,
+    margin: 2,
+    overflow: "hidden"
   },
   GridViewInsideTextItemStyle: {
     color: "#fff",
@@ -552,6 +563,7 @@ ListCompoment.propTypes = {
   tabTitle: PropTypes.string,
   columns: PropTypes.number,
   data: PropTypes.object,
-  navigation:PropTypes.object
+  noData: PropTypes.bool,
+  navigation: PropTypes.object
 };
 export default ListCompoment;

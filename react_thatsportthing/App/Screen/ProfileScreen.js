@@ -50,6 +50,7 @@ class ProfileScreen extends Component {
     super(props);
 
     this.state = {
+      noData:false,
       tabTitle: "Posts",
       columnCount: 1,
       isAllFriends: true,
@@ -104,9 +105,10 @@ class ProfileScreen extends Component {
           image: Icons.ball1
         }
       ],
+      filteredData:[],
       dataSource1: [
         {
-          name: "JOHN SCHUFFER",
+          name: "Mason SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -120,7 +122,7 @@ class ProfileScreen extends Component {
           followstatus: 1
         },
         {
-          name: "JOHN SCHUFFER",
+          name: "Jacob SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -134,7 +136,7 @@ class ProfileScreen extends Component {
           followstatus: 1
         },
         {
-          name: "JOHN SCHUFFER",
+          name: "William SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -148,7 +150,7 @@ class ProfileScreen extends Component {
           followstatus: 1
         },
         {
-          name: "JOHN SCHUFFER",
+          name: "Ethan SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -162,7 +164,7 @@ class ProfileScreen extends Component {
           followstatus: 1
         },
         {
-          name: "JOHN SCHUFFER",
+          name: "James SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -175,7 +177,7 @@ class ProfileScreen extends Component {
           friendstatus: 1
         },
         {
-          name: "JOHN SCHUFFER",
+          name: "Alexander SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -189,7 +191,7 @@ class ProfileScreen extends Component {
           followstatus: 1
         },
         {
-          name: "JOHN SCHUFFER",
+          name: "Michael SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -203,7 +205,7 @@ class ProfileScreen extends Component {
           followstatus: 1
         },
         {
-          name: "JOHN SCHUFFER",
+          name: "Benjamin SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -217,7 +219,7 @@ class ProfileScreen extends Component {
           followstatus: 1
         },
         {
-          name: "JOHN SCHUFFER",
+          name: "Elijah SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -231,7 +233,7 @@ class ProfileScreen extends Component {
           followstatus: 1
         },
         {
-          name: "JOHN SCHUFFER",
+          name: "Daniel SCHUFFER",
           username: "@schufferj",
           location: "New york City,Newyork",
           description:
@@ -246,6 +248,7 @@ class ProfileScreen extends Component {
         }
       ]
     };
+    this.setState({filteredData:this.state.dataSource1});
   }
 
   componentWillMount() {
@@ -318,6 +321,7 @@ class ProfileScreen extends Component {
       this.refs.viewPager.setPage(0);
     } else if (tabName == "pictures") {
       this.setState({
+        
         tabTitle: "Pictures",
         columnCount: 3,
         isPostActive: false,
@@ -327,6 +331,7 @@ class ProfileScreen extends Component {
       this.refs.viewPager.setPage(1);
     } else if (tabName == "friends") {
       this.setState({
+       
         tabTitle: "Crew",
         columnCount: 1,
         isPostActive: false,
@@ -336,7 +341,28 @@ class ProfileScreen extends Component {
       this.refs.viewPager.setPage(2);
     }
   }
-
+  searchText = (e) => {
+    let text = e.toLowerCase()
+    let trucks = this.state.dataSource1
+    let filteredName = trucks.filter((item) => {
+      return item.name.toLowerCase().match(text)
+    })
+    if (!text || text === '') {
+      this.setState({
+        filteredData: this.state.dataSource1
+      })
+    } else if (!Array.isArray(filteredName) && !filteredName.length) {
+      // set no data flag to true so as to render flatlist conditionally
+      this.setState({
+        noData: true
+      })
+    } else if (Array.isArray(filteredName)) {
+      this.setState({
+        noData: false,
+        filteredData: filteredName
+      })
+    }
+  }
   render() {
     return (
       <SafeAreaView>
@@ -344,7 +370,7 @@ class ProfileScreen extends Component {
           bounces={false}
           showsVerticalScrollIndicator={false}
           alwaysBounceVertical={false}
-          nestedScrollEnabled={true}
+         
         >
           <View>
             <BannerCompoment
@@ -583,6 +609,7 @@ class ProfileScreen extends Component {
                           }}
                           placeholderTextColor={Colors.colorSearch}
                           underlineColorAndroid={Colors.transparent}
+                          onChangeText={(text)=>this.searchText(text)}
                         />
                       </View>
                     </View>
@@ -663,7 +690,8 @@ class ProfileScreen extends Component {
                     <ListCompoment
                       tabTitle={this.state.tabTitle}
                       columns={this.state.columnCount}
-                      data={this.state.dataSource1}
+                      data={this.state.filteredData.length>0?this.state.filteredData:this.state.dataSource1}
+                      noData={this.state.noData}
                       navigation={this.props.navigation}
                     />
                   </View>
