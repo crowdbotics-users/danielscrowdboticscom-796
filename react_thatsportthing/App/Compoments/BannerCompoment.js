@@ -20,6 +20,9 @@ class BannerCompoment extends Component {
       avatarSource: ""
     };
   }
+  doRedirect(screen){
+    this.props.navigation.navigate(screen);
+  }
   render() {
     if (this.props.tabTitle == "Posts" || this.props.tabTitle=="Pictures" || this.props.tabTitle=="Crew") {
       return (
@@ -244,7 +247,7 @@ class BannerCompoment extends Component {
                     </Text>
                   </View>
                 </View>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={()=>this.doRedirect("EditProfileScreen")}>
                   <View
                     style={{
                       justifyContent: "center",
@@ -312,6 +315,7 @@ const customstyles = StyleSheet.create({
 BannerCompoment.propTypes = {
   tabActive: PropTypes.bool,
   tabTitle: PropTypes.string,
-  profilePicture: PropTypes.string
+  profilePicture: PropTypes.string,
+  navigation: PropTypes.object
 };
 export default BannerCompoment;

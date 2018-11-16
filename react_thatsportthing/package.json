@@ -12,6 +12,7 @@
     "react": "16.5.0",
     "react-native": "0.57.1",
     "react-native-easy-grid-view": "^0.1.1",
+    "react-native-firebase": "^5.1.0",
     "react-native-gridview": "^0.1.2",
     "react-native-image-crop-picker": "^0.21.2",
     "react-native-indicators": "^0.13.0",

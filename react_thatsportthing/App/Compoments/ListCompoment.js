@@ -311,9 +311,9 @@ class ListCompoment extends Component {
             <View style={{ flex: 1 }}>
               <View
                 style={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: 40,
+                  width: 72,
+                  height: 72,
+                  borderRadius: 36,
                   backgroundColor: "#F8F6F7",
                   alignSelf: "center",
                   justifyContent: "center",
@@ -324,9 +324,9 @@ class ListCompoment extends Component {
                 <Image
                   source={data.image}
                   style={{
-                    width: 74,
-                    height: 74,
-                    borderRadius: 37,
+                    width: 68,
+                    height: 68,
+                    borderRadius: 34,
                     borderWidth: 1.5,
                     borderColor: "#D1D0D0",
                     alignSelf: "center"

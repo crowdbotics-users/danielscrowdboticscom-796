@@ -23,7 +23,7 @@ import ImagePicker from "react-native-image-crop-picker";
 import TabCompoment from "../Compoments/TabCompoment";
 import HamburgerIcon from "../Compoments/DrawerIcon";
 import ListCompoment from "../Compoments/ListCompoment";
-import { ViewPager } from "rn-viewpager";
+import { ViewPager, IndicatorViewPager } from "rn-viewpager";
 import BannerCompoment from "../Compoments/BannerCompoment";
 import PictureTabCompoment from "../Compoments/PictureTabCompoment";
 import hometabstyles from "../Resource/hometabstyles";
@@ -42,7 +42,6 @@ class HomeTabScreen extends Component {
     super(props);
 
     this.state = {
-      currentTab: 0,
       tabTitle: "Stream",
       columnCount: 1,
       isStreamActive: true,
@@ -91,7 +90,7 @@ class HomeTabScreen extends Component {
           image: Icons.ball1
         }
       ],
-      filteredData:[],
+      filteredData: [],
       dataSource1: [
         {
           name: "Mason SCHUFFER",
@@ -293,41 +292,60 @@ class HomeTabScreen extends Component {
       </View>
     );
   }
-  searchText = (e) => {
-    let text = e.toLowerCase()
-    let trucks = this.state.dataSource1
-    let filteredName = trucks.filter((item) => {
-      return item.name.toLowerCase().match(text)
-    })
-    if (!text || text === '') {
+  searchText = e => {
+    let text = e.toLowerCase();
+    let trucks = this.state.dataSource1;
+    let filteredName = trucks.filter(item => {
+      return item.name.toLowerCase().match(text);
+    });
+    if (!text || text === "") {
       this.setState({
         filteredData: this.state.dataSource1
-      })
+      });
     } else if (!Array.isArray(filteredName) && !filteredName.length) {
       // set no data flag to true so as to render flatlist conditionally
       this.setState({
         noData: true
-      })
+      });
     } else if (Array.isArray(filteredName)) {
       this.setState({
         noData: false,
         filteredData: filteredName
-      })
+      });
     }
+  };
+  _onPageScroll(scrollData) {
+    let { offset, position } = scrollData;
+    if (position < 0 || position >= 2) return;
+    switch (position) {
+      case 0:
+        this.doChangeTab("stream");
+        break;
+      case 1:
+        this.doChangeTab("friendspost");
+        break;
+      case 2:
+        this.doChangeTab("search");
+        break;
+    }
+  }
+  doRedirect(screen) {
+    const { navigate } = this.props.navigation;
+    navigate(screen);
   }
   render() {
     return (
       <SafeAreaView>
-         <ScrollView
+        <ScrollView
           bounces={false}
           showsVerticalScrollIndicator={false}
           alwaysBounceVertical={false}
-          
-        > 
+        >
           <View>
             <BannerCompoment
               tabTitle={this.state.tabTitle}
               profilePicture={this.state.avatarSource}
+              navigation={this.props.navigation}
             />
           </View>
           <View>
@@ -337,7 +355,7 @@ class HomeTabScreen extends Component {
                 backgroundColor: "#BABABA",
                 justifyContent: "center",
                 alignContent: "center",
-                alignItems:'center'
+                alignItems: "center"
               }}
             >
               <ActivityIndicator
@@ -366,203 +384,256 @@ class HomeTabScreen extends Component {
               </Text>
             </View>
           </View>
-          
-            <View style={{ backgroundColor: "#414141",flexDirection:'column'}}>
-             
-                <View style={{ flexDirection: "row", marginTop: 10 }}>
-                  <TouchableOpacity onPress={() => this.doChangeTab("stream")}>
-                  <View
+
+          <View style={{ backgroundColor: "#414141", flexDirection: "column" }}>
+            <View style={{ flexDirection: "row", marginTop: 10 }}>
+              <TouchableOpacity onPress={() => this.doChangeTab("stream")}>
+                <View
+                  style={
+                    this.state.isStreamActive
+                      ? hometabstyles.StreamActiveTab
+                      : hometabstyles.StreamInactiveTab
+                  }
+                >
+                  <Text
                     style={
                       this.state.isStreamActive
-                        ? hometabstyles.StreamActiveTab
-                        : hometabstyles.StreamInactiveTab
+                        ? hometabstyles.StreamActiveTabText
+                        : hometabstyles.StreamInactiveTabText
                     }
                   >
-                    <Text
-                      style={
-                        this.state.isStreamActive
-                          ? hometabstyles.StreamActiveTabText
-                          : hometabstyles.StreamInactiveTabText
-                      }
-                    >
-                      Stream
-                    </Text>
-                  </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => this.doChangeTab("friendspost")}
-                  >
-                    <View
+                    Stream
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.doChangeTab("friendspost")}>
+                <View
+                  style={
+                    this.state.isFriendsPostActive
+                      ? hometabstyles.FriendsPostActiveTab
+                      : hometabstyles.FriendsPostInactiveTab
+                  }
+                >
+                  <Text
                     style={
                       this.state.isFriendsPostActive
-                        ? hometabstyles.FriendsPostActiveTab
-                        : hometabstyles.FriendsPostInactiveTab
+                        ? hometabstyles.FriendsPostActiveTabText
+                        : hometabstyles.FriendsPostInactiveTabText
                     }
                   >
-                    <Text
-                      style={
-                        this.state.isFriendsPostActive
-                          ? hometabstyles.FriendsPostActiveTabText
-                          : hometabstyles.FriendsPostInactiveTabText
-                      }
-                    >
-                      Friend's Post
-                    </Text>
-                  </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => this.doChangeTab("search")}>
-                  <View
+                    Friend's Post
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.doChangeTab("search")}>
+                <View
+                  style={
+                    this.state.isSearchActive
+                      ? hometabstyles.SearchActiveTab
+                      : hometabstyles.SearchInactiveTab
+                  }
+                >
+                  <Text
                     style={
                       this.state.isSearchActive
-                        ? hometabstyles.SearchActiveTab
-                        : hometabstyles.SearchInactiveTab
+                        ? hometabstyles.SearchActiveTabText
+                        : hometabstyles.SearchInactiveTabText
                     }
                   >
-                    <Text
-                      style={
-                        this.state.isSearchActive
-                          ? hometabstyles.SearchActiveTabText
-                          : hometabstyles.SearchInactiveTabText
-                      }
-                    >
-                     Search
-                    </Text>
-                  </View>
-                  </TouchableOpacity>
+                    Search
+                  </Text>
                 </View>
-      
-          
-               <View>
-               <ViewPager
-                 style={{height:Dimensions.get('screen').height}}
-                  ref={"viewPager"}
-                  initialPage={this.state.currentTab}
-                  
-                >
-                  <View>
-                    <ListCompoment
-                      tabTitle={this.state.tabTitle}
-                      columns={this.state.columnCount}
-                      data={this.state.dataSource1}
-                      navigation={this.props.navigation}
-                    />
-                  </View>
-                  <View>
-                    <ListCompoment
-                      tabTitle={this.state.tabTitle}
-                      columns={this.state.columnCount}
-                      data={this.state.dataSource1}
-                      navigation={this.props.navigation}
-                    />
-                  </View>
-                  <View>
-                    <View>
+              </TouchableOpacity>
+            </View>
+
+            <View>
+              <IndicatorViewPager
+                style={{ height: Dimensions.get("screen").height }}
+                ref={"viewPager"}
+                scrollEnabled={false}
+              >
+                <View>
+                  <View
+                    style={[
+                      styles.row,
+                      { marginStart: 10, marginEnd: 10, marginTop: 10 }
+                    ]}
+                  >
+                    <TouchableOpacity
+                      style={{ flex: 1 }}
+                      onPress={() => this.doRedirect("AddPostScreen")}
+                    >
                       <View
                         style={{
-                          alignItems: "center",
-                          backgroundColor: "#313131",
+                          backgroundColor: Colors.white,
+                          flex: 1,
+                          padding: 5,
                           flexDirection: "row",
-                          padding: Platform.OS == "android" ? 0 : 10,
-                          borderColor: Colors.colorSearch,
-                          marginTop: 15,
-                          margin: 10,
+                          alignItems: "center",
                           borderRadius: 5
                         }}
                       >
                         <Image
-                          source={Icons.ic_search}
-                          style={{
-                            width: 24,
-                            height: 24,
-                            marginLeft: 10,
-                            marginRight: 5
-                          }}
+                          source={Icons.ic_write_post}
+                          style={styles.icon}
                         />
-                        <TextInput
-                          returnKeyType="done"
-                          placeholder="Search.."
+                        <Text
                           style={{
-                            padding: Platform.OS == "android" ? 5 : 0,
-                            color: Colors.colorSearch,
                             flex: 1,
-                            marginLeft: 5,
-                            fontSize: 14,
-                            fontFamily: "OpenSans-SemiBold"
+                            color: Colors.colorSearch,
+                            fontFamily: "OpenSans-SemiBold",
+                            marginStart: 10
                           }}
-                          placeholderTextColor={Colors.colorSearch}
-                          underlineColorAndroid={Colors.transparent}
-                          onChangeText={(text)=>this.searchText(text)}
+                        >
+                          Write a post
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => this.doRedirect("AddPostScreen")}
+                    >
+                      <View
+                        style={{
+                          marginStart: 5,
+                          backgroundColor: Colors.white,
+                          padding: 5,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          borderRadius: 5
+                        }}
+                      >
+                        <Image
+                          source={Icons.ic_write_camera}
+                          style={styles.icon}
                         />
                       </View>
+                    </TouchableOpacity>
+                  </View>
+                  <ListCompoment
+                    tabTitle={this.state.tabTitle}
+                    columns={this.state.columnCount}
+                    data={this.state.dataSource1}
+                    navigation={this.props.navigation}
+                  />
+                </View>
+                <View>
+                  <ListCompoment
+                    tabTitle={this.state.tabTitle}
+                    columns={this.state.columnCount}
+                    data={this.state.dataSource1}
+                    navigation={this.props.navigation}
+                  />
+                </View>
+                <View>
+                  <View>
+                    <View
+                      style={{
+                        alignItems: "center",
+                        backgroundColor: "#313131",
+                        flexDirection: "row",
+                        padding: Platform.OS == "android" ? 0 : 10,
+                        borderColor: Colors.colorSearch,
+                        marginTop: 15,
+                        margin: 10,
+                        borderRadius: 5
+                      }}
+                    >
+                      <Image
+                        source={Icons.ic_search}
+                        style={{
+                          width: 24,
+                          height: 24,
+                          marginLeft: 10,
+                          marginRight: 5
+                        }}
+                      />
+                      <TextInput
+                        returnKeyType="done"
+                        placeholder="Search.."
+                        style={{
+                          padding: Platform.OS == "android" ? 5 : 0,
+                          color: Colors.colorSearch,
+                          flex: 1,
+                          marginLeft: 5,
+                          fontSize: 14,
+                          fontFamily: "OpenSans-SemiBold"
+                        }}
+                        placeholderTextColor={Colors.colorSearch}
+                        underlineColorAndroid={Colors.transparent}
+                        onChangeText={text => this.searchText(text)}
+                      />
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      position: "relative",
+                      marginTop: 20,
+                      marginBottom: 15
+                    }}
+                  >
+                    <View style={{ position: "relative" }}>
+                      <View
+                        style={{
+                          height: 2,
+                          width: "100%",
+                          backgroundColor: Colors.bgHeader
+                        }}
+                      />
                     </View>
                     <View
                       style={{
-                        position: "relative",
-                        marginTop: 20,
-                        marginBottom: 15
+                        position: "absolute",
+                        alignSelf: "center",
+                        bottom: -10,
+                        justifyContent: "center",
+                        alignContent: "center"
                       }}
                     >
-                      <View style={{ position: "relative" }}>
-                        <View
-                          style={{
-                            height: 2,
-                            width: "100%",
-                            backgroundColor: Colors.bgHeader
-                          }}
-                        />
-                      </View>
                       <View
                         style={{
-                          position: "absolute",
-                          alignSelf: "center",
-                          bottom: -10,
+                          backgroundColor: Colors.bgHeader,
+                          borderRadius: 10,
                           justifyContent: "center",
-                          alignContent: "center"
+                          alignContent: "center",
+                          flexDirection: "row",
+                          alignItems: "center"
                         }}
                       >
-                        <View
+                        <Image
+                          source={Icons.ic_down_arrow_white}
+                          style={{ width: 15, height: 9, margin: 3 }}
+                        />
+                        <Text
                           style={{
-                            backgroundColor: Colors.bgHeader,
-                            borderRadius: 10,
-                            justifyContent: "center",
-                            alignContent: "center",
-                            flexDirection: "row",
-                            alignItems: "center"
+                            color: Colors.white,
+                            padding: 1,
+                            margin: 1
                           }}
                         >
-                          <Image
-                            source={Icons.ic_down_arrow_white}
-                            style={{ width: 15, height: 9, margin: 3 }}
-                          />
-                          <Text
-                            style={{
-                              color: Colors.white,
-                              padding: 1,
-                              margin: 1
-                            }}
-                          >
-                            Advanced Search
-                          </Text>
-                          <Image
-                            source={Icons.ic_down_arrow_white}
-                            style={{ width: 15, height: 9, margin: 3 }}
-                          />
-                        </View>
+                          Advanced Search
+                        </Text>
+                        <Image
+                          source={Icons.ic_down_arrow_white}
+                          style={{ width: 15, height: 9, margin: 3 }}
+                        />
                       </View>
                     </View>
-                    <ListCompoment
-                      tabTitle={this.state.tabTitle}
-                      columns={this.state.columnCount}
-                      data={this.state.filteredData.length>0?this.state.filteredData:this.state.dataSource1}
-                      navigation={this.props.navigation}
-                    />
                   </View>
-                </ViewPager>
-               </View>
-          
+                  <ListCompoment
+                    tabTitle={this.state.tabTitle}
+                    columns={this.state.columnCount}
+                    data={
+                      this.state.filteredData.length > 0
+                        ? this.state.filteredData
+                        : this.state.dataSource1
+                    }
+                    navigation={this.props.navigation}
+                  />
+                </View>
+              </IndicatorViewPager>
             </View>
-          
-      </ScrollView> 
+          </View>
+        </ScrollView>
       </SafeAreaView>
     );
   }
