@@ -314,25 +314,6 @@ class HomeTabScreen extends Component {
       });
     }
   };
-  _onPageScroll(scrollData) {
-    let { offset, position } = scrollData;
-    if (position < 0 || position >= 2) return;
-    switch (position) {
-      case 0:
-        this.doChangeTab("stream");
-        break;
-      case 1:
-        this.doChangeTab("friendspost");
-        break;
-      case 2:
-        this.doChangeTab("search");
-        break;
-    }
-  }
-  doRedirect(screen) {
-    const { navigate } = this.props.navigation;
-    navigate(screen);
-  }
   render() {
     return (
       <SafeAreaView>
@@ -351,37 +332,44 @@ class HomeTabScreen extends Component {
           <View>
             <View
               style={{
-                height: 80,
-                backgroundColor: "#BABABA",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center"
+                height: 80
               }}
             >
-              <ActivityIndicator
-                color={Colors.white}
-                style={{ display: this.state.isLoading ? "flex" : "none" }}
-              />
-              <ListView
-                style={{ display: this.state.isLoading ? "none" : "flex" }}
-                horizontal={true}
-                showsVerticalScrollIndicator={false}
-                alwaysBounceVertical={false}
-                bounces={false}
-                dataSource={ds.cloneWithRows(this.state.dataSource)}
-                renderRow={this.renderRow.bind(this)}
-                renderFooter={this.renderFooter.bind(this)}
-              />
-              <Text
+              <ImageBackground
+                source={Icons.bg_fav}
                 style={{
-                  textAlign: "center",
-                  color: Colors.white,
-                  fontSize: 11,
-                  fontFamily: "OpenSans-SemiBold"
+                  width: "100%",
+                  height: 80,
+                  justifyContent: "center",
+                  alignContent: "center",
+                  alignItems: "center"
                 }}
               >
-                FAVORITE SPORTS
-              </Text>
+                <ActivityIndicator
+                  color={Colors.white}
+                  style={{ display: this.state.isLoading ? "flex" : "none" }}
+                />
+                <ListView
+                  style={{ display: this.state.isLoading ? "none" : "flex" }}
+                  horizontal={true}
+                  showsVerticalScrollIndicator={false}
+                  alwaysBounceVertical={false}
+                  bounces={false}
+                  dataSource={ds.cloneWithRows(this.state.dataSource)}
+                  renderRow={this.renderRow.bind(this)}
+                  renderFooter={this.renderFooter.bind(this)}
+                />
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: Colors.black,
+                    fontSize: 9,
+                    fontFamily: "OpenSans-SemiBold"
+                  }}
+                >
+                  FAVORITES
+                </Text>
+              </ImageBackground>
             </View>
           </View>
 
@@ -447,68 +435,12 @@ class HomeTabScreen extends Component {
             </View>
 
             <View>
-              <IndicatorViewPager
+              <ViewPager
                 style={{ height: Dimensions.get("screen").height }}
                 ref={"viewPager"}
-                scrollEnabled={false}
+                initialPage={this.state.currentTab}
               >
                 <View>
-                  <View
-                    style={[
-                      styles.row,
-                      { marginStart: 10, marginEnd: 10, marginTop: 10 }
-                    ]}
-                  >
-                    <TouchableOpacity
-                      style={{ flex: 1 }}
-                      onPress={() => this.doRedirect("AddPostScreen")}
-                    >
-                      <View
-                        style={{
-                          backgroundColor: Colors.white,
-                          flex: 1,
-                          padding: 5,
-                          flexDirection: "row",
-                          alignItems: "center",
-                          borderRadius: 5
-                        }}
-                      >
-                        <Image
-                          source={Icons.ic_write_post}
-                          style={styles.icon}
-                        />
-                        <Text
-                          style={{
-                            flex: 1,
-                            color: Colors.colorSearch,
-                            fontFamily: "OpenSans-SemiBold",
-                            marginStart: 10
-                          }}
-                        >
-                          Write a post
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => this.doRedirect("AddPostScreen")}
-                    >
-                      <View
-                        style={{
-                          marginStart: 5,
-                          backgroundColor: Colors.white,
-                          padding: 5,
-                          flexDirection: "row",
-                          alignItems: "center",
-                          borderRadius: 5
-                        }}
-                      >
-                        <Image
-                          source={Icons.ic_write_camera}
-                          style={styles.icon}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                  </View>
                   <ListCompoment
                     tabTitle={this.state.tabTitle}
                     columns={this.state.columnCount}
@@ -630,7 +562,7 @@ class HomeTabScreen extends Component {
                     navigation={this.props.navigation}
                   />
                 </View>
-              </IndicatorViewPager>
+              </ViewPager>
             </View>
           </View>
         </ScrollView>

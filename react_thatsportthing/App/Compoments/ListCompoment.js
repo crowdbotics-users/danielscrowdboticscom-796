@@ -27,13 +27,13 @@ class ListCompoment extends Component {
           style={[
             styles.column,
             styles.card,
-            { alignItems: "center", marginBottom: 8, borderRadius: 10 }
+            { alignItems: "center", marginBottom: 1, borderRadius: 0 }
           ]}
         >
           <View
             style={[
               styles.row,
-              { justifyContent: "center", alignItems: "center" }
+              { justifyContent: "center", alignItems: "center", marginTop:8 }
             ]}
           >
             <View
@@ -45,7 +45,9 @@ class ListCompoment extends Component {
                 alignSelf: "center",
                 justifyContent: "center",
                 alignContent: "center",
-                marginLeft: 8
+                alignItems:'center',
+               
+                marginLeft: 10
               }}
             >
               <Image
@@ -68,7 +70,8 @@ class ListCompoment extends Component {
                 style={{
                   color: Colors.black,
                   fontFamily: "OpenSans-SemiBold",
-                  fontSize: 13
+                  fontSize: 13,
+                  marginStart:5
                 }}
               >
                 {data.name}
@@ -89,7 +92,7 @@ class ListCompoment extends Component {
             style={{
               marginTop: 5,
               marginBottom: 5,
-              marginLeft: 8,
+              marginLeft: 15,
               marginRight: 8,
               color: "#6C6C6C",
 
@@ -101,7 +104,7 @@ class ListCompoment extends Component {
           <View
             style={[
               styles.row,
-              { justifyContent: "center", alignItems: "center", marginLeft: 8 }
+              { justifyContent: "center", alignItems: "center", marginLeft: 10,marginBottom:5 }
             ]}
           >
             <Image
@@ -143,15 +146,7 @@ class ListCompoment extends Component {
             >
               Comment ({data.commnets})
             </Text>
-            <Image
-              source={Icons.ic_share}
-              style={{
-                width: 20,
-                height: 20,
-                margin: 8,
-                marginRight: 8
-              }}
-            />
+            
           </View>
         </View>
       </SafeAreaView>
@@ -470,7 +465,7 @@ class ListCompoment extends Component {
             alwaysBounceVertical={false}
             bounces={false}
             numColumns={this.props.columns}
-            style={{ marginTop: 8, marginLeft: 8, marginRight: 8 }}
+            style={{ marginTop: 8 }}
             data={this.props.data}
             renderItem={({ item, index }) => this.renderStream(item)}
             keyExtractor={item => item}

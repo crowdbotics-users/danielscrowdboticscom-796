@@ -108,7 +108,7 @@ class SignUpScreen3 extends Component {
       <SafeAreaView style={styles.container}>
         <View style={styles.logoView}>
           <View style={styles.logo}>
-            <Image style={styles.logoImage} source={Icons.logo_white} />
+            <Image style={styles.logoImage} source={Icons.logo} />
           </View>
         </View>
         <View style={styles.uploadView}>
@@ -175,12 +175,12 @@ class SignUpScreen3 extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.orange,
+    backgroundColor: Colors.white,
     flex: 1
   },
   logoView: { flex: 1, marginTop: 30 },
-  logo: { flex: 1,marginLeft:30},
-  logoImage: { height: 90, width: 137 },
+  logo: { flex: 1,marginLeft:"10%",marginTop:"5%"},
+  logoImage: { height: 100, width: 152 },
   uploadView: {
     flex: 2,
     marginTop: 20,
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   buttonView: { flex: 1, justifyContent: "flex-end", alignItems: "flex-end" },
   button: {
     marginBottom: "10%",
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.bgHeader,
     marginLeft:10,
    width:Dimensions.get('screen').width/2,
     borderTopLeftRadius: 10,
@@ -225,9 +225,9 @@ const styles = StyleSheet.create({
   backbutton: {
     marginBottom: "10%",
     marginRight:10,
-    borderWidth:2,
+    borderWidth:1,
     width:Dimensions.get('screen').width/2,
-    borderColor:Colors.white,
+    borderColor:Colors.bgHeader,
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10
   },
@@ -238,9 +238,9 @@ const styles = StyleSheet.create({
     paddingTop: 25,
     paddingLeft: "15%",
     paddingRight: "15%",
-    color: Colors.orange
+    color: Colors.white
   },
-  text: { color: Colors.white, textAlign: "center", marginTop: 5 ,fontFamily:'OpenSans-SemiBold'},
+  text: { color: Colors.colorEdittext, textAlign: "center", marginTop: 5 ,fontFamily:'OpenSans-SemiBold'},
   buttonText: {
     textAlign:'center',
     fontSize: 18,
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     paddingTop: 25,
     paddingLeft: "15%",
     paddingRight: "15%",
-    color: Colors.white
+    color: Colors.bgHeader
   }
 });
 export default SignUpScreen3;

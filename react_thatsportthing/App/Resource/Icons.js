@@ -1,6 +1,6 @@
 const Icons ={
     ic_logo:require('./Icon/tst_white.png'),
-    ic_login_bg:require('./Images/background.png'),
+    ic_login_bg:require('./Images/login_type_bg.png'),
     ic_upload_image_bg:require('./Icon/dotted_circle.png'),
     ic_camera:require('./Icon/ic_camera.png'),
     ic_upload_image:require('./Icon/add_circle.png'),
@@ -9,6 +9,7 @@ const Icons ={
     bg_username:require('./Images/bg_username.png'),
     messi:require('./Images/messi.png'),
     player:require('./Images/player.png'),
+    bg_fav:require('./Images/bg_fav.png'),
     logo:require('./Images/logo.png'),
     logo_white:require('./Images/logo_white.png'),
     ball1:require('./Icon/ball1.png'),
@@ -39,10 +40,7 @@ const Icons ={
     ic_edit_profile:require('./Icon/ic_edit_profile.png'),
     ic_menu_icon:require('./Icon/ic_menu_icon.png'),
     ic_player:require('./Icon/ic_player.png'),
-    ic_close:require('./Icon/ic_close.png'),
-    ic_camera_profile:require('./Icon/ic_camera_profile.png'),
-    ic_write_post:require('./Icon/ic_write_post.png'),
-    ic_write_camera:require('./Icon/ic_write_camera.png'),
+    ic_setting:require('./Icon/ic_setting.png'),
 
 }
 export default Icons;

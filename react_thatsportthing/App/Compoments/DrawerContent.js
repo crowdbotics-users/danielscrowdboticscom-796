@@ -469,7 +469,7 @@ class DrawerContent extends Component {
                     fontFamily: "OpenSans-SemiBold"
                   }}
                 >
-                  Friends
+                  Crew
                 </Text>
               </View>
             </TouchableOpacity>
@@ -483,7 +483,8 @@ class DrawerContent extends Component {
                     : Color.navBg,
                   flexDirection: "row",
                   padding: 10,
-                  borderColor: Color.colorSearch
+                  borderColor: Color.colorSearch,
+                marginTop:30,
                 }}
               >
                 <Image

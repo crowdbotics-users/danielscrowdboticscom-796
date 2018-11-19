@@ -35,19 +35,16 @@ class LoginTypeScreen extends Component {
           translucent={true}
         />
         <ImageBackground
-          imageStyle={{ resizeMode: "cover" }}
-          style={{ width: width, height: height, justifyContent: "center" }}
+          imageStyle={{ resizeMode: "contain" }}
+          style={{ width: width, height: height }}
           source={Icons.ic_login_bg}
         >
-          <Image
-            source={Icons.logo}
-            style={{ width: 370, height: 250, alignSelf: "center" }}
-          />
+         
 
           <View style={styles.mainView}>
             <View style={styles.buttonTopView}>
               <TouchableOpacity onPress={this.doRedirect.bind(this, "Login")}>
-                <View style={styles.buttonLogin}>
+                <View style={[styles.buttonLogin,{borderTopWidth:1,borderEndWidth:1,borderBottomWidth:1}]}>
                   <Text
                     style={[
                       styles.buttonText,
@@ -60,7 +57,7 @@ class LoginTypeScreen extends Component {
               </TouchableOpacity>
 
               <TouchableOpacity onPress={this.doRedirect.bind(this, "SignUp1")}>
-                <View style={styles.buttonSignUp}>
+                <View style={[styles.buttonSignUp,{borderTopWidth:1,borderStartWidth:1,borderBottomWidth:1}]}>
                   <Text
                     style={[
                       styles.buttonText,
@@ -96,7 +93,7 @@ const styles = StyleSheet.create({
   background: { height: "100%", width: "100%" },
   mainView: {
     position: "absolute",
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.bgHeader,
     width: Dimensions.get("screen").width,
     marginBottom: Platform.OS == "android" ? 30 : 0,
     bottom: "5%"
@@ -112,16 +109,17 @@ const styles = StyleSheet.create({
 
     marginTop: 10,
     marginBottom: 10,
-    backgroundColor: Colors.backgroundLogin,
+   borderColor:Colors.white,
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
     alignContent: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+   
   },
   buttonSignUp: {
     marginLeft: 5,
     width: Dimensions.get("screen").width / 2,
-
+    borderColor:Colors.white,
     marginTop: 10,
     marginBottom: 10,
     backgroundColor: Colors.orange,
