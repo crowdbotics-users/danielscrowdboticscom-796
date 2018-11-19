@@ -85,7 +85,7 @@ class SignUpScreen1 extends Component {
             style={styles.logoImage}
             resizeMode="contain"
             resizeMethod="auto"
-            source={Icons.logo_white}
+            source={Icons.logo}
           />
         </View>
         <View style={styles.textField}>
@@ -97,15 +97,15 @@ class SignUpScreen1 extends Component {
                 styles.editText,
                 {
                   fontFamily: "OpenSans-Bold",
-                  borderBottomColor: Colors.white,
+                  borderBottomColor: Colors.colorEdittext,
                   borderBottomWidth: 1,
                   paddingBottom: 5
                 }
               ]}
               keyboardType="ascii-capable"
               placeholder={"FULL NAME"}
-              placeholderTextColor={Colors.white}
-              selectionColor={Colors.white}
+              placeholderTextColor={Colors.colorEdittext}
+              selectionColor={Colors.colorEdittext}
               underlineColorAndroid={Colors.transparent}
               returnKeyType='next'
             />
@@ -130,15 +130,15 @@ class SignUpScreen1 extends Component {
                 styles.editText,
                 {
                   fontFamily: "OpenSans-Bold",
-                  borderBottomColor: Colors.white,
+                  borderBottomColor: Colors.colorEdittext,
                   borderBottomWidth: 1,
                   paddingBottom: 5
                 }
               ]}
               keyboardType="email-address"
               placeholder={"EMAIL ADDRESS"}
-              placeholderTextColor={Colors.white}
-              selectionColor={Colors.white}
+              placeholderTextColor={Colors.colorEdittext}
+              selectionColor={Colors.colorEdittext}
               underlineColorAndroid={Colors.transparent}
               returnKeyType='done'
             />
@@ -160,7 +160,7 @@ class SignUpScreen1 extends Component {
               style={[
                 styles.editText,
                 {
-                  borderBottomColor: Colors.white,
+                  borderBottomColor: Colors.colorEdittext,
                   borderBottomWidth: 1,
                   paddingBottom: 5
                 }
@@ -169,14 +169,14 @@ class SignUpScreen1 extends Component {
               <Text
                ref={"bdate"}
                 style={{
-                  color: Colors.white,
+                  color: Colors.colorEdittext,
                   fontFamily: "OpenSans-Bold",
                   fontSize: 18
                 }}
                 editable={false}
                 placeholder={"DATE OF BIRTH"}
-                placeholderTextColor={Colors.white}
-                selectionColor={Colors.white}
+                placeholderTextColor={Colors.colorEdittext}
+                selectionColor={Colors.colorEdittext}
                 underlineColorAndroid={Colors.transparent}
               >
                 {this.state.dateOfBirth}
@@ -241,11 +241,11 @@ class SignUpScreen1 extends Component {
 }
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.orange,
+    backgroundColor: Colors.white,
     flex: 1
   },
-  logo: { marginTop: 50, marginLeft: 30 },
-  logoImage: { height: 90, width: 137 },
+  logo: { marginTop: 50, marginLeft: "10%" },
+  logoImage: { height: 100, width: 152 },
   textField: {
     flex: 1,
     marginRight: "10%",
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
   buttonView: { flex: 1, justifyContent: "center", alignItems: "center" },
   button: {
     marginBottom: "10%",
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.bgHeader,
     marginLeft: 10,
     width: Dimensions.get("screen").width / 2,
     borderTopLeftRadius: 10,
@@ -265,9 +265,9 @@ const styles = StyleSheet.create({
   backbutton: {
     marginBottom: "10%",
     marginRight: 10,
-    borderWidth: 2,
+    borderWidth: 1,
     width: Dimensions.get("screen").width / 2,
-    borderColor: Colors.white,
+    borderColor: Colors.bgHeader,
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10
   },
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
     paddingTop: 25,
     paddingLeft: "15%",
     paddingRight: "15%",
-    color: Colors.white
+    color: Colors.bgHeader
   },
   nextbuttonText: {
     textAlign: "center",
@@ -287,8 +287,8 @@ const styles = StyleSheet.create({
     paddingTop: 25,
     paddingLeft: "15%",
     paddingRight: "15%",
-    color: Colors.orange
+    color: Colors.white
   },
-  editText: { color: Colors.white, fontSize: 18, padding: 0 }
+  editText: { color: Colors.colorEdittext, fontSize: 18, padding: 0 }
 });
 export default SignUpScreen1;

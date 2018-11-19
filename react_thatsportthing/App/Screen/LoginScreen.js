@@ -71,7 +71,7 @@ class LoginScreen extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.logo}>
-          <Image style={styles.logoImage} source={Icons.logo_white} />
+          <Image style={styles.logoImage} source={Icons.logo} />
         </View>
         <View style={styles.textField}>
           <View style={{ marginBottom: 10 }}>
@@ -82,7 +82,7 @@ class LoginScreen extends Component {
                 styles.editText,
                 {
                   fontFamily: "OpenSans-Bold",
-                  borderBottomColor: Colors.white,
+                  borderBottomColor: Colors.colorEdittext,
                   borderBottomWidth: 1,
                   paddingBottom: 5
                 }
@@ -90,8 +90,8 @@ class LoginScreen extends Component {
               value={this.state.userName}
               keyboardType="email-address"
               placeholder={"User name"}
-              placeholderTextColor={Colors.white}
-              selectionColor={Colors.white}
+              placeholderTextColor={Colors.colorEdittext}
+              selectionColor={Colors.colorEdittext}
               underlineColorAndroid={Colors.transparent}
               returnKeyType="next"
             />
@@ -114,7 +114,7 @@ class LoginScreen extends Component {
                 styles.editText,
                 {
                   fontFamily: "OpenSans-Bold",
-                  borderBottomColor: Colors.white,
+                  borderBottomColor: Colors.colorEdittext,
                   borderBottomWidth: 1,
                   paddingBottom: 5
                 }
@@ -123,8 +123,8 @@ class LoginScreen extends Component {
               secureTextEntry={true}
               placeholder={"Password"}
               value={this.state.password}
-              placeholderTextColor={Colors.white}
-              selectionColor={Colors.white}
+              placeholderTextColor={Colors.colorEdittext}
+              selectionColor={Colors.colorEdittext}
               underlineColorAndroid={Colors.transparent}
               returnKeyType="done"
             />
@@ -182,22 +182,22 @@ class LoginScreen extends Component {
 }
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.backgroundLogin,
+    backgroundColor: Colors.white,
     flex: 1
   },
-  logo: { marginTop: 80, justifyContent: "center", alignItems: "center" },
-  logoImage: { height: 90, width: 137 },
+  logo: { marginTop: 80, justifyContent: "flex-start", alignItems: "flex-start",marginStart:'10%' },
+  logoImage: { height: 100, width: 152 },
   textField: {
     flex: 1,
     marginRight: "10%",
     marginLeft: "10%",
     justifyContent: "center"
   },
-  labelName: { fontSize: 14, marginTop: 5 },
+  labelName: { fontSize: 14, marginTop: 5,color: Colors.colorEdittext },
   buttonView: { flex: 1, justifyContent: "center", alignItems: "center" },
   button: {
     marginBottom: "10%",
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.bgHeader,
     marginLeft: 10,
     width: Dimensions.get("screen").width / 2,
     borderTopLeftRadius: 10,
@@ -206,30 +206,30 @@ const styles = StyleSheet.create({
   backbutton: {
     marginBottom: "10%",
     marginRight: 10,
-    borderWidth: 2,
+    borderWidth: 1,
     width: Dimensions.get("screen").width / 2,
-    borderColor: Colors.white,
+    borderColor: Colors.bgHeader,
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10
   },
   backbuttonText: {
     textAlign: "center",
     fontSize: 18,
-    paddingBottom: 25,
-    paddingTop: 25,
+    paddingBottom: 20,
+    paddingTop: 20,
     paddingLeft: "15%",
     paddingRight: "15%",
-    color: Colors.white
+    color: Colors.bgHeader
   },
   buttonText: {
     textAlign: "center",
     fontSize: 18,
-    paddingBottom: 25,
-    paddingTop: 25,
+    paddingBottom: 20,
+    paddingTop: 20,
     paddingLeft: "15%",
     paddingRight: "15%",
-    color: Colors.backgroundLogin
+    color: Colors.white
   },
-  editText: { color: Colors.white, fontSize: 18, padding: 0 }
+  editText: { color: Colors.colorEdittext, fontSize: 18, padding: 0 }
 });
 export default LoginScreen;
