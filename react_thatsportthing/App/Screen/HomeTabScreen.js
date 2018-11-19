@@ -23,7 +23,7 @@ import ImagePicker from "react-native-image-crop-picker";
 import TabCompoment from "../Compoments/TabCompoment";
 import HamburgerIcon from "../Compoments/DrawerIcon";
 import ListCompoment from "../Compoments/ListCompoment";
-import { ViewPager } from "rn-viewpager";
+import { ViewPager, IndicatorViewPager } from "rn-viewpager";
 import BannerCompoment from "../Compoments/BannerCompoment";
 import PictureTabCompoment from "../Compoments/PictureTabCompoment";
 import hometabstyles from "../Resource/hometabstyles";
@@ -42,7 +42,6 @@ class HomeTabScreen extends Component {
     super(props);
 
     this.state = {
-      currentTab: 0,
       tabTitle: "Stream",
       columnCount: 1,
       isStreamActive: true,
@@ -327,6 +326,7 @@ class HomeTabScreen extends Component {
             <BannerCompoment
               tabTitle={this.state.tabTitle}
               profilePicture={this.state.avatarSource}
+              navigation={this.props.navigation}
             />
           </View>
           <View>

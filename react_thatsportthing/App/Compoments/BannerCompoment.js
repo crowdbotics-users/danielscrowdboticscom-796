@@ -20,6 +20,9 @@ class BannerCompoment extends Component {
       avatarSource: ""
     };
   }
+  doRedirect(screen){
+    this.props.navigation.navigate(screen);
+  }
   render() {
     if (
       this.props.tabTitle == "Posts" ||
@@ -349,6 +352,7 @@ const customstyles = StyleSheet.create({
 BannerCompoment.propTypes = {
   tabActive: PropTypes.bool,
   tabTitle: PropTypes.string,
-  profilePicture: PropTypes.string
+  profilePicture: PropTypes.string,
+  navigation: PropTypes.object
 };
 export default BannerCompoment;

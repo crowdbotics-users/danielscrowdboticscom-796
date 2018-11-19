@@ -37,7 +37,7 @@ class SignUpScreen3 extends Component {
       alert("Select Picture");
     }else{
       this.openProgressbar();
-      setInterval((()=>{
+      setTimeout((()=>{
         this.hideProgressbar();
         navigate(screen);
       }),1000);
