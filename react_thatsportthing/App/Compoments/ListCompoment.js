@@ -46,7 +46,6 @@ class ListCompoment extends Component {
                 justifyContent: "center",
                 alignContent: "center",
                 alignItems:'center',
-               
                 marginLeft: 10
               }}
             >
