@@ -2,12 +2,12 @@ const Colors ={
     black:'#000000',
     white:'#FFFFFF',
     red:'#D0021B',
-    orange:'#FA6509',
+    orange:'#fa6509',
     backgroundLogin:'#4A90E2',
     transparent:'transparent',
     navBg:"#4A4A4A",
     bgHeader:"#FA6509",
     colorSearch:"#949494",
-    colorEdittext:'#4A4A4A'
+    colorLine:'#d3d3d3'
 }
 export default Colors;
