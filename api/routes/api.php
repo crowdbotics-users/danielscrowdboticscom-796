@@ -20,4 +20,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'users'], function () {
     Route::post('register', 'Api\LoginController@register');
     Route::post('login', 'Api\LoginController@login');
+
+    Route::group(['middleware' => 'jwt.verify'], function () {
+        Route::get('logout', 'Api\LoginController@logout');
+        Route::get('edit_profile', 'Api\LoginController@edit_profile');
+        Route::post('post_profile', 'Api\LoginController@post_profile');
+    });
 });
