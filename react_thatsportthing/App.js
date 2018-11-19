@@ -63,7 +63,7 @@ const App = createStackNavigator(
     }
   },
   {
-    initialRouteName: "HomePage",
+    initialRouteName: "LoginType",
     headerMode: "float",
     navigationOptions: {
       gesturesEnabled: false,
