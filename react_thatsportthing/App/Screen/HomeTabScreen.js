@@ -439,6 +439,7 @@ class HomeTabScreen extends Component {
                 style={{ height: Dimensions.get("screen").height }}
                 ref={"viewPager"}
                 initialPage={this.state.currentTab}
+
               >
                 <View>
                   <ListCompoment
