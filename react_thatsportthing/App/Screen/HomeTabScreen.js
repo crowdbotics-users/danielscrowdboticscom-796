@@ -47,7 +47,7 @@ class HomeTabScreen extends Component {
       currentTab: 0,
       tabTitle: "Stream",
       columnCount: 1,
-      isStreamActive: false,
+      isStreamActive: true,
       isFriendsPostActive: false,
       isSearchActive: false,
       isLoading: true,
