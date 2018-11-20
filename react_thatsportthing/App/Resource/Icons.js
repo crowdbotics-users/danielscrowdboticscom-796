@@ -37,10 +37,15 @@ const Icons ={
     ic_profile:require('./Icon/ic_profile.png'),
     ic_videos:require('./Icon/ic_videos.png'),
     ic_down_arrow_white:require('./Icon/ic_down_arrow_white.png'),
+    ic_up_arrow_white:require('./Icon/ic_up_arrow_white.png'),
     ic_edit_profile:require('./Icon/ic_edit_profile.png'),
     ic_menu_icon:require('./Icon/ic_menu_icon.png'),
     ic_player:require('./Icon/ic_player.png'),
     ic_setting:require('./Icon/ic_setting.png'),
+    ic_close:require('./Icon/ic_close.png'),
+    ic_camera_profile:require('./Icon/ic_camera_profile.png'),
+    ic_write_camera:require('./Icon/ic_write_camera.png'),
+    ic_write_post:require('./Icon/ic_write_post.png'),
 
 }
 export default Icons;

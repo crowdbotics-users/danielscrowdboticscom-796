@@ -255,7 +255,7 @@ class BannerCompoment extends Component {
                         </Text>
                       </View>
                       <View style={{ flex: 1 ,padding:5}}>
-                        <TouchableOpacity style={{alignItems:'center',}}>
+                        <TouchableOpacity style={{alignItems:'center',}} onPress={()=>this.doRedirect("EditProfileScreen")}>
                         <Image style={[styles.icon,{width:20,height:20}]} source={Icons.ic_setting}/>
                        
                        
@@ -353,6 +353,6 @@ BannerCompoment.propTypes = {
   tabActive: PropTypes.bool,
   tabTitle: PropTypes.string,
   profilePicture: PropTypes.string,
-  navigation: PropTypes.object
+  navigation:PropTypes.object
 };
 export default BannerCompoment;

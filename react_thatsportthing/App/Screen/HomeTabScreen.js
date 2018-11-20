@@ -27,6 +27,8 @@ import { ViewPager, IndicatorViewPager } from "rn-viewpager";
 import BannerCompoment from "../Compoments/BannerCompoment";
 import PictureTabCompoment from "../Compoments/PictureTabCompoment";
 import hometabstyles from "../Resource/hometabstyles";
+import WritePostCompoment from "../Compoments/WritePostCompoment";
+import CollapseView from "react-native-collapse-view";
 
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
@@ -44,7 +46,7 @@ class HomeTabScreen extends Component {
     this.state = {
       tabTitle: "Stream",
       columnCount: 1,
-      isStreamActive: true,
+      isStreamActive: false,
       isFriendsPostActive: false,
       isSearchActive: false,
       isLoading: true,
@@ -292,6 +294,85 @@ class HomeTabScreen extends Component {
       </View>
     );
   }
+  _renderView = collapse => {
+    return (
+      <View>
+       
+        <View
+          style={{
+            position: "relative",
+            marginTop: 20,
+            marginBottom: 15
+          }}
+        >
+          <View style={{ position: "relative" }}>
+            <View
+              style={{
+                height: 2,
+                width: "100%",
+                backgroundColor: Colors.bgHeader
+              }}
+            />
+          </View>
+          <View
+            style={{
+              position: "absolute",
+              alignSelf: "center",
+              bottom: -10,
+              justifyContent: "center",
+              alignContent: "center"
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: Colors.bgHeader,
+                borderRadius: 10,
+                justifyContent: "center",
+                alignContent: "center",
+                flexDirection: "row",
+                alignItems: "center"
+              }}
+            >
+              <Image
+                source={collapse?Icons.ic_up_arrow_white:Icons.ic_down_arrow_white}
+                style={{ width: 15, height: 9, margin: 3 }}
+              />
+              <Text
+                style={{
+                  color: Colors.white,
+                  padding: 1,
+                  margin: 1
+                }}
+              >
+                Advanced Search
+              </Text>
+              <Image
+                source={collapse?Icons.ic_up_arrow_white:Icons.ic_down_arrow_white}
+                style={{ width: 15, height: 9, margin: 3 }}
+              />
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  };
+  _renderCollapseView = collapse => {
+    return (
+      <View style={styles.collapseView}>
+        <Text>
+          Lorem Ipsum is simply dummy text of the printing and typesetting
+          industry. Lorem Ipsum has been the industrys standard dummy text ever
+          since the 1500s, when an unknown printer took a galley of type and
+          scrambled it to make a type specimen book. It has survived not only
+          five centuries, but also the leap into electronic typesetting,
+          remaining essentially unchanged. It was popularised in the 1960s with
+          the release of Letraset sheets containing Lorem Ipsum passages, and
+          more recently with desktop publishing software like Aldus PageMaker
+          including versions of Lorem Ipsum.
+        </Text>
+      </View>
+    );
+  };
   searchText = e => {
     let text = e.toLowerCase();
     let trucks = this.state.dataSource1;
@@ -374,7 +455,14 @@ class HomeTabScreen extends Component {
           </View>
 
           <View style={{ backgroundColor: "#414141", flexDirection: "column" }}>
-            <View style={{ flexDirection: "row", marginTop: 10 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 10,
+                backgroundColor: Colors.bgHeader,
+                padding: 3
+              }}
+            >
               <TouchableOpacity onPress={() => this.doChangeTab("stream")}>
                 <View
                   style={
@@ -409,7 +497,7 @@ class HomeTabScreen extends Component {
                         : hometabstyles.FriendsPostInactiveTabText
                     }
                   >
-                    Friend's Post
+                    My Posts
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -439,9 +527,9 @@ class HomeTabScreen extends Component {
                 style={{ height: Dimensions.get("screen").height }}
                 ref={"viewPager"}
                 initialPage={this.state.currentTab}
-
               >
                 <View>
+                  <WritePostCompoment navigation={this.props.navigation} />
                   <ListCompoment
                     tabTitle={this.state.tabTitle}
                     columns={this.state.columnCount}
@@ -450,6 +538,7 @@ class HomeTabScreen extends Component {
                   />
                 </View>
                 <View>
+                  <WritePostCompoment navigation={this.props.navigation} />
                   <ListCompoment
                     tabTitle={this.state.tabTitle}
                     columns={this.state.columnCount}
@@ -497,61 +586,12 @@ class HomeTabScreen extends Component {
                       />
                     </View>
                   </View>
-                  <View
-                    style={{
-                      position: "relative",
-                      marginTop: 20,
-                      marginBottom: 15
-                    }}
-                  >
-                    <View style={{ position: "relative" }}>
-                      <View
-                        style={{
-                          height: 2,
-                          width: "100%",
-                          backgroundColor: Colors.bgHeader
-                        }}
-                      />
-                    </View>
-                    <View
-                      style={{
-                        position: "absolute",
-                        alignSelf: "center",
-                        bottom: -10,
-                        justifyContent: "center",
-                        alignContent: "center"
-                      }}
-                    >
-                      <View
-                        style={{
-                          backgroundColor: Colors.bgHeader,
-                          borderRadius: 10,
-                          justifyContent: "center",
-                          alignContent: "center",
-                          flexDirection: "row",
-                          alignItems: "center"
-                        }}
-                      >
-                        <Image
-                          source={Icons.ic_down_arrow_white}
-                          style={{ width: 15, height: 9, margin: 3 }}
-                        />
-                        <Text
-                          style={{
-                            color: Colors.white,
-                            padding: 1,
-                            margin: 1
-                          }}
-                        >
-                          Advanced Search
-                        </Text>
-                        <Image
-                          source={Icons.ic_down_arrow_white}
-                          style={{ width: 15, height: 9, margin: 3 }}
-                        />
-                      </View>
-                    </View>
-                  </View>
+
+                  <CollapseView
+                   renderCollapseView={this._renderCollapseView}
+                    renderView={this._renderView}
+                   
+                  />
                   <ListCompoment
                     tabTitle={this.state.tabTitle}
                     columns={this.state.columnCount}

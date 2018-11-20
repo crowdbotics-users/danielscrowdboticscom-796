@@ -287,7 +287,7 @@ class EditProfileScreen extends PureComponent {
                     marginTop: 10,
                     marginBottom: 5,
                     fontFamily: "OpenSans-SemiBold",
-                    fontSize: 14,
+                    fontSize: 12,
                     marginStart: 10,
                     marginEnd: 10
                   }}
@@ -465,7 +465,7 @@ class EditProfileScreen extends PureComponent {
                     marginStart: 10,
                     marginEnd: 10,
                     fontFamily: "OpenSans-SemiBold",
-                    fontSize: 14
+                    fontSize: 12,
                   }}
                 >
                   Change your cover picture
