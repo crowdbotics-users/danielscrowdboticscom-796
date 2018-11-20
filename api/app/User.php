@@ -7,6 +7,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Followers;
+use App\Request;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -29,6 +31,9 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    protected $appends = ['follower_count','crew_count'];
+
 
     public function getJWTIdentifier()
     {
@@ -64,5 +69,20 @@ class User extends Authenticatable implements JWTSubject
 			return "";
 		}	
         
+    }
+
+    public function getFollowerCountAttribute()
+    {
+        $follower_count=Followers::where('user_id',$this->attributes['id'])->count();
+        return $follower_count;
+    }
+
+    public function getCrewCountAttribute()
+    {
+        $crew_count=Request::where('sender_id',$this->attributes['id'])
+                        ->orwhere('receiver_id',$this->attributes['id'])
+                        ->where('status',1)
+                        ->count();
+        return $crew_count;
     }
 }

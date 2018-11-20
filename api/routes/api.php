@@ -25,5 +25,21 @@ Route::group(['prefix' => 'users'], function () {
         Route::get('logout', 'Api\LoginController@logout');
         Route::get('edit_profile', 'Api\LoginController@edit_profile');
         Route::post('post_profile', 'Api\LoginController@post_profile');
+        Route::post('upload_cover_profile', 'Api\UserController@cover_image');
+        Route::post('add_follower', 'Api\UserController@add_follower');
+
+        Route::group(['prefix' => 'gallery'], function () {
+            Route::get('list', 'Api\GalleryController@list_images');
+            Route::post('upload-images', 'Api\GalleryController@upload_images');
+        });
+
+        Route::group(['prefix' => 'posts'], function () {
+            
+            Route::post('add_post', 'Api\PostController@store');
+            Route::post('add_like', 'Api\PostController@add_like');
+            Route::post('add_comment', 'Api\PostController@add_comment');
+        });
+
+
     });
 });
