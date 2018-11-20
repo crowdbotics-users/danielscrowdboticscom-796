@@ -23,7 +23,7 @@ class LoginController extends Controller
             'password'=>'required',
             'dob' => 'required',
             'profile_image' => 'required',
-            'role_id' => 'required'
+            
         );
        
         $validator = \Validator::make($request->all(), $rules,[]);
@@ -47,7 +47,7 @@ class LoginController extends Controller
         $user->email=$request->email;
         $user->password=Hash::make($request->password);
         $user->DOB=$request->dob;
-        $user->role_id=$request->role_id;
+        $user->role_id=1;
         $user->status=1;
 
         $image=$request->profile_image;
@@ -133,7 +133,7 @@ class LoginController extends Controller
                         'success' => false,
                         'message' => 'Your account has not activated Yet.',
                         'status'  => 401
-                    ], RESPONCE_ERROR_CODE);
+                    ], 200);
                 }
             }
             else
@@ -142,7 +142,7 @@ class LoginController extends Controller
                     'success' => false,
                     'message' => 'Invalid email or password',
                     'status'  => 401
-                ], RESPONCE_ERROR_CODE);
+                ], 200);
             }
                
            }
@@ -152,7 +152,7 @@ class LoginController extends Controller
                    'success' => false,
                    'message' => 'Invalid email or password',
                    'status'  => 401
-               ], RESPONCE_ERROR_CODE);
+               ], 200);
            }
        	}
        	else
@@ -161,7 +161,118 @@ class LoginController extends Controller
                'success' => false,
                'message' => 'Invalid Parameter.',
                'status'  => 400
-           ], RESPONCE_ERROR_CODE);
+           ], 200);
         }
+    }
+
+    public function logout(Request $request)
+    {
+        if(isset($request->token))
+        {
+            try {
+                JWTAuth::invalidate($request->token);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'User logged out successfully',
+                    'status'  => 200
+                ], 200);
+
+            } catch (JWTException $exception) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Sorry, the user cannot be logged out',
+                    'status'  => 500
+                ], 500);
+            }
+        }
+        else
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid Parameter.',
+                'status'  => 400
+            ], 400);
+        } 
+    }
+
+    public function post_profile(Request $request)
+    {
+        if(isset($request->name) && isset($request->post_status))
+        {
+            $user=JWTAuth::touser($request->token);
+            $user_update=User::where('id',$user->id)->where("update_name_date",">", Carbon::now()->subMonths(6))->first();
+            if($user_update != null && $user->full_name != $request->name )
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You have not changed your name.',
+                    'status'  => 400
+                ], 200);
+            }
+            else
+            {
+                if($user->full_name != $request->name)
+                {
+                   $user_update->full_name=$request->name;
+                }
+                   if(isset($request->profile_image))
+                   {
+                        $image=$request->profile_image;
+                        $imageName = str_replace(' ', '_', $request->name).'_'.uniqid(time()) . '.' . $image->getClientOriginalExtension();
+                
+                        uploadImage($image,'uploads/user/thumbnail',$imageName,'150','150');
+                        $image_path = uploadImage($image,'uploads/user',$imageName,'400','400');
+                
+                        $user_update->profile_image = $image_path;
+                   }
+                   if(isset($request->cover_image))
+                   {
+                        $image=$request->cover_image;
+                        $imageName = str_replace(' ', '_', $request->name).'_'.uniqid(time()) . '.' . $image->getClientOriginalExtension();
+                
+                        uploadImage($image,'uploads/user/thumbnail',$imageName,'150','150');
+                        $image_path = uploadImage($image,'uploads/user/cover/',$imageName,'400','400');
+                
+                        $user_update->cover_image = $image_path;
+                   }
+
+                        $user_update->post_status=$request->post_status;
+                        $user_update->save();
+
+                        return response()->json([
+                           
+                            'message' => 'Your Profile Updated Successfully.',
+                            'success' => true,
+                            'status' => 200,
+                        ],200);
+
+                }
+            }
+
+        else
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid Parameter.',
+                'status'  => 400
+            ], 200);
+        }
+    }
+
+    public function edit_profile(Request $request)
+    {
+      
+            $user=JWTAuth::touser($request->token);
+            $result=make_null($user);
+
+            return response()->json([
+                'result' => $result,
+                'message' => 'User Profile.',
+                'success' => true,
+                'status' => 200,
+            ],200);
+
     }
 }
