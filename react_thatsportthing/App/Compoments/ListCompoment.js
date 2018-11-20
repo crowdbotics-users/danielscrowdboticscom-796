@@ -329,7 +329,7 @@ class ListCompoment extends Component {
             alwaysBounceVertical={false}
             bounces={false}
             numColumns={this.props.columns}
-            style={{ marginTop: 8 }}
+            style={{ marginTop: 5 }}
             data={this.props.data}
             renderItem={({ item, index }) => this.renderStream(item)}
             keyExtractor={item => item}
@@ -384,7 +384,7 @@ class ListCompoment extends Component {
             alwaysBounceVertical={false}
             bounces={false}
             numColumns={this.props.columns}
-            style={{ marginTop: 8, marginLeft: 8, marginRight: 8 }}
+            style={{ marginTop: 5 }}
             data={this.props.data}
             renderItem={({ item, index }) => this.renderStream(item)}
             keyExtractor={item => item}

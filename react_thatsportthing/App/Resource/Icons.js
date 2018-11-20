@@ -17,6 +17,12 @@ const Icons ={
     ball3:require('./Icon/ball3.png'),
     ball4:require('./Icon/ball4.png'),
     ball5:require('./Icon/ball5.png'),
+    ball6:require('./Icon/ball6.png'),
+    ball7:require('./Icon/ball7.png'),
+    ball8:require('./Icon/ball8.png'),
+    ball9:require('./Icon/ball9.png'),
+    ball10:require('./Icon/ball10.png'),
+    ball11:require('./Icon/ball11.png'),
     ic_add:require('./Icon/add.png'),
     ic_like:require('./Icon/ic_like.png'),
     ic_comment:require('./Icon/ic_comment.png'),
@@ -31,10 +37,15 @@ const Icons ={
     ic_profile:require('./Icon/ic_profile.png'),
     ic_videos:require('./Icon/ic_videos.png'),
     ic_down_arrow_white:require('./Icon/ic_down_arrow_white.png'),
+    ic_up_arrow_white:require('./Icon/ic_up_arrow_white.png'),
     ic_edit_profile:require('./Icon/ic_edit_profile.png'),
     ic_menu_icon:require('./Icon/ic_menu_icon.png'),
     ic_player:require('./Icon/ic_player.png'),
     ic_setting:require('./Icon/ic_setting.png'),
+    ic_close:require('./Icon/ic_close.png'),
+    ic_camera_profile:require('./Icon/ic_camera_profile.png'),
+    ic_write_camera:require('./Icon/ic_write_camera.png'),
+    ic_write_post:require('./Icon/ic_write_post.png'),
 
 }
 export default Icons;
