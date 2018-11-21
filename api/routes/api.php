@@ -34,12 +34,16 @@ Route::group(['prefix' => 'users'], function () {
         });
 
         Route::group(['prefix' => 'posts'], function () {
-            
+            Route::get('list', 'Api\PostController@list');
             Route::post('add_post', 'Api\PostController@store');
             Route::post('add_like', 'Api\PostController@add_like');
             Route::post('add_comment', 'Api\PostController@add_comment');
+            Route::post('view_all_message', 'Api\PostController@view_all_message');
+            Route::post('view_reply_all_message', 'Api\PostController@view_reply_all_message');
         });
-
+        Route::group(['prefix' => 'requests'], function () {
+            Route::post('send_request', 'Api\RequestController@send_request');
+        });   
 
     });
 });

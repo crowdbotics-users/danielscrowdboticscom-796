@@ -14,6 +14,23 @@ use Carbon\Carbon;
 class PostController extends Controller
 {
     //
+    public function list(Request $request)
+    {
+        $post=Post::with('users')->where('status',1)->paginate(10);
+        $post=make_null($post);
+
+        return response()->json([
+            'total' => get_api_data(isset($post['total']) ? $post['total'] : 0),
+            'current_page' => get_api_data(isset($post['current_page']) ? $post['current_page'] : 0),
+            'prev_page_url' => get_api_data(isset($post['prev_page_url']) ? $post['prev_page_url'] : ''),
+            'next_page_url' => get_api_data(isset($post['next_page_url']) ? $post['next_page_url'] : ''),
+            'result' => $post['data'],
+            'message' => 'Post Data.',
+            'success' => true,
+            'status' => 200,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $user= JWTAuth::touser($request->header('authorization'));
@@ -138,10 +155,67 @@ class PostController extends Controller
         }
     }
 
-    public function list(Request $request)
+    public function view_all_message(Request $request)
     {
-        $post=Post::where('status',1)->pagination(10);
+        if(isset($request->post_id))
+        {
+            $comments=CommentsLikes::with('users')->where('status',1)
+              ->where('type','comment')->where('parent_id',0)->where('post_id',$request->post_id)->paginate(10);
+
+            $comments=make_null($comments);
+
+            return response()->json([
+                'total' => get_api_data(isset($comments['total']) ? $comments['total'] : 0),
+                'current_page' => get_api_data(isset($comments['current_page']) ? $comments['current_page'] : 0),
+                'prev_page_url' => get_api_data(isset($comments['prev_page_url']) ? $comments['prev_page_url'] : ''),
+                'next_page_url' => get_api_data(isset($comments['next_page_url']) ? $comments['next_page_url'] : ''),
+                'result' => $comments['data'],
+                'message' => 'Comments Data.',
+                'success' => true,
+                'status' => 200,
+            ]);
+        }
+        else
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid Parameter.',
+                'status'  => 400
+            ], 200);
+        }
         
+    }
+
+    public function view_reply_all_message(Request $request)
+    {
+        if(isset($request->post_id) && isset($request->parent_id))
+        {
+            $comments=CommentsLikes::with('users')->where('status',1)
+                    ->where('type','reply')->where('parent_id',$request->parent_id)
+                    ->where('post_id',$request->post_id)
+                    ->paginate(10);
+                    
+            $comments=make_null($comments);
+
+            return response()->json([
+                'total' => get_api_data(isset($comments['total']) ? $comments['total'] : 0),
+                'current_page' => get_api_data(isset($comments['current_page']) ? $comments['current_page'] : 0),
+                'prev_page_url' => get_api_data(isset($comments['prev_page_url']) ? $comments['prev_page_url'] : ''),
+                'next_page_url' => get_api_data(isset($comments['next_page_url']) ? $comments['next_page_url'] : ''),
+                'result' => $comments['data'],
+                'message' => 'Comments Data.',
+                'success' => true,
+                'status' => 200,
+            ]);
+        }
+        else
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid Parameter.',
+                'status'  => 400
+            ], 200);
+        }
 
     }
 }

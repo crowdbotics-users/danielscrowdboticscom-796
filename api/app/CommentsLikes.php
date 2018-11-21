@@ -24,4 +24,20 @@ class CommentsLikes extends Model
     protected $table = 'comments_likes';
 
     protected $fillable = ['messages','type','user_id','post_id','parent_id','status'];
+
+    protected $appends = ['reply_count'];
+
+    public function getReplyCountAttribute()
+    {
+        return $this->reply()->count();
+    }
+    public function reply()
+    {
+        return $this->hasMany('App\CommentsLikes', 'parent_id', 'id');
+    }
+
+    public function users()
+    {
+        return $this->hasMany('App\User', 'id', 'user_id');
+    }
 }

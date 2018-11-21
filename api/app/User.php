@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\Followers;
-use App\Request;
+use App\Request_data;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -32,7 +32,7 @@ class User extends Authenticatable implements JWTSubject
         'password', 'remember_token',
     ];
 
-    protected $appends = ['follower_count','crew_count'];
+    protected $appends = ['follower_count','crew_count','post_count'];
 
 
     public function getJWTIdentifier()
@@ -49,6 +49,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->roles()->get()->contains('label',$role);
     }
+
+    
 
     public function getProfileImageAttribute()
     {
@@ -79,10 +81,16 @@ class User extends Authenticatable implements JWTSubject
 
     public function getCrewCountAttribute()
     {
-        $crew_count=Request::where('sender_id',$this->attributes['id'])
+        $crew_count=Request_data::where('sender_id',$this->attributes['id'])
                         ->orwhere('receiver_id',$this->attributes['id'])
                         ->where('status',1)
                         ->count();
         return $crew_count;
+    }
+
+    public function getPostCountAttribute()
+    {
+        $follower_count=Followers::where('user_id',$this->attributes['id'])->count();
+        return $follower_count;
     }
 }
