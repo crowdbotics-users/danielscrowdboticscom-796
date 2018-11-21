@@ -7,6 +7,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Followers;
+use App\Request_data;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -30,6 +32,9 @@ class User extends Authenticatable implements JWTSubject
         'password', 'remember_token',
     ];
 
+    protected $appends = ['follower_count','crew_count','post_count'];
+
+
     public function getJWTIdentifier()
     {
         return $this->getKey(); 
@@ -44,6 +49,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->roles()->get()->contains('label',$role);
     }
+
+    
 
     public function getProfileImageAttribute()
     {
@@ -64,5 +71,26 @@ class User extends Authenticatable implements JWTSubject
 			return "";
 		}	
         
+    }
+
+    public function getFollowerCountAttribute()
+    {
+        $follower_count=Followers::where('user_id',$this->attributes['id'])->count();
+        return $follower_count;
+    }
+
+    public function getCrewCountAttribute()
+    {
+        $crew_count=Request_data::where('sender_id',$this->attributes['id'])
+                        ->orwhere('receiver_id',$this->attributes['id'])
+                        ->where('status',1)
+                        ->count();
+        return $crew_count;
+    }
+
+    public function getPostCountAttribute()
+    {
+        $follower_count=Followers::where('user_id',$this->attributes['id'])->count();
+        return $follower_count;
     }
 }
