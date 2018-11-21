@@ -4,14 +4,8 @@ import { View, Text, TouchableOpacity } from "react-native";
 import styles from "../Resource/Styles";
 import Color from "../Resource/Colors";
 import DrawerContent from "../Compoments/DrawerContent";
-
-import StreamScreen from "./StreamScreen";
-import { TabContent } from "../Compoments/TabContent";
 import HomeTabScreen from "./HomeTabScreen";
 import ProfileScreen from "./ProfileScreen";
-const StreamScreenNavigator = createStackNavigator({
-  StreamScreen: { screen: StreamScreen }
-});
 
 const HomePageNavigator = createStackNavigator({
   HomeTabScreen: {
@@ -25,8 +19,6 @@ const ProfileScreenNavigator = createStackNavigator({
 });
 const HomePage = createDrawerNavigator(
   {
-    StreamScreen: { screen: StreamScreenNavigator },
-    TabContent: { screen: TabContent },
     HomeTabScreen: { screen: HomePageNavigator },
     ProfileScreen: { screen: ProfileScreenNavigator }
   },
