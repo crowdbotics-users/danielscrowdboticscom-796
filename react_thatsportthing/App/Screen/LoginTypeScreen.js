@@ -29,11 +29,7 @@ class LoginTypeScreen extends Component {
     const height = Dimensions.get("screen").height;
     return (
       <View>
-        <StatusBar
-          backgroundColor={Colors.bgHeader}
-          barStyle="light-content"
-          translucent={true}
-        />
+        
         <ImageBackground
           imageStyle={{ resizeMode: "contain" }}
           style={{ width: width, height: height }}
@@ -96,7 +92,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.bgHeader,
     width: Dimensions.get("screen").width,
     marginBottom: Platform.OS == "android" ? 30 : 0,
-    bottom: "5%"
+    bottom: "7%"
   },
   buttonTopView: {
     flexDirection: "row",
@@ -136,12 +132,7 @@ const styles = StyleSheet.create({
     paddingLeft: "15%",
     paddingRight: "15%",
     color: Colors.white
-  },
-  TouchableOpacityView: {
-    flex: 1
-  },
-  row: { flexDirection: "row" },
-  column: { flexDirection: "column" }
+  }
 });
 
 export default LoginTypeScreen;
