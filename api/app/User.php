@@ -93,4 +93,6 @@ class User extends Authenticatable implements JWTSubject
         $follower_count=Followers::where('user_id',$this->attributes['id'])->count();
         return $follower_count;
     }
+   
+    
 }

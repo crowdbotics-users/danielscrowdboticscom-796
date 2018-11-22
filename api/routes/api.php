@@ -23,8 +23,8 @@ Route::group(['prefix' => 'users'], function () {
 
     Route::group(['middleware' => 'jwt.verify'], function () {
         Route::get('logout', 'API\LoginController@logout');
-        Route::get('edit_profile', 'API\LoginController@edit_profile');
-        Route::post('post_profile', 'API\LoginController@post_profile');
+        Route::get('edit_profile_data', 'API\LoginController@edit_profile');
+        Route::post('post_profile_data', 'API\LoginController@post_profile');
         Route::post('upload_cover_profile', 'API\UserController@cover_image');
         Route::post('add_follower', 'API\UserController@add_follower');
 
@@ -38,7 +38,7 @@ Route::group(['prefix' => 'users'], function () {
             Route::post('add_post', 'API\PostController@store');
             Route::post('add_like', 'API\PostController@add_like');
             Route::post('add_comment', 'API\PostController@add_comment');
-            Route::post('view_all_message', 'API\PostController@view_all_message');
+            Route::post('view_comment_all_message', 'API\PostController@view_all_message');
             Route::post('view_reply_all_message', 'API\PostController@view_reply_all_message');
         });
         Route::group(['prefix' => 'requests'], function () {

@@ -21,12 +21,11 @@ class LoginController extends Controller
             'full_name' => 'required|max:50',
             'email' => 'required|email|unique:users',
             'password'=>'required',
-            'dob' => 'required',
+            'dob' => 'required|date_format:Y-m-d',
             'profile_image' => 'required',
             'device_type' => 'required',
             'fire_base_token' => 'required',
-            'user_name' => 'required'
-            
+            'user_name' => 'required|unique:users'
         );
        
         $validator = \Validator::make($request->all(), $rules,[]);
@@ -248,7 +247,7 @@ class LoginController extends Controller
                         $imageName = str_replace(' ', '_', $request->name).'_'.uniqid(time()) . '.' . $image->getClientOriginalExtension();
                 
                         uploadImage($image,'uploads/user/'.$user->id.'/thumbnail',$imageName,'150','150');
-                        $image_path = uploadImage($image,'uploads/user/'.$user->id.'/',$imageName,'400','400');
+                        $image_path = uploadImage($image,'uploads/user/'.$user->id.'/',$imageName,'1200','400');
                 
                         $user_update->cover_image = $image_path;
                    }

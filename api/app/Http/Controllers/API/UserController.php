@@ -26,7 +26,7 @@ class UserController extends Controller
                 $imageName = str_replace(' ', '_', $user->id).'_'.uniqid(time()) . '.' . $image->getClientOriginalExtension();
         
                 uploadImage($image,'uploads/user/thumbnail',$imageName,'150','150');
-                $image_path = uploadImage($image,'uploads/user/cover/',$imageName,'400','400');
+                $image_path = uploadImage($image,'uploads/user/cover/',$imageName,'1200','400');
         
                 $user_update->cover_image = $image_path;
                 $user_update->save();
@@ -103,12 +103,21 @@ class UserController extends Controller
             {
                 $user_follower= JWTAuth::touser($request->header('authorization'));
                 $follower_data=Followers::where('user_id',$user->id)->where('follower_id',$user_follower->id)->first();
-
+                if($user->id == $user_follower->id)
+                {
+                    return response()->json([
+                        'message' => 'can not Follow itself.',
+                        'success' => true,
+                        'status' => 400,
+                    ],200);  
+                }
                 if($follower_data != null)
                 {
                     $follower_data->delete();
-    
+                    $result['follower'] = make_null($user);
+                    $result['users'] = make_null($user_follower);
                     return response()->json([
+                        'result' => $result,
                         'message' => 'Success.',
                         'success' => true,
                         'status' => 200,

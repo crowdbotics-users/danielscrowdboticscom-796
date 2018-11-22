@@ -20,6 +20,26 @@ class RequestController extends Controller
         if(isset($request->receiver_id))
         {
             $receiver=User::find($request->receiver_id);
+
+            if($sender->id == $receiver->id)
+            {
+                return response()->json([
+                    'result' => $result,
+                    'message' => 'Can not send Request your self.',
+                    'success' => true,
+                    'status' => 400,
+                ],200);
+            }
+            $request_search=Request_data::where('sender_id',$sender->id)->where('receiver_id',$receiver->id)->first();
+            if($request_search != null)
+            {
+                return response()->json([
+                    'result' => $result,
+                    'message' => 'You have already send request.',
+                    'success' => true,
+                    'status' => 400,
+                ],200);
+            }
             $request_data = new Request_data();
             $request_data->sender_id = $sender->id;
             $request_data->receiver_id = $request->receiver_id;

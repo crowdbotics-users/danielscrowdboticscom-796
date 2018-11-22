@@ -38,6 +38,6 @@ class CommentsLikes extends Model
 
     public function users()
     {
-        return $this->hasMany('App\User', 'id', 'user_id');
+        return $this->hasOne('App\User', 'id', 'user_id');
     }
 }

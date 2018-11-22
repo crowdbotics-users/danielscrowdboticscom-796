@@ -27,12 +27,12 @@ class Post extends Model
       */
      protected $table = 'post';
  
-     protected $fillable = ['description','user_id','status'];
+     protected $fillable = ['description','user_id','status','post_image'];
      protected $appends = ['likes_count','comment_count','is_like'];
 
     public function users()
     {
-        return $this->hasMany('App\User', 'id', 'user_id');
+        return $this->hasOne('App\User', 'id', 'user_id');
     }
 
      public function getLikesCountAttribute()
@@ -45,7 +45,7 @@ class Post extends Model
          $comment_count=CommentsLikes::where('type','reply')->orwhere('type','comment')->where('post_id',$this->attributes['id'])->count();
          return $comment_count;
      }
-
+    
      public function getIsLikeAttribute()
      {  
         $user_follower= JWTAuth::touser(app('request')->header('authorization'));
@@ -62,6 +62,16 @@ class Post extends Model
         {
             return false;
         }
+     }
+     public function getPostImageAttribute()
+     {
+         if($this->attributes['post_image'] && \File::exists(public_path()."/uploads/user/post_images/".$this->attributes['post_image'])){
+             $path = url("/")."/"."uploads/user/post_images/";
+             return ($this->attributes['post_image'])?$path.$this->attributes['post_image']:'';
+         }else{
+             return "";
+         }	
+         
      }
 
 }
