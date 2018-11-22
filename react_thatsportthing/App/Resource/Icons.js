@@ -12,6 +12,7 @@ const Icons ={
     bg_fav:require('./Images/bg_fav.png'),
     logo:require('./Images/logo.png'),
     logo_white:require('./Images/logo_white.png'),
+    ic_splash_logo:require('./Images/ic_splash_logo.png'),
     ball1:require('./Icon/ball1.png'),
     ball2:require('./Icon/ball2.png'),
     ball3:require('./Icon/ball3.png'),
@@ -45,7 +46,6 @@ const Icons ={
     ic_close:require('./Icon/ic_close.png'),
     ic_camera_profile:require('./Icon/ic_camera_profile.png'),
     ic_write_camera:require('./Icon/ic_write_camera.png'),
-    ic_write_post:require('./Icon/ic_write_post.png'),
-
+    ic_write_post:require('./Icon/ic_write_post.png')
 }
 export default Icons;

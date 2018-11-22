@@ -28,18 +28,10 @@ class LoginTypeScreen extends Component {
     const width = Dimensions.get("screen").width;
     const height = Dimensions.get("screen").height;
     return (
-      <View>
-        <StatusBar
-          backgroundColor={Colors.bgHeader}
-          barStyle="light-content"
-          translucent={true}
-        />
-        <ImageBackground
-          imageStyle={{ resizeMode: "contain" }}
-          style={{ width: width, height: height }}
-          source={Icons.ic_login_bg}
-        >
-         
+      <View style={{backgroundColor:Colors.bgHeader,flex:1,justifyContent:'center'}}>
+        
+        
+         <Image source={Icons.ic_splash_logo} style={{width:300,height:300,alignSelf:'center'}}/>
 
           <View style={styles.mainView}>
             <View style={styles.buttonTopView}>
@@ -70,7 +62,7 @@ class LoginTypeScreen extends Component {
               </TouchableOpacity>
             </View>
           </View>
-        </ImageBackground>
+       
       </View>
     );
   }
@@ -96,7 +88,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.bgHeader,
     width: Dimensions.get("screen").width,
     marginBottom: Platform.OS == "android" ? 30 : 0,
-    bottom: "5%"
+    bottom: "0%"
   },
   buttonTopView: {
     flexDirection: "row",
@@ -136,12 +128,7 @@ const styles = StyleSheet.create({
     paddingLeft: "15%",
     paddingRight: "15%",
     color: Colors.white
-  },
-  TouchableOpacityView: {
-    flex: 1
-  },
-  row: { flexDirection: "row" },
-  column: { flexDirection: "column" }
+  }
 });
 
 export default LoginTypeScreen;

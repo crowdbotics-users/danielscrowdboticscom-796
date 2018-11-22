@@ -14,12 +14,11 @@ import Icons from "../Resource/Icons";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import { NavigationActions, StackActions } from "react-navigation";
 
-class LoginScreen extends Component {
+class OneTimePasswordScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userName: "",
-      password: "",
+      onetimepassword: "",
       isProgress: false
     };
   }
@@ -33,15 +32,15 @@ class LoginScreen extends Component {
     this.setState({ isProgress: false });
   };
   //redirect home page
-  
+
   doLogin(screen) {
     const { navigate } = this.props.navigation;
-    if (this.state.userName == "") {
-      alert("Enter User Name");
-      this.refs.username.focus();
-    } else if (this.state.password == "") {
-      alert("Enter Password");
-      this.refs.password.focus();
+    if (this.state.onetimepassword == "") {
+      alert("Enter One-Time Password");
+      this.refs.onetimepassword.focus();
+    } else if ((this.state.onetimepassword.length < 4)) {
+      alert("Enter Valid One-Time Password");
+      this.refs.onetimepassword.focus();
     } else {
       this.openProgressbar();
       setTimeout(() => {
@@ -52,7 +51,7 @@ class LoginScreen extends Component {
   }
   doRedirect(screen) {
     const { navigate } = this.props.navigation;
-   navigate(screen);
+    navigate(screen);
   }
   doFinish(screen) {
     const resetAction = StackActions.reset({
@@ -63,7 +62,7 @@ class LoginScreen extends Component {
     this.props.navigation.dispatch(resetAction);
   }
   doBack() {
-    this.props.navigation.goBack();
+    this.props.navigation.goBack(null);
   }
 
   render() {
@@ -75,10 +74,52 @@ class LoginScreen extends Component {
           <Image style={styles.logoImage} source={Icons.logo} />
         </View>
         <View style={styles.textField}>
-          <View style={{ marginBottom: 10 }}>
+          <Text
+            style={{
+              fontFamily: "OpenSans-SemiBold",
+              fontSize: 13,
+              marginTop: 5,
+              color: Colors.colorEdittext
+            }}
+          >
+            ENTER YOUR 4 OR 6 CHARACTERS
+          </Text>
+          <Text
+            style={{
+              fontFamily: "OpenSans-SemiBold",
+              fontSize: 13,
+
+              color: Colors.colorEdittext
+            }}
+          >
+            ONE-TIME PASSWORD
+          </Text>
+          <Text
+            style={{
+              fontFamily: "OpenSans-SemiBold",
+              fontSize: 13,
+              marginTop: 5,
+              color: Colors.colorSearch
+            }}
+          >
+            ONE-TIME PASSWORD
+          </Text>
+          <Text
+            style={{
+              fontFamily: "OpenSans-SemiBold",
+              fontSize: 13,
+
+              color: Colors.colorSearch
+            }}
+          >
+            WILL EXPIRE AFTER 15 MINUTES!
+          </Text>
+          <View style={{ marginTop: 40, marginBottom: 100 }}>
             <TextInput
-              ref={"username"}
-              onChangeText={username => this.setState({ userName: username })}
+              ref={"onetimepassword"}
+              onChangeText={onetimepassword =>
+                this.setState({ onetimepassword: onetimepassword })
+              }
               style={[
                 styles.editText,
                 {
@@ -88,13 +129,15 @@ class LoginScreen extends Component {
                   paddingBottom: 5
                 }
               ]}
-              value={this.state.userName}
-              keyboardType="email-address"
-              placeholder={"User name"}
+              maxLength={6}
+              value={this.state.onetimepassword}
+              secureTextEntry={true}
+              keyboardType="ascii-capable"
+              placeholder={"ONE-TIME PASSWORD"}
               placeholderTextColor={Colors.colorEdittext}
               selectionColor={Colors.colorEdittext}
               underlineColorAndroid={Colors.transparent}
-              returnKeyType="next"
+              returnKeyType="done"
             />
             <Text
               style={[
@@ -103,53 +146,10 @@ class LoginScreen extends Component {
                 { fontFamily: "OpenSans-SemiBold" }
               ]}
             >
-              USERNAME
+              ONE-TIME PASSWORD
             </Text>
           </View>
           <ProgressCompoment isProgress={this.state.isProgress} />
-          <View style={{marginTop:20}}>
-            <TextInput
-              ref={"password"}
-              onChangeText={password => this.setState({ password: password })}
-              style={[
-                styles.editText,
-                {
-                  fontFamily: "OpenSans-Bold",
-                  borderBottomColor: Colors.colorEdittext,
-                  borderBottomWidth: 1,
-                  paddingBottom: 5
-                }
-              ]}
-              keyboardType="ascii-capable"
-              secureTextEntry={true}
-              placeholder={"Password"}
-              value={this.state.password}
-              placeholderTextColor={Colors.colorEdittext}
-              selectionColor={Colors.colorEdittext}
-              underlineColorAndroid={Colors.transparent}
-              returnKeyType="done"
-            />
-          </View>
-          <Text
-            style={[
-              styles.editText,
-              styles.labelName,
-              { fontFamily: "OpenSans-SemiBold" }
-            ]}
-          >
-            PASSWORD
-          </Text>
-          <TouchableOpacity style={{marginTop:20}} onPress={()=>this.doRedirect("ForgotPasswordScreen")}>
-          <Text
-            style={[
-              styles.editText,
-              styles.labelName,
-              { fontFamily: "OpenSans-SemiBold" }
-            ]}
-          >
-            FORGOT YOUR PASSWORD?
-          </Text>
-          </TouchableOpacity>
         </View>
 
         <View
@@ -160,7 +160,7 @@ class LoginScreen extends Component {
           }}
         >
           <View style={styles.buttonView}>
-            <TouchableOpacity onPress={()=>this.doBack()}>
+            <TouchableOpacity onPress={() => this.doBack()}>
               <View style={styles.backbutton}>
                 <Text
                   style={[
@@ -174,7 +174,9 @@ class LoginScreen extends Component {
             </TouchableOpacity>
           </View>
           <View style={styles.buttonView}>
-            <TouchableOpacity onPress={() => this.doLogin("HomePage")}>
+            <TouchableOpacity
+              onPress={() => this.doLogin("UpdatePasswordScreen")}
+            >
               <View style={styles.button}>
                 <Text
                   style={[
@@ -182,7 +184,7 @@ class LoginScreen extends Component {
                     { fontFamily: "JosefinSans-Bold" }
                   ]}
                 >
-                  LOGIN
+                  NEXT
                 </Text>
               </View>
             </TouchableOpacity>
@@ -197,7 +199,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     flex: 1
   },
-  logo: { marginTop: 50, justifyContent: "flex-start", alignItems: "flex-start",marginStart:'10%' },
+  logo: {
+    marginTop: 50,
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    marginStart: "10%"
+  },
   logoImage: { height: 100, width: 152 },
   textField: {
     flex: 1,
@@ -205,7 +212,7 @@ const styles = StyleSheet.create({
     marginLeft: "10%",
     justifyContent: "center"
   },
-  labelName: { fontSize: 14, marginTop: 5,color: Colors.colorEdittext },
+  labelName: { fontSize: 14, marginTop: 5, color: Colors.colorEdittext },
   buttonView: { flex: 1, justifyContent: "center", alignItems: "center" },
   button: {
     marginBottom: "10%",
@@ -244,4 +251,4 @@ const styles = StyleSheet.create({
   },
   editText: { color: Colors.colorEdittext, fontSize: 18, padding: 0 }
 });
-export default LoginScreen;
+export default OneTimePasswordScreen;

@@ -46,7 +46,7 @@ class HomeTabScreen extends Component {
     this.state = {
       tabTitle: "Stream",
       columnCount: 1,
-      isStreamActive: false,
+      isStreamActive: true,
       isFriendsPostActive: false,
       isSearchActive: false,
       isLoading: true,
