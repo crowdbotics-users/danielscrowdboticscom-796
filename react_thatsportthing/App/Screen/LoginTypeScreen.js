@@ -109,8 +109,11 @@ class LoginTypeScreen extends Component {
     const width = Dimensions.get("screen").width;
     const height = Dimensions.get("screen").height;
     return (
-      <View>
+      <View style={{backgroundColor:Colors.bgHeader,flex:1,justifyContent:'center'}}>
         
+        
+         <Image source={Icons.ic_splash_logo} style={{width:300,height:300,alignSelf:'center'}}/>
+
           <View style={styles.mainView}>
             <View style={styles.buttonTopView}>
               <TouchableOpacity onPress={this.doRedirect.bind(this, "Login")}>
