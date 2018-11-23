@@ -78,8 +78,6 @@ class LoginScreen extends Component {
           );
         }
       });
-
-      setTimeout(() => {}, 500);
     }
   }
   doLoginApi(bodyData, screen) {
