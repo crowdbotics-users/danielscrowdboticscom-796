@@ -15,9 +15,9 @@ class SignUpScreen2 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userName: "",
-      password: "",
-      cpassword: ""
+      userName: "ishan.v",
+      password: "123456",
+      cpassword: "123456"
     };
   }
   static navigationOptions = {
@@ -32,12 +32,21 @@ class SignUpScreen2 extends Component {
     if (this.state.userName == "") {
       this.refs.username.focus();
       alert("Enter User Name");
+    }else if (this.state.userName.length<5) {
+      this.refs.password.focus();
+      alert("Enter at least 5 letters Username");
     } else if (this.state.password == "") {
       this.refs.password.focus();
       alert("Enter Password");
+    }else if (this.state.password.length<6) {
+      this.refs.password.focus();
+      alert("Enter at least 6 letters Password");
     }else if (this.state.cpassword == "") {
       this.refs.cpassword.focus();
       alert("Enter Confirm Password");
+    }else if (this.state.cpassword.length<6) {
+      this.refs.cpassword.focus();
+      alert("Enter at least 6 letters Password");
     }else if(this.state.password!=this.state.cpassword){
       this.refs.cpassword.focus();
       alert("Password does not match");

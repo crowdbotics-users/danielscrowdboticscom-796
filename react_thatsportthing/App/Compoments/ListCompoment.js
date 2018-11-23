@@ -387,7 +387,7 @@ class ListCompoment extends Component {
                   }}
                 />
 
-                <TouchableOpacity>
+                 <TouchableOpacity style={{ flex: 1 }}>
                   <Text
                     style={{
                       color: Colors.black,
@@ -407,7 +407,7 @@ class ListCompoment extends Component {
                     height: 10
                   }}
                 />
-                <TouchableOpacity>
+                 <TouchableOpacity style={{ flex: 1 }}>
                   <Text
                     style={{
                       color: Colors.black,
@@ -424,15 +424,7 @@ class ListCompoment extends Component {
                       : "Follow"}
                   </Text>
                 </TouchableOpacity>
-                <Image
-                  source={Icons.ic_share}
-                  style={{
-                    width: 20,
-                    height: 20,
-                    marginStart: 8,
-                    marginEnd: 8
-                  }}
-                />
+                
               </View>
             </View>
           </View>

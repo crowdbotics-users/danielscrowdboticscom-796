@@ -7,19 +7,24 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Dimensions
+  Dimensions,
+  NetInfo,
+  AsyncStorage,
+  Platform,
+  Alert
 } from "react-native";
 import Colors from "../Resource/Colors";
 import Icons from "../Resource/Icons";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import { NavigationActions, StackActions } from "react-navigation";
+import ApiUrl from "../Network/ApiUrl";
 
 class LoginScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userName: "",
-      password: "",
+      userName: "ishan.v@gmail.com",
+      password: "123456789",
       isProgress: false
     };
   }
@@ -33,7 +38,7 @@ class LoginScreen extends Component {
     this.setState({ isProgress: false });
   };
   //redirect home page
-  
+
   doLogin(screen) {
     const { navigate } = this.props.navigation;
     if (this.state.userName == "") {
@@ -43,16 +48,98 @@ class LoginScreen extends Component {
       alert("Enter Password");
       this.refs.password.focus();
     } else {
-      this.openProgressbar();
-      setTimeout(() => {
-        this.hideProgressbar();
-        this.doFinish(screen);
-      }, 500);
+      console.log("login api");
+      NetInfo.isConnected.fetch().then(isConnected => {
+        if (isConnected) {
+        
+          AsyncStorage.getItem("token")
+            .then(data => {
+              console.log("AsyncStorage");
+              if (data != null) {
+                console.log(data);
+
+                const bodyData = JSON.stringify({
+                  email: this.state.userName,
+                  password: this.state.password,
+                  device_type: Platform.OS,
+                  fire_base_token: data
+                });
+                this.openProgressbar();
+                this.doLoginApi(bodyData, screen);
+              } else {
+                console.log(data);
+              }
+            })
+            .done();
+        } else {
+          Alert.alert(
+            "Internet Connection",
+            "Kindly connect to internet then try again"
+          );
+        }
+      });
     }
+  }
+  doLoginApi(bodyData, screen) {
+    const { navigate } = this.props.navigation;
+    fetch(ApiUrl.loginUrl, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: bodyData
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        this.hideProgressbar();
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+            console.log(message);
+            this.hideProgressbar();
+            const result = responseJson.result;
+            const userData = {
+              id: result.id,
+              name: result.full_name,
+              email: result.email,
+              profile_image: result.profile_image,
+              cover_image: result.cover_image,
+              token: result.token
+            };
+            const stringifiedArray = JSON.stringify(userData);
+            AsyncStorage.setItem("data", stringifiedArray);
+            const loginData = {
+              login: "true"         
+            };
+            AsyncStorage.setItem("login", JSON.stringify(loginData));
+            this.doFinish(screen);
+            break;
+          }
+          case 401: {
+            this.hideProgressbar();
+            alert(message);
+            console.log(message);
+            break;
+          }
+          case 400: {
+            this.hideProgressbar();
+            alert(message);
+            console.log(message);
+            break;
+          }
+        }
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+      });
   }
   doRedirect(screen) {
     const { navigate } = this.props.navigation;
-   navigate(screen);
+    navigate(screen);
   }
   doFinish(screen) {
     const resetAction = StackActions.reset({
@@ -90,7 +177,7 @@ class LoginScreen extends Component {
               ]}
               value={this.state.userName}
               keyboardType="email-address"
-              placeholder={"User name"}
+              placeholder={"Email Address"}
               placeholderTextColor={Colors.colorEdittext}
               selectionColor={Colors.colorEdittext}
               underlineColorAndroid={Colors.transparent}
@@ -103,11 +190,11 @@ class LoginScreen extends Component {
                 { fontFamily: "OpenSans-SemiBold" }
               ]}
             >
-              USERNAME
+              Email Address
             </Text>
           </View>
           <ProgressCompoment isProgress={this.state.isProgress} />
-          <View style={{marginTop:20}}>
+          <View style={{ marginTop: 20 }}>
             <TextInput
               ref={"password"}
               onChangeText={password => this.setState({ password: password })}
@@ -139,16 +226,19 @@ class LoginScreen extends Component {
           >
             PASSWORD
           </Text>
-          <TouchableOpacity style={{marginTop:20}} onPress={()=>this.doRedirect("ForgotPasswordScreen")}>
-          <Text
-            style={[
-              styles.editText,
-              styles.labelName,
-              { fontFamily: "OpenSans-SemiBold" }
-            ]}
+          <TouchableOpacity
+            style={{ marginTop: 20 }}
+            onPress={() => this.doRedirect("ForgotPasswordScreen")}
           >
-            FORGOT YOUR PASSWORD?
-          </Text>
+            <Text
+              style={[
+                styles.editText,
+                styles.labelName,
+                { fontFamily: "OpenSans-SemiBold" }
+              ]}
+            >
+              FORGOT YOUR PASSWORD?
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -160,7 +250,7 @@ class LoginScreen extends Component {
           }}
         >
           <View style={styles.buttonView}>
-            <TouchableOpacity onPress={()=>this.doBack()}>
+            <TouchableOpacity onPress={() => this.doBack()}>
               <View style={styles.backbutton}>
                 <Text
                   style={[
@@ -197,7 +287,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     flex: 1
   },
-  logo: { marginTop: 50, justifyContent: "flex-start", alignItems: "flex-start",marginStart:'10%' },
+  logo: {
+    marginTop: 50,
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    marginStart: "10%"
+  },
   logoImage: { height: 100, width: 152 },
   textField: {
     flex: 1,
@@ -205,7 +300,7 @@ const styles = StyleSheet.create({
     marginLeft: "10%",
     justifyContent: "center"
   },
-  labelName: { fontSize: 14, marginTop: 5,color: Colors.colorEdittext },
+  labelName: { fontSize: 14, marginTop: 5, color: Colors.colorEdittext },
   buttonView: { flex: 1, justifyContent: "center", alignItems: "center" },
   button: {
     marginBottom: "10%",

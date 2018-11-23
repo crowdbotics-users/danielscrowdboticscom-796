@@ -8,17 +8,98 @@ import {
   Dimensions,
   Image,
   StatusBar,
-  Platform
+  Platform,
+  AsyncStorage
 } from "react-native";
 import Icons from "../Resource/Icons";
 import Colors from "../Resource/Colors";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
-
+import firebase from "react-native-firebase";
+import type { Notification, NotificationOpen } from "react-native-firebase";
 class LoginTypeScreen extends Component {
   static navigationOptions = {
     header: null
   };
+  async componentDidMount() {
+    const notificationOpen: NotificationOpen = await firebase
+      .notifications()
+      .getInitialNotification();
+    if (notificationOpen) {
+      const action = notificationOpen.action;
+      const notification: Notification = notificationOpen.notification;
+      var seen = [];
+      alert(
+        JSON.stringify(notification.data, function(key, val) {
+          if (val != null && typeof val == "object") {
+            if (seen.indexOf(val) >= 0) {
+              return;
+            }
+            seen.push(val);
+          }
+          return val;
+        })
+      );
+    }
+    const channel = new firebase.notifications.Android.Channel(
+      "test-channel",
+      "Test Channel",
+      firebase.notifications.Android.Importance.Max
+    ).setDescription("My apps test channel");
+    // Create the channel
+    firebase.notifications().android.createChannel(channel);
+    this.notificationDisplayedListener = firebase
+      .notifications()
+      .onNotificationDisplayed((notification: Notification) => {
+        // Process your notification as required
+        // ANDROID: Remote notifications do not contain the channel ID. You will have to specify this manually if you'd like to re-display the notification.
+      });
+    this.notificationListener = firebase
+      .notifications()
+      .onNotification((notification: Notification) => {
+        // Process your notification as required
+        notification.android
+          .setChannelId("test-channel")
+          .android.setSmallIcon("ic_launcher");
+        firebase.notifications().displayNotification(notification);
+      });
+    this.notificationOpenedListener = firebase
+      .notifications()
+      .onNotificationOpened((notificationOpen: NotificationOpen) => {
+        // Get the action triggered by the notification being opened
+        const action = notificationOpen.action;
+        // Get information about the notification that was opened
+        const notification: Notification = notificationOpen.notification;
+        var seen = [];
+        alert(
+          JSON.stringify(notification.data, function(key, val) {
+            if (val != null && typeof val == "object") {
+              if (seen.indexOf(val) >= 0) {
+                return;
+              }
+              seen.push(val);
+            }
+            return val;
+          })
+        );
+        firebase
+          .notifications()
+          .removeDeliveredNotification(notification.notificationId);
+      });
+    const fcmToken = await firebase.messaging().getToken();
 
+    if (fcmToken) {
+      console.log("fcmToken", fcmToken);
+      AsyncStorage.setItem("token", fcmToken);
+    } else {
+      console.log("fcmToken", fcmToken);
+      // user doesn't have a device token yet
+    }
+  }
+  componentWillUnmount() {
+    this.notificationDisplayedListener();
+    this.notificationListener();
+    this.notificationOpenedListener();
+  }
   doRedirect(screen) {
     const { navigate } = this.props.navigation;
     navigate(screen);
@@ -28,15 +109,21 @@ class LoginTypeScreen extends Component {
     const width = Dimensions.get("screen").width;
     const height = Dimensions.get("screen").height;
     return (
-      <View style={{backgroundColor:Colors.bgHeader,flex:1,justifyContent:'center'}}>
+      <View>
         
-        
-         <Image source={Icons.ic_splash_logo} style={{width:300,height:300,alignSelf:'center'}}/>
-
           <View style={styles.mainView}>
             <View style={styles.buttonTopView}>
               <TouchableOpacity onPress={this.doRedirect.bind(this, "Login")}>
-                <View style={[styles.buttonLogin,{borderTopWidth:1,borderEndWidth:1,borderBottomWidth:1}]}>
+                <View
+                  style={[
+                    styles.buttonLogin,
+                    {
+                      borderTopWidth: 1,
+                      borderEndWidth: 1,
+                      borderBottomWidth: 1
+                    }
+                  ]}
+                >
                   <Text
                     style={[
                       styles.buttonText,
@@ -49,7 +136,16 @@ class LoginTypeScreen extends Component {
               </TouchableOpacity>
 
               <TouchableOpacity onPress={this.doRedirect.bind(this, "SignUp1")}>
-                <View style={[styles.buttonSignUp,{borderTopWidth:1,borderStartWidth:1,borderBottomWidth:1}]}>
+                <View
+                  style={[
+                    styles.buttonSignUp,
+                    {
+                      borderTopWidth: 1,
+                      borderStartWidth: 1,
+                      borderBottomWidth: 1
+                    }
+                  ]}
+                >
                   <Text
                     style={[
                       styles.buttonText,
@@ -101,17 +197,16 @@ const styles = StyleSheet.create({
 
     marginTop: 10,
     marginBottom: 10,
-   borderColor:Colors.white,
+    borderColor: Colors.white,
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
     alignContent: "center",
-    justifyContent: "center",
-   
+    justifyContent: "center"
   },
   buttonSignUp: {
     marginLeft: 5,
     width: Dimensions.get("screen").width / 2,
-    borderColor:Colors.white,
+    borderColor: Colors.white,
     marginTop: 10,
     marginBottom: 10,
     backgroundColor: Colors.orange,

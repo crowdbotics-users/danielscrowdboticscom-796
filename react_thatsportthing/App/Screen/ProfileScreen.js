@@ -19,9 +19,7 @@ import {
 import Colors from "../Resource/Colors";
 import Icons from "../Resource/Icons";
 import styles from "../Resource/Styles";
-import ImagePicker from "react-native-image-crop-picker";
-import TabCompoment from "../Compoments/TabCompoment";
-import HamburgerIcon from "../Compoments/DrawerIcon";
+import HamburgerIcon from "../Compoments/HamburgerIcon";
 import ListCompoment from "../Compoments/ListCompoment";
 import {
   PagerTabIndicator,
@@ -30,8 +28,6 @@ import {
   ViewPager
 } from "rn-viewpager";
 import BannerCompoment from "../Compoments/BannerCompoment";
-import ProfileTabCompoment from "../Compoments/ProfileTabCompoment";
-import PictureTabCompoment from "../Compoments/PictureTabCompoment";
 import tabstyles from "../Resource/tabstyles";
 import friendstabstyles from "../Resource/friendstabstyles";
 import picturetabstyles from "../Resource/picturetabstyles";
@@ -407,13 +403,20 @@ class ProfileScreen extends Component {
                   marginBottom: 5
                 }}
               >
-                FAVORITE SPORTS
+                FAVORITES
               </Text>
             </View>
           </View>
           <View>
             <View style={{ backgroundColor: "#414141" }}>
-              <View style={{ flexDirection: "row", marginTop: 10 }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginTop: 10,
+                  backgroundColor: Colors.bgHeader,
+                  padding: 3
+                }}
+              >
                 <TouchableOpacity onPress={() => this.doChangeTab("posts")}>
                   <View
                     style={
@@ -448,7 +451,7 @@ class ProfileScreen extends Component {
                           : tabstyles.PictureInactiveTabText
                       }
                     >
-                      Pictures
+                      Gallery
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -467,7 +470,7 @@ class ProfileScreen extends Component {
                           : tabstyles.FriendsInactiveTabText
                       }
                     >
-                      {Strings.friends}
+                      Crew
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -638,7 +641,7 @@ class ProfileScreen extends Component {
                                 : friendstabstyles.FriendsInactiveTabText
                             }
                           >
-                            All Friends
+                            All
                           </Text>
                         </View>
                       </TouchableOpacity>
@@ -659,7 +662,7 @@ class ProfileScreen extends Component {
                                 : friendstabstyles.MutualFriendsInactiveTabText
                             }
                           >
-                            Mutual Friends
+                            Mutual
                           </Text>
                         </View>
                       </TouchableOpacity>
