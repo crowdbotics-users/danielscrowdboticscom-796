@@ -19,16 +19,14 @@ import {
 import Colors from "../Resource/Colors";
 import Icons from "../Resource/Icons";
 import styles from "../Resource/Styles";
-import ImagePicker from "react-native-image-crop-picker";
-import TabCompoment from "../Compoments/TabCompoment";
-import HamburgerIcon from "../Compoments/DrawerIcon";
+import HamburgerIcon from "../Compoments/HamburgerIcon";
 import ListCompoment from "../Compoments/ListCompoment";
 import { ViewPager } from "rn-viewpager";
 import BannerCompoment from "../Compoments/BannerCompoment";
-import PictureTabCompoment from "../Compoments/PictureTabCompoment";
 import hometabstyles from "../Resource/hometabstyles";
 import WritePostCompoment from "../Compoments/WritePostCompoment";
 import CollapseView from "react-native-collapse-view";
+import searchtabstyles from "../Resource/searchtabstyles";
 
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
@@ -56,6 +54,11 @@ class HomeTabScreen extends Component {
       inactiveColor: Colors.white,
       inactiveTextColor: Colors.backgroundLogin,
       avatarSource: "",
+      isPeopleActive: true,
+      isPostActive: false,
+      isSportActive: false,
+      isPageActive: false,
+      isLocationActive: false,
       dataSource: [
         {
           companyname: "ADIDAS",
@@ -253,7 +256,49 @@ class HomeTabScreen extends Component {
       </View>
     );
   }
-
+  doSearchChangeTab(tabName) {
+    if (tabName == "people") {
+      this.setState({
+        isPeopleActive: true,
+        isPostActive: false,
+        isSportActive: false,
+        isPageActive: false,
+        isLocationActive: false
+      });
+    } else if (tabName == "post") {
+      this.setState({
+        isPeopleActive: false,
+        isPostActive: true,
+        isSportActive: false,
+        isPageActive: false,
+        isLocationActive: false
+      });
+    } else if (tabName == "sport") {
+      this.setState({
+        isPeopleActive: false,
+        isPostActive: false,
+        isSportActive: true,
+        isPageActive: false,
+        isLocationActive: false
+      });
+    } else if (tabName == "page") {
+      this.setState({
+        isPeopleActive: false,
+        isPostActive: false,
+        isSportActive: false,
+        isPageActive: true,
+        isLocationActive: false
+      });
+    } else if (tabName == "location") {
+      this.setState({
+        isPeopleActive: false,
+        isPostActive: false,
+        isSportActive: false,
+        isPageActive: false,
+        isLocationActive: true
+      });
+    }
+  }
   doChangeTab(tabName) {
     if (tabName == "stream") {
       this.setState({
@@ -298,7 +343,6 @@ class HomeTabScreen extends Component {
   _renderView = collapse => {
     return (
       <View>
-       
         <View
           style={{
             position: "relative",
@@ -335,7 +379,9 @@ class HomeTabScreen extends Component {
               }}
             >
               <Image
-                source={collapse?Icons.ic_up_arrow_white:Icons.ic_down_arrow_white}
+                source={
+                  collapse ? Icons.ic_up_arrow_white : Icons.ic_down_arrow_white
+                }
                 style={{ width: 15, height: 9, margin: 3 }}
               />
               <Text
@@ -348,7 +394,9 @@ class HomeTabScreen extends Component {
                 Advanced Search
               </Text>
               <Image
-                source={collapse?Icons.ic_up_arrow_white:Icons.ic_down_arrow_white}
+                source={
+                  collapse ? Icons.ic_up_arrow_white : Icons.ic_down_arrow_white
+                }
                 style={{ width: 15, height: 9, margin: 3 }}
               />
             </View>
@@ -359,18 +407,37 @@ class HomeTabScreen extends Component {
   };
   _renderCollapseView = collapse => {
     return (
-      <View style={styles.collapseView}>
-        <Text>
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industrys standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book. It has survived not only
-          five centuries, but also the leap into electronic typesetting,
-          remaining essentially unchanged. It was popularised in the 1960s with
-          the release of Letraset sheets containing Lorem Ipsum passages, and
-          more recently with desktop publishing software like Aldus PageMaker
-          including versions of Lorem Ipsum.
+      <View style={customstyles.collapseView}>
+        <Text style={{ color: Colors.white, fontFamily: "OpenSans-SemiBold" }}>
+          Search for..
         </Text>
+        <View style={[styles.row,{marginTop:5}]}>
+          <TouchableOpacity style={{ flex: 1 }} onPress={()=>this.doSearchChangeTab("people")}>
+            <View style={this.state.isPeopleActive?searchtabstyles.PeopleActiveTab:searchtabstyles.PeopleInactiveTab}>
+              <Text style={this.state.isPeopleActive?searchtabstyles.PeopleActiveTabText:searchtabstyles.PeopleInactiveTabText}>People</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={{ flex: 1 }} onPress={()=>this.doSearchChangeTab("post")}>
+            <View style={this.state.isPostActive?searchtabstyles.PostActiveTab:searchtabstyles.PostInactiveTab}>
+              <Text style={this.state.isPostActive?searchtabstyles.PostActiveTabText:searchtabstyles.PostInactiveTabText}>Post</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={{ flex: 1 }} onPress={()=>this.doSearchChangeTab("sport")}>
+            <View style={this.state.isSportActive?searchtabstyles.SportActiveTab:searchtabstyles.SportInactiveTab}>
+              <Text style={this.state.isSportActive?searchtabstyles.SportActiveTabText:searchtabstyles.SportInactiveTabText}>Sport</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={{ flex: 1 }} onPress={()=>this.doSearchChangeTab("page")}>
+            <View style={this.state.isPageActive?searchtabstyles.PageActiveTab:searchtabstyles.PageInactiveTab}>
+              <Text style={this.state.isPageActive?searchtabstyles.PageActiveTabText:searchtabstyles.PageInactiveTabText}>Page</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={{ flex: 1 }} onPress={()=>this.doSearchChangeTab("location")}>
+            <View style={this.state.isLocationActive?searchtabstyles.LocationActiveTab:searchtabstyles.LocationInactiveTab}>
+              <Text style={this.state.isLocationActive?searchtabstyles.LocationActiveTabText:searchtabstyles.LocationInactiveTabText}>Location</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
@@ -589,9 +656,8 @@ class HomeTabScreen extends Component {
                   </View>
 
                   <CollapseView
-                   renderCollapseView={this._renderCollapseView}
+                    renderCollapseView={this._renderCollapseView}
                     renderView={this._renderView}
-                   
                   />
                   <ListCompoment
                     tabTitle={this.state.tabTitle}
@@ -612,4 +678,14 @@ class HomeTabScreen extends Component {
     );
   }
 }
+
+const customstyles = StyleSheet.create({
+  collapseView: {
+    backgroundColor: Colors.black,
+    paddingTop: 10,
+    paddingStart: 10,
+    paddingEnd: 10,
+    height:70
+  }
+});
 export default HomeTabScreen;

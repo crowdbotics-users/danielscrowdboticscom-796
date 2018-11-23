@@ -3,13 +3,15 @@ import Colors from "./Colors";
 
 const tabstyles = StyleSheet.create({
   PostactiveTab: {
-    backgroundColor: Colors.bgHeader,
-    width: Dimensions.get("screen").width / 3,
+    backgroundColor: "#af4300",
+    width: Dimensions.get("screen").width / 3.2,
     alignItems: "center",
     justifyContent: "center",
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
-    marginRight: 5
+    borderRadius: 2,
+    marginLeft: 4,
+    marginRight: 2,
+    borderColor: Colors.black,
+    borderWidth: 0.5
   },
   PostactiveTabText: {
     padding: 10,
@@ -18,28 +20,32 @@ const tabstyles = StyleSheet.create({
     fontFamily: "OpenSans-SemiBold"
   },
   PostInactiveTab: {
-    backgroundColor: Colors.white,
-    width: Dimensions.get("screen").width / 3,
+    backgroundColor: Colors.bgHeader,
+    width: Dimensions.get("screen").width / 3.2,
     alignItems: "center",
     justifyContent: "center",
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
-    marginRight: 5
+    borderRadius: 2,
+    marginLeft: 4,
+    marginRight: 2,
+    borderColor: Colors.black,
+    borderWidth: 0.5
   },
   PostInactiveTabText: {
     padding: 10,
-    color: Colors.bgHeader,
+    color: Colors.white,
     fontSize: 15,
     fontFamily: "OpenSans-SemiBold"
   },
   PictureactiveTab: {
-    backgroundColor: Colors.bgHeader,
-    width: Dimensions.get("screen").width / 3,
+    backgroundColor: "#af4300",
+    width: Dimensions.get("screen").width / 3.2,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 10,
-    marginLeft: 5,
-    marginRight: 5
+    borderRadius: 2,
+    marginLeft: 3,
+    marginRight: 3,
+    borderColor: Colors.black,
+    borderWidth: 0.5
   },
   PictureactiveTabText: {
     padding: 10,
@@ -48,28 +54,33 @@ const tabstyles = StyleSheet.create({
     fontFamily: "OpenSans-SemiBold"
   },
   PictureInactiveTab: {
-    backgroundColor: Colors.white,
-    width: Dimensions.get("screen").width / 3,
+    backgroundColor: Colors.bgHeader,
+    width: Dimensions.get("screen").width / 3.2,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 10,
-    marginLeft: 5,
-    marginRight: 5
+    borderRadius: 2,
+    marginLeft: 3,
+    marginRight: 3,
+    borderColor: Colors.black,
+    borderWidth: 0.5
   },
   PictureInactiveTabText: {
     padding: 10,
-    color: Colors.bgHeader,
+    color: Colors.white,
     fontSize: 15,
     fontFamily: "OpenSans-SemiBold"
   },
   FriendsactiveTab: {
-    backgroundColor: Colors.bgHeader,
-    width: Dimensions.get("screen").width / 3,
+    backgroundColor: "#af4300",
+    width: Dimensions.get("screen").width / 3.2,
     alignItems: "center",
     justifyContent: "center",
-    borderTopStartRadius: 10,
-    borderBottomStartRadius: 10,
-    marginLeft: 5,
+    borderRadius: 2,
+    marginLeft: 2,
+    marginRight: 3,
+
+    borderColor: Colors.black,
+    borderWidth: 0.5
     
   },
   FriendsactiveTabText: {
@@ -79,17 +90,19 @@ const tabstyles = StyleSheet.create({
     fontFamily: "OpenSans-SemiBold"
   },
   FriendsInactiveTab: {
-    backgroundColor: Colors.white,
-    width: Dimensions.get("screen").width / 3,
+    backgroundColor: Colors.bgHeader,
+    width: Dimensions.get("screen").width / 3.2,
     alignItems: "center",
     justifyContent: "center",
-    borderTopStartRadius: 10,
-    borderBottomStartRadius: 10,
-    marginLeft: 5,
+    borderRadius: 2,
+    marginLeft: 2,
+    marginRight: 3,
+    borderColor: Colors.black,
+    borderWidth: 0.5
   },
   FriendsInactiveTabText: {
     padding: 10,
-    color: Colors.bgHeader,
+    color: Colors.white,
     fontSize: 15,
     fontFamily: "OpenSans-SemiBold"
   }

@@ -19,9 +19,7 @@ import {
 import Colors from "../Resource/Colors";
 import Icons from "../Resource/Icons";
 import styles from "../Resource/Styles";
-import ImagePicker from "react-native-image-crop-picker";
-import TabCompoment from "../Compoments/TabCompoment";
-import HamburgerIcon from "../Compoments/DrawerIcon";
+import HamburgerIcon from "../Compoments/HamburgerIcon";
 import ListCompoment from "../Compoments/ListCompoment";
 import {
   PagerTabIndicator,
@@ -30,12 +28,10 @@ import {
   ViewPager
 } from "rn-viewpager";
 import BannerCompoment from "../Compoments/BannerCompoment";
-import ProfileTabCompoment from "../Compoments/ProfileTabCompoment";
-import PictureTabCompoment from "../Compoments/PictureTabCompoment";
 import tabstyles from "../Resource/tabstyles";
 import friendstabstyles from "../Resource/friendstabstyles";
 import picturetabstyles from "../Resource/picturetabstyles";
-import Strings from '../Resource/Strings';
+import Strings from "../Resource/Strings";
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
 class ProfileScreen extends Component {
@@ -50,7 +46,7 @@ class ProfileScreen extends Component {
     super(props);
 
     this.state = {
-      noData:false,
+      noData: false,
       tabTitle: "Posts",
       columnCount: 1,
       isAllFriends: true,
@@ -105,7 +101,7 @@ class ProfileScreen extends Component {
           image: Icons.ball1
         }
       ],
-      filteredData:[],
+      filteredData: [],
       dataSource1: [
         {
           name: "Mason SCHUFFER",
@@ -248,7 +244,7 @@ class ProfileScreen extends Component {
         }
       ]
     };
-    this.setState({filteredData:this.state.dataSource1});
+    this.setState({ filteredData: this.state.dataSource1 });
   }
 
   componentWillMount() {
@@ -321,7 +317,6 @@ class ProfileScreen extends Component {
       this.refs.viewPager.setPage(0);
     } else if (tabName == "pictures") {
       this.setState({
-        
         tabTitle: "Pictures",
         columnCount: 3,
         isPostActive: false,
@@ -331,7 +326,6 @@ class ProfileScreen extends Component {
       this.refs.viewPager.setPage(1);
     } else if (tabName == "friends") {
       this.setState({
-       
         tabTitle: "Crew",
         columnCount: 1,
         isPostActive: false,
@@ -341,28 +335,28 @@ class ProfileScreen extends Component {
       this.refs.viewPager.setPage(2);
     }
   }
-  searchText = (e) => {
-    let text = e.toLowerCase()
-    let trucks = this.state.dataSource1
-    let filteredName = trucks.filter((item) => {
-      return item.name.toLowerCase().match(text)
-    })
-    if (!text || text === '') {
+  searchText = e => {
+    let text = e.toLowerCase();
+    let trucks = this.state.dataSource1;
+    let filteredName = trucks.filter(item => {
+      return item.name.toLowerCase().match(text);
+    });
+    if (!text || text === "") {
       this.setState({
         filteredData: this.state.dataSource1
-      })
+      });
     } else if (!Array.isArray(filteredName) && !filteredName.length) {
       // set no data flag to true so as to render flatlist conditionally
       this.setState({
         noData: true
-      })
+      });
     } else if (Array.isArray(filteredName)) {
       this.setState({
         noData: false,
         filteredData: filteredName
-      })
+      });
     }
-  }
+  };
   render() {
     return (
       <SafeAreaView>
@@ -370,7 +364,6 @@ class ProfileScreen extends Component {
           bounces={false}
           showsVerticalScrollIndicator={false}
           alwaysBounceVertical={false}
-         
         >
           <View>
             <BannerCompoment
@@ -410,13 +403,20 @@ class ProfileScreen extends Component {
                   marginBottom: 5
                 }}
               >
-                FAVORITE SPORTS
+                FAVORITES
               </Text>
             </View>
           </View>
           <View>
             <View style={{ backgroundColor: "#414141" }}>
-              <View style={{ flexDirection: "row", marginTop: 10 }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginTop: 10,
+                  backgroundColor: Colors.bgHeader,
+                  padding: 3
+                }}
+              >
                 <TouchableOpacity onPress={() => this.doChangeTab("posts")}>
                   <View
                     style={
@@ -451,7 +451,7 @@ class ProfileScreen extends Component {
                           : tabstyles.PictureInactiveTabText
                       }
                     >
-                      Pictures
+                      Gallery
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -470,7 +470,7 @@ class ProfileScreen extends Component {
                           : tabstyles.FriendsInactiveTabText
                       }
                     >
-                      Friends
+                      Crew
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -561,7 +561,7 @@ class ProfileScreen extends Component {
                                 : picturetabstyles.TaggedInactiveTabText
                             }
                           >
-                           {Strings.tagged}
+                            {Strings.tagged}
                           </Text>
                         </View>
                       </TouchableOpacity>
@@ -609,7 +609,7 @@ class ProfileScreen extends Component {
                           }}
                           placeholderTextColor={Colors.colorSearch}
                           underlineColorAndroid={Colors.transparent}
-                          onChangeText={(text)=>this.searchText(text)}
+                          onChangeText={text => this.searchText(text)}
                         />
                       </View>
                     </View>
@@ -640,7 +640,7 @@ class ProfileScreen extends Component {
                                 : friendstabstyles.FriendsInactiveTabText
                             }
                           >
-                            All Friends
+                            All
                           </Text>
                         </View>
                       </TouchableOpacity>
@@ -661,7 +661,7 @@ class ProfileScreen extends Component {
                                 : friendstabstyles.MutualFriendsInactiveTabText
                             }
                           >
-                            Mutual Friends
+                            Mutual
                           </Text>
                         </View>
                       </TouchableOpacity>
@@ -690,7 +690,11 @@ class ProfileScreen extends Component {
                     <ListCompoment
                       tabTitle={this.state.tabTitle}
                       columns={this.state.columnCount}
-                      data={this.state.filteredData.length>0?this.state.filteredData:this.state.dataSource1}
+                      data={
+                        this.state.filteredData.length > 0
+                          ? this.state.filteredData
+                          : this.state.dataSource1
+                      }
                       noData={this.state.noData}
                       navigation={this.props.navigation}
                     />
