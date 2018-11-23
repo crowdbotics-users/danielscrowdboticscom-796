@@ -10,6 +10,7 @@ use Hash;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Carbon\Carbon;
+use Mail;
 
 class LoginController extends Controller
 {
@@ -64,6 +65,14 @@ class LoginController extends Controller
 
         $user->profile_image = $image_path;
         $user->save();
+
+        $email=$user->email;
+
+        Mail::send('emails.welcome', ['user_name' => $user->full_name], function ($message) use ($email)
+        {
+                $message->subject('Welcome');
+                $message->to($email);
+        });
 
         $result=make_null($user);
 
