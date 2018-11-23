@@ -16,11 +16,11 @@ class SignUpScreen1 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      fullName: "",
-      EmailAddress: "",
+      fullName: "Ishan Vyas",
+      EmailAddress: "ishan.v@gmail.com",
       dateOfBirth: "DATE OF BIRTH",
       isDateTimePickerVisible: false,
-      isDateTimePickerVisible: false
+      postDob:""
     };
     Moment.locale();
   }
@@ -49,7 +49,7 @@ class SignUpScreen1 extends Component {
       const userData1 = {
         name: this.state.fullName,
         email: this.state.EmailAddress,
-        bdate: this.state.dateOfBirth
+        bdate: this.state.postDob
       };
      
       navigate(screen, { userData1: userData1 });
@@ -75,6 +75,7 @@ class SignUpScreen1 extends Component {
 
   _handleDatePicked = date => {
     this.setState({ dateOfBirth: Moment(date).format("DD/MM/YYYY") });
+    this.setState({ postDob: Moment(date).format("YYYY/MM/DD") });
     this._hideDateTimePicker();
   };
   render() {
@@ -102,6 +103,7 @@ class SignUpScreen1 extends Component {
                   paddingBottom: 5
                 }
               ]}
+              value={this.state.fullName}
               keyboardType="ascii-capable"
               placeholder={"FULL NAME"}
               placeholderTextColor={Colors.colorEdittext}
@@ -135,6 +137,7 @@ class SignUpScreen1 extends Component {
                   paddingBottom: 5
                 }
               ]}
+              value={this.state.EmailAddress}
               keyboardType="email-address"
               placeholder={"EMAIL ADDRESS"}
               placeholderTextColor={Colors.colorEdittext}
