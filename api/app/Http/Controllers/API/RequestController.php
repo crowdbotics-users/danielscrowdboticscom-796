@@ -24,7 +24,7 @@ class RequestController extends Controller
             if($sender->id == $receiver->id)
             {
                 return response()->json([
-                    'result' => $result,
+                  
                     'message' => 'Can not send Request your self.',
                     'success' => true,
                     'status' => 400,
