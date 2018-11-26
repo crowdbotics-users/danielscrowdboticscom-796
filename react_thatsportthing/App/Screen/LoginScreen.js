@@ -76,6 +76,7 @@ class LoginScreen extends Component {
                   device_type: Platform.OS,
                   fire_base_token: data
                 });
+                AsyncStorage.setItem("logged","true");
                 this.openProgressbar();
                 this.doLoginApi(bodyData, screen);
               } else {

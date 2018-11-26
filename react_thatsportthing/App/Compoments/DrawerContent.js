@@ -7,7 +7,10 @@ import {
   TouchableOpacity,
   Dimensions,
   Linking,
-  TextInput,Platform
+  TextInput,
+  Platform,
+  NetInfo,
+  Alert
 } from "react-native";
 import { NavigationActions, StackActions } from "react-navigation";
 
@@ -17,11 +20,14 @@ import styles from "../Resource/Styles";
 import Color from "../Resource/Colors";
 import Icon from "../Resource/Icons";
 import Icons from "../Resource/Icons";
+import ApiUrl from "../Network/ApiUrl";
+import ProgressCompoment from "./ProgressCompoment";
 
 class DrawerContent extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isProgress: false,
       username: "",
       useremail: "",
       userimage: "",
@@ -36,7 +42,11 @@ class DrawerContent extends Component {
       isActiveLogout: false
     };
   }
-  componentDidMount() {}
+  componentDidMount() {
+    if(this.props.activeDrawer=="home"){
+      this.doHome();
+    }
+  }
   navigateToScreen = route => () => {
     const navigate = NavigationActions.navigate({
       routeName: route
@@ -45,13 +55,87 @@ class DrawerContent extends Component {
     this.closeDrawer();
   };
   doLogout(screen) {
-    const resetAction = StackActions.reset({
-      index: 0,
-      key: null,
-      actions: [NavigationActions.navigate({ routeName: screen })]
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if (isConnected) {
+        AsyncStorage.getItem("data")
+          .then(data => {
+            console.log("AsyncStorage");
+            if (data != null) {
+              const myData = JSON.parse(data);
+              console.log(data);
+
+              let postData = {
+                method: "GET",
+                headers: {
+                  Accept: "application/json",
+                  Authorization: "Bearer " + myData.token,
+                  "Content-Type": "multipart/form-data"
+                }
+              };
+
+              this.openProgressbar();
+              this.doLogoutApi(postData, screen);
+            } else {
+              console.log(data);
+            }
+          })
+          .done();
+      } else {
+        Alert.alert(
+          "Internet Connection",
+          "Kindly connect to internet then try again"
+        );
+      }
     });
-    this.props.navigation.dispatch(resetAction);
-    this.closeDrawer();
+  }
+  openProgressbar = () => {
+    this.setState({ isProgress: true });
+  };
+  hideProgressbar = () => {
+    this.setState({ isProgress: false });
+  };
+  doLogoutApi(bodyData, screen) {
+    const { navigate, dispatch } = this.props.navigation;
+    fetch(ApiUrl.logoutUrl, bodyData)
+      .then(response => response.json())
+      .then(responseJson => {
+        this.hideProgressbar();
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+            console.log(message);
+            this.hideProgressbar();
+            AsyncStorage.setItem("logged", "false");
+            AsyncStorage.clear();
+            const resetAction = StackActions.reset({
+              index: 0,
+              key: null,
+              actions: [NavigationActions.navigate({ routeName: screen })]
+            });
+            dispatch(resetAction);
+            this.closeDrawer();
+            break;
+          }
+          case 401: {
+            this.hideProgressbar();
+            alert(message);
+            console.log(message);
+            break;
+          }
+          case 400: {
+            this.hideProgressbar();
+            alert(message);
+            console.log(message);
+            break;
+          }
+        }
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+      });
   }
   doRateUs() {
     Linking.openURL("http://www.goodindiabadindia.com/terms-conditons.html");
@@ -133,6 +217,7 @@ class DrawerContent extends Component {
       isActiveAccountSettings: false,
       isActiveLogout: false
     });
+    this.doRedirect("MyCrewScreen");
     this.closeDrawer();
   };
   doAccountSetting = () => {
@@ -151,7 +236,10 @@ class DrawerContent extends Component {
   closeDrawer = () => {
     this.props.navigation.closeDrawer();
   };
-
+  doRedirect(screen) {
+    
+    this.props.navigation.navigate(screen);
+  }
   render() {
     return (
       <View
@@ -160,11 +248,12 @@ class DrawerContent extends Component {
           {
             backgroundColor: Color.navBg,
             justifyContent: "flex-start",
-            
+
             height: 200
           }
         ]}
       >
+        <ProgressCompoment isProgress={this.state.isProgress} />
         <View
           style={{
             backgroundColor: Color.bgHeader,
@@ -224,12 +313,12 @@ class DrawerContent extends Component {
         <View>
           <View
             style={{
-              justifyContent:'center',
-              alignContent:'center',
-              alignItems:'center',
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
               backgroundColor: "#313131",
               flexDirection: "row",
-              padding: Platform.OS=="android"?0:10,
+              padding: Platform.OS == "android" ? 0 : 10,
               borderColor: Color.colorSearch,
               margin: 10,
               borderRadius: 5
@@ -237,13 +326,13 @@ class DrawerContent extends Component {
           >
             <Image
               source={Icons.ic_search}
-              style={{ width: 24, height: 24, marginRight: 5,marginLeft:10 }}
+              style={{ width: 24, height: 24, marginRight: 5, marginLeft: 10 }}
             />
             <TextInput
               returnKeyType="done"
               placeholder="Search.."
               style={{
-                padding:Platform.OS=="android"?5:0,
+                padding: Platform.OS == "android" ? 5 : 0,
                 color: Color.colorSearch,
                 flex: 1,
                 marginLeft: 5,
@@ -484,7 +573,7 @@ class DrawerContent extends Component {
                   flexDirection: "row",
                   padding: 10,
                   borderColor: Color.colorSearch,
-                marginTop:30,
+                  marginTop: 30
                 }}
               >
                 <Image
@@ -512,7 +601,7 @@ class DrawerContent extends Component {
             </TouchableOpacity>
           </View>
           <View>
-            <TouchableOpacity onPress={()=>this.doLogout("LoginType")}>
+            <TouchableOpacity onPress={() => this.doLogout("LoginType")}>
               <View
                 style={{
                   backgroundColor: this.state.isActiveLogout
@@ -554,6 +643,7 @@ class DrawerContent extends Component {
 }
 
 DrawerContent.propTypes = {
-  navigation: PropTypes.object
+  navigation: PropTypes.object,
+  activeDrawer:PropTypes.string
 };
 export default DrawerContent;

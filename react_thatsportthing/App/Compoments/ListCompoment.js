@@ -15,10 +15,13 @@ import Colors from "../Resource/Colors";
 import styles from "../Resource/Styles";
 import Icons from "../Resource/Icons";
 import GridView from "react-native-gridview";
-
+import Moment from "moment";
 class ListCompoment extends Component {
   doRedirect(data) {
     this.props.navigation.navigate("ProfileScreen", { data: data });
+  }
+  doCommentList(data) {
+    this.props.navigation.navigate("CommentListScreen", { data: data });
   }
   renderStream(data) {
     return (
@@ -33,7 +36,7 @@ class ListCompoment extends Component {
           <View
             style={[
               styles.row,
-              { justifyContent: "center", alignItems: "center", marginTop:8 }
+              { justifyContent: "center", alignItems: "center", marginTop: 8 }
             ]}
           >
             <View
@@ -45,7 +48,7 @@ class ListCompoment extends Component {
                 alignSelf: "center",
                 justifyContent: "center",
                 alignContent: "center",
-                alignItems:'center',
+                alignItems: "center",
                 marginLeft: 10
               }}
             >
@@ -70,10 +73,10 @@ class ListCompoment extends Component {
                   color: Colors.black,
                   fontFamily: "OpenSans-SemiBold",
                   fontSize: 13,
-                  marginStart:5
+                  marginStart: 5
                 }}
               >
-                {data.name}
+                {JSON.stringify(data.users)}
               </Text>
             </TouchableOpacity>
             <Text
@@ -83,9 +86,7 @@ class ListCompoment extends Component {
                 fontSize: 13,
                 marginRight: 8
               }}
-            >
-              {data.time}
-            </Text>
+            >{Moment(data.created_at).format("hh:mm A")}</Text>
           </View>
           <Text
             style={{
@@ -103,7 +104,12 @@ class ListCompoment extends Component {
           <View
             style={[
               styles.row,
-              { justifyContent: "center", alignItems: "center", marginLeft: 10,marginBottom:5 }
+              {
+                justifyContent: "center",
+                alignItems: "center",
+                marginLeft: 10,
+                marginBottom: 5
+              }
             ]}
           >
             <Image
@@ -122,7 +128,7 @@ class ListCompoment extends Component {
                 fontSize: 12
               }}
             >
-              Like ({data.likes})
+              Like ({data.likes_count})
             </Text>
             <Image
               source={Icons.ic_comment}
@@ -133,19 +139,22 @@ class ListCompoment extends Component {
                 margin: 8
               }}
             />
-
-            <Text
-              style={{
-                flex: 1,
-
-                color: Colors.black,
-                fontFamily: "OpenSans-SemiBold",
-                fontSize: 12
-              }}
+            <TouchableOpacity
+              onPress={() => this.doCommentList(data)}
+              style={{ flex: 1 }}
             >
-              Comment ({data.commnets})
-            </Text>
-            
+              <Text
+                style={{
+                 
+
+                  color: Colors.black,
+                  fontFamily: "OpenSans-SemiBold",
+                  fontSize: 12
+                }}
+              >
+                Comment ({data.comment_count})
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </SafeAreaView>
@@ -191,10 +200,9 @@ class ListCompoment extends Component {
                 }}
               />
             </View>
-            <TouchableOpacity style={{flex:1}}>
+            <TouchableOpacity style={{ flex: 1 }}>
               <Text
                 style={{
-                  
                   color: Colors.black,
                   fontFamily: "OpenSans-SemiBold",
                   fontSize: 13
@@ -387,7 +395,7 @@ class ListCompoment extends Component {
                   }}
                 />
 
-                 <TouchableOpacity style={{ flex: 1 }}>
+                <TouchableOpacity style={{ flex: 1 }}>
                   <Text
                     style={{
                       color: Colors.black,
@@ -407,7 +415,7 @@ class ListCompoment extends Component {
                     height: 10
                   }}
                 />
-                 <TouchableOpacity style={{ flex: 1 }}>
+                <TouchableOpacity style={{ flex: 1 }}>
                   <Text
                     style={{
                       color: Colors.black,
@@ -424,7 +432,6 @@ class ListCompoment extends Component {
                       : "Follow"}
                   </Text>
                 </TouchableOpacity>
-                
               </View>
             </View>
           </View>
@@ -448,7 +455,11 @@ class ListCompoment extends Component {
     );
   }
   render() {
-    if (this.props.tabTitle == "Stream" || this.props.tabTitle == "Friends's Post" || this.props.tabTitle == "Search") {
+    if (
+      this.props.tabTitle == "Stream" ||
+      this.props.tabTitle == "Friends's Post" ||
+      this.props.tabTitle == "Search"
+    ) {
       return (
         <View>
           <FlatList

@@ -20,7 +20,7 @@ class BannerCompoment extends Component {
       avatarSource: ""
     };
   }
-  doRedirect(screen){
+  doRedirect(screen) {
     this.props.navigation.navigate(screen);
   }
   render() {
@@ -31,7 +31,14 @@ class BannerCompoment extends Component {
     ) {
       return (
         <View>
-          <ImageBackground source={Icons.toolbarbg} style={{ height: 180 }}>
+          <ImageBackground
+            source={
+              this.props.cover_image == ""
+                ? Icons.toolbarbg
+                : { uri: this.props.cover_image }
+            }
+            style={{ height: 180 }}
+          >
             <View
               style={{
                 alignItems: "center",
@@ -52,9 +59,9 @@ class BannerCompoment extends Component {
               >
                 <Image
                   source={
-                    this.props.profilePicture == ""
+                    this.props.profile_image == ""
                       ? Icons.messi
-                      : { uri: this.props.profilePicture }
+                      : { uri: this.props.profile_image }
                   }
                   style={{
                     width: 98,
@@ -79,7 +86,7 @@ class BannerCompoment extends Component {
                       textAlign: "center"
                     }}
                   >
-                    JOHN SCHUFFER
+                    {this.props.full_name}
                   </Text>
                   <Text
                     style={{
@@ -89,7 +96,7 @@ class BannerCompoment extends Component {
                       textAlign: "center"
                     }}
                   >
-                    @schufferj
+                    {"@" + this.props.user_name}
                   </Text>
                   <View
                     style={{
@@ -145,7 +152,11 @@ class BannerCompoment extends Component {
       return (
         <View>
           <ImageBackground
-            source={Icons.toolbarbg}
+            source={
+              this.props.cover_image == ""
+                ? Icons.toolbarbg
+                : { uri: this.props.cover_image }
+            }
             style={{ height: 180, backgroundColor: Colors.black }}
           >
             <View
@@ -170,144 +181,163 @@ class BannerCompoment extends Component {
                   width: "100%"
                 }}
               >
-              
-              <View style={{position:'relative',flex:1}}>
+                <View style={{ position: "relative", flex: 1 }}>
+                  <View style={{ position: "relative" }}>
+                    <View style={{ flexDirection: "column", width: "100%" }}>
+                      <View style={{ backgroundColor: "#00000060" }}>
+                        <Text
+                          style={{
+                            textAlign: "center",
+                            color: Colors.white,
+                            fontFamily: "OpenSans-SemiBold",
+                            fontSize: 16,
+                            marginTop: 5,
+                            marginBottom: 5
+                          }}
+                        >
+                          {this.props.full_name}
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          justifyContent: "center",
+                          alignContent: "center",
+                          backgroundColor: Colors.black,
+                          flexDirection: "row"
+                        }}
+                      >
+                        <View
+                          style={{
+                            flex: 1,
+                            padding: 5,
+                            alignItems: "flex-end",
+                            alignContent: "flex-end",
+                            justifyContent: "flex-end"
+                          }}
+                        >
+                          <Text
+                            style={{
+                              textAlign: "center",
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontFamily: "OpenSans-SemiBold"
+                            }}
+                          >
+                            {"@" + this.props.user_name}
+                          </Text>
+                        </View>
+                        <View style={{ flex: 1, padding: 5 }}>
+                          <TouchableOpacity
+                            onPress={() => this.doRedirect("MyCrewScreen")}
+                          >
+                            <Text
+                              style={{
+                                textAlign: "center",
+                                color: Colors.white,
+                                fontFamily: "OpenSans-SemiBold",
+                                fontSize: 16
+                              }}
+                            >
+                              {this.props.crew_count}
+                            </Text>
 
-                <View style={{position:'relative'}}>
-                <View style={{ flexDirection: "column", width: "100%" }}>
-                    <View style={{backgroundColor:'#00000060'}}>
-                    <Text
-                      style={{
-                        textAlign: "center",
-                        color: Colors.white,
-                        fontFamily: "OpenSans-SemiBold",
-                        fontSize: 16,
-                        marginTop: 5,
-                        marginBottom: 5
-                      }}
-                    >
-                      JOHN SCHUFFER
-                    </Text>
+                            <Text
+                              style={{
+                                textAlign: "center",
+                                color: Colors.white,
+                                fontSize: 11,
+                                fontFamily: "OpenSans-SemiBold"
+                              }}
+                            >
+                              Crew
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                        <View style={{ flex: 1, padding: 5 }}>
+                          <TouchableOpacity
+                            onPress={() => this.doRedirect("MyFollowersScreen")}
+                          >
+                            <Text
+                              style={{
+                                textAlign: "center",
+                                color: Colors.white,
+                                fontFamily: "OpenSans-SemiBold",
+                                fontSize: 16
+                              }}
+                            >
+                              {this.props.follower_count}
+                            </Text>
+                            <Text
+                              style={{
+                                textAlign: "center",
+                                color: Colors.white,
+                                fontSize: 11,
+                                fontFamily: "OpenSans-SemiBold"
+                              }}
+                            >
+                              Followers
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                        <View style={{ flex: 1, padding: 5 }}>
+                          <TouchableOpacity
+                            style={{ alignItems: "center" }}
+                            onPress={() => this.doRedirect("EditProfileScreen")}
+                          >
+                            <Image
+                              style={[styles.icon, { width: 20, height: 20 }]}
+                              source={Icons.ic_setting}
+                            />
+
+                            <Text
+                              style={{
+                                textAlign: "center",
+                                color: Colors.white,
+                                fontSize: 11,
+                                fontFamily: "OpenSans-SemiBold",
+                                marginTop: 2
+                              }}
+                            >
+                              Edit Profile
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
                     </View>
+                  </View>
+                  <View
+                    style={{ position: "absolute", width: "100%", bottom: 25 }}
+                  >
                     <View
                       style={{
+                        width: 95,
+                        height: 95,
+                        borderRadius: 47.5,
+                        backgroundColor: "#F8F6F7",
+                        marginStart: 20,
+                        margin: 10,
                         justifyContent: "center",
-                        alignContent: "center",
-                        backgroundColor: Colors.black,
-                        flexDirection: "row"
+                        alignContent: "center"
                       }}
                     >
-                      <View style={{ flex: 1,padding:5 ,alignItems:'flex-end',alignContent:'flex-end',justifyContent:'flex-end'}}>
-                      
-                        <Text
-                    style={{
-                      textAlign: "center",
-                      color: Colors.white,
-                      fontSize: 11,
-                      fontFamily: "OpenSans-SemiBold"
-                    }}
-                  >
-                    @schufferj
-                  </Text>
-                      </View>
-                      <View style={{ flex: 1,padding:5 }}>
-                        <Text
-                          style={{
-                            textAlign: "center",
-                            color: Colors.white,
-                            fontFamily: "OpenSans-SemiBold",
-                            fontSize: 16
-                          }}
-                        >
-                          199
-                        </Text>
-                        <Text
-                          style={{
-                            textAlign: "center",
-                            color: Colors.white,
-                            fontSize: 11,
-                            fontFamily: "OpenSans-SemiBold"
-                          }}
-                        >
-                          Crew
-                        </Text>
-                      </View>
-                      <View style={{ flex: 1,padding:5 }}>
-                        <Text
-                          style={{
-                            textAlign: "center",
-                            color: Colors.white,
-                            fontFamily: "OpenSans-SemiBold",
-                            fontSize: 16
-                          }}
-                        >
-                          109
-                        </Text>
-                        <Text
-                          style={{
-                            textAlign: "center",
-                            color: Colors.white,
-                            fontSize: 11,
-                            fontFamily: "OpenSans-SemiBold"
-                          }}
-                        >
-                          Followers
-                        </Text>
-                      </View>
-                      <View style={{ flex: 1 ,padding:5}}>
-                        <TouchableOpacity style={{alignItems:'center',}} onPress={()=>this.doRedirect("EditProfileScreen")}>
-                        <Image style={[styles.icon,{width:20,height:20}]} source={Icons.ic_setting}/>
-                       
-                       
-                       <Text
-                         style={{
-                           textAlign: "center",
-                           color: Colors.white,
-                           fontSize: 11,
-                           fontFamily: "OpenSans-SemiBold",
-                           marginTop:2,
-                         }}
-                       >
-                         Edit Profile
-                       </Text>
-                        </TouchableOpacity>
-                      </View>
+                      <Image
+                        source={
+                          this.props.profile_image == ""
+                            ? Icons.messi
+                            : { uri: this.props.profile_image }
+                        }
+                        style={{
+                          width: 91,
+                          height: 91,
+                          borderRadius: 45.5,
+                          borderWidth: 1.5,
+                          borderColor: "#D1D0D0",
+                          alignSelf: "center"
+                        }}
+                      />
                     </View>
                   </View>
                 </View>
-                <View style={{position:'absolute',width:'100%',bottom:25}}>
-                <View
-                    style={{
-                      width: 95,
-                      height: 95,
-                      borderRadius: 47.5,
-                      backgroundColor: "#F8F6F7",
-                      marginStart:20,
-                     margin:10,
-                      justifyContent: "center",
-                      alignContent: "center"
-                    }}
-                  >
-                    <Image
-                      source={
-                        this.props.profilePicture == ""
-                          ? Icons.messi
-                          : { uri: this.props.profilePicture }
-                      }
-                      style={{
-                        width: 91,
-                        height: 91,
-                        borderRadius: 45.5,
-                        borderWidth: 1.5,
-                        borderColor: "#D1D0D0",
-                        alignSelf: "center"
-                      }}
-                    />
-                  </View>
-
-                </View>
-              </View>
-              
               </View>
             </View>
           </ImageBackground>
@@ -352,7 +382,12 @@ const customstyles = StyleSheet.create({
 BannerCompoment.propTypes = {
   tabActive: PropTypes.bool,
   tabTitle: PropTypes.string,
-  profilePicture: PropTypes.string,
-  navigation:PropTypes.object
+  full_name: PropTypes.string,
+  profile_image: PropTypes.string,
+  cover_image: PropTypes.string,
+  user_name: PropTypes.string,
+  follower_count: PropTypes.number,
+  crew_count: PropTypes.number,
+  navigation: PropTypes.object
 };
 export default BannerCompoment;
