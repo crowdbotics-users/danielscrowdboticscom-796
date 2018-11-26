@@ -15,11 +15,15 @@ import Icons from "../Resource/Icons";
 import Colors from "../Resource/Colors";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import firebase from "react-native-firebase";
+import { NavigationActions, StackActions } from "react-navigation";
 import type { Notification, NotificationOpen } from "react-native-firebase";
 class LoginTypeScreen extends Component {
   constructor(props) {
     super(props);
     this.getToken();
+    this.state={
+      isProgress: false
+    }
   }
   static navigationOptions = {
     header: null
@@ -109,6 +113,32 @@ class LoginTypeScreen extends Component {
       console.log("fcmToken", fcmToken);
       // user doesn't have a device token yet
     }
+    this.openProgressbar();
+    AsyncStorage.getItem("logged")
+      .then(data => {
+        console.log("AsyncStorage");
+        this.hideProgressbar();
+        if (data != null) {
+          if (data == "true") {
+            this.doFinish("HomePage");
+          }
+        }
+      })
+      .done();
+  }
+  openProgressbar = () => {
+    this.setState({ isProgress: true });
+  };
+  hideProgressbar = () => {
+    this.setState({ isProgress: false });
+  };
+  doFinish(screen) {
+    const resetAction = StackActions.reset({
+      index: 0,
+      key: null,
+      actions: [NavigationActions.navigate({ routeName: screen })]
+    });
+    this.props.navigation.dispatch(resetAction);
   }
   componentWillUnmount() {
     this.notificationDisplayedListener();
@@ -159,7 +189,7 @@ class LoginTypeScreen extends Component {
                 </Text>
               </View>
             </TouchableOpacity>
-
+            <ProgressCompoment isProgress={this.state.isProgress} />
             <TouchableOpacity onPress={this.doRedirect.bind(this, "SignUp1")}>
               <View
                 style={[

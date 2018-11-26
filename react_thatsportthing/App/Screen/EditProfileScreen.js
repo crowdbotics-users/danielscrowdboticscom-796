@@ -9,7 +9,10 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  NetInfo,
+  AsyncStorage,
+  Alert
 } from "react-native";
 import EditProfileHeaderCompoment from "../Compoments/EditProfileHeaderCompoment";
 import editscreenstyle from "../Resource/editscreenstyle";
@@ -17,7 +20,8 @@ import Colors from "../Resource/Colors";
 import styles from "../Resource/Styles";
 import Icons from "../Resource/Icons";
 import ImagePicker from "react-native-image-crop-picker";
-
+import ApiUrl from "../Network/ApiUrl";
+import ProgressCompoment from "../Compoments/ProgressCompoment";
 class EditProfileScreen extends PureComponent {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
@@ -30,11 +34,14 @@ class EditProfileScreen extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      isProgress: false,
       isActiveEveryone: true,
       isActiveYourCrew: false,
       isActiveYourCrewFollower: false,
-      profilePicture:'',
-      coverPicture:'',
+      full_name: "",
+      post_status: "all",
+      profilePicture: "",
+      coverPicture: "",
       favouriteSport: [
         {
           companyname: "ADIDAS",
@@ -81,10 +88,98 @@ class EditProfileScreen extends PureComponent {
       ]
     };
   }
-  doSportClick(data) {
-  //  alert(JSON.stringify(data));
+  componentDidMount() {
+    this.doGetUserInfo();
   }
-  pickSingleProfile(cropit, circular=true) {
+  openProgressbar = () => {
+    this.setState({ isProgress: true });
+  };
+  hideProgressbar = () => {
+    this.setState({ isProgress: false });
+  };
+  doGetUserInfoApi(bodyData) {
+    fetch(ApiUrl.getUserProfile, bodyData)
+      .then(response => response.json())
+      .then(responseJson => {
+        this.hideProgressbar();
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+            const result = responseJson.result;
+          
+            this.hideProgressbar();
+            this.setState({
+              full_name: result.full_name,
+              profilePicture: result.profile_image,
+              coverPicture: result.cover_image,
+              post_status: result.post_status
+            });
+            if (result.post_status == "all") {
+              this.doChangeSeePost("everyone");
+            } else {
+              this.doChangeSeePost("everyone");
+            }
+            break;
+          }
+          case 401: {
+            this.hideProgressbar();
+            alert(message);
+            console.log(message);
+            break;
+          }
+          case 400: {
+            this.hideProgressbar();
+            alert(message);
+            console.log(message);
+            break;
+          }
+        }
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+      });
+  }
+  doGetUserInfo() {
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if (isConnected) {
+        AsyncStorage.getItem("data")
+          .then(data => {
+            console.log("AsyncStorage");
+            if (data != null) {
+              const myData = JSON.parse(data);
+              console.log(data);
+
+              let postData = {
+                method: "GET",
+                headers: {
+                  Accept: "application/json",
+                  Authorization: "Bearer " + myData.token,
+                  "Content-Type": "multipart/form-data"
+                }
+              };
+
+              this.openProgressbar();
+              this.doGetUserInfoApi(postData);
+            } else {
+              console.log(data);
+            }
+          })
+          .done();
+      } else {
+        Alert.alert(
+          "Internet Connection",
+          "Kindly connect to internet then try again"
+        );
+      }
+    });
+  }
+  doSportClick(data) {
+    //  alert(JSON.stringify(data));
+  }
+  pickSingleProfile(cropit, circular = true) {
     ImagePicker.openPicker({
       width: 300,
       height: 300,
@@ -93,21 +188,28 @@ class EditProfileScreen extends PureComponent {
       compressImageMaxWidth: 640,
       compressImageMaxHeight: 640,
       compressImageQuality: 0.5,
-      includeExif: true,
-    }).then(image => {
-      this.setState({
-        profilePicture: image.path
+      includeExif: true
+    })
+      .then(image => {
+        this.setState({
+          profilePicture: image.path
+        });
+        this.setState({
+          image: {
+            uri: image.path,
+            width: image.width,
+            height: image.height,
+            mime: image.mime
+          },
+          images: null
+        });
+      })
+      .catch(e => {
+        console.log(e);
+        alert(e.message ? e.message : e);
       });
-      this.setState({
-        image: {uri: image.path, width: image.width, height: image.height, mime: image.mime},
-        images: null
-      });
-    }).catch(e => {
-      console.log(e);
-      alert(e.message ? e.message : e);
-    });
   }
-  pickSingleCover(cropit, circular=false) {
+  pickSingleCover(cropit, circular = false) {
     ImagePicker.openPicker({
       width: 700,
       height: 300,
@@ -116,19 +218,26 @@ class EditProfileScreen extends PureComponent {
       compressImageMaxWidth: 700,
       compressImageMaxHeight: 700,
       compressImageQuality: 0.5,
-      includeExif: true,
-    }).then(image => {
-      this.setState({
-        coverPicture: image.path
+      includeExif: true
+    })
+      .then(image => {
+        this.setState({
+          coverPicture: image.path
+        });
+        this.setState({
+          image: {
+            uri: image.path,
+            width: image.width,
+            height: image.height,
+            mime: image.mime
+          },
+          images: null
+        });
+      })
+      .catch(e => {
+        console.log(e);
+        alert(e.message ? e.message : e);
       });
-      this.setState({
-        image: {uri: image.path, width: image.width, height: image.height, mime: image.mime},
-        images: null
-      });
-    }).catch(e => {
-      console.log(e);
-      alert(e.message ? e.message : e);
-    });
   }
   pickSingleWithCameraProfile(cropping, circular = true) {
     ImagePicker.openCamera({
@@ -181,23 +290,105 @@ class EditProfileScreen extends PureComponent {
   doChangeSeePost(screen) {
     if (screen == "everyone") {
       this.setState({
+        post_status: "all",
         isActiveEveryone: true,
         isActiveYourCrew: false,
         isActiveYourCrewFollower: false
       });
     } else if (screen == "yourcrew") {
       this.setState({
+        post_status: "all",
         isActiveEveryone: false,
         isActiveYourCrew: true,
         isActiveYourCrewFollower: false
       });
     } else if (screen == "yourcrewfollower") {
       this.setState({
+        post_status: "all",
         isActiveEveryone: false,
         isActiveYourCrew: false,
         isActiveYourCrewFollower: true
       });
     }
+  }
+  doUpdateProfile() {
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if (isConnected) {
+        AsyncStorage.getItem("data")
+          .then(data => {
+            console.log("AsyncStorage");
+            if (data != null) {
+              const myData = JSON.parse(data);
+              const bodyData = new FormData();
+              bodyData.append("profile_image", {
+                uri: this.state.profilePicture,
+                type: "image/jpeg",
+                name: "image1"
+              });
+              bodyData.append("cover_image", {
+                uri: this.state.coverPicture,
+                type: "image/jpeg",
+                name: "image1"
+              });
+              bodyData.append("name", this.state.full_name);
+              bodyData.append("post_status", this.state.post_status);
+            
+              this.openProgressbar();
+              this.doUpdateUserInfoApi(bodyData,myData.token);
+            } else {
+              console.log(data);
+            }
+          })
+          .done();
+      } else {
+        Alert.alert(
+          "Internet Connection",
+          "Kindly connect to internet then try again"
+        );
+      }
+    });
+  }
+  doUpdateUserInfoApi(bodyData,token) {
+    fetch(ApiUrl.editUserProfile, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data",
+        Authorization: "Bearer " + token,
+      },
+      body: bodyData
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        this.hideProgressbar();
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+           
+            this.props.navigation.goBack(null);
+            break;
+          }
+          case 401: {
+            this.hideProgressbar();
+            alert(message);
+            console.log(message);
+            break;
+          }
+          case 400: {
+            this.hideProgressbar();
+            alert(message);
+            console.log(message);
+            break;
+          }
+        }
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+        alert(error);
+      });
   }
   renderItem(data) {
     console.log(data);
@@ -205,7 +396,7 @@ class EditProfileScreen extends PureComponent {
       <View>
         <TouchableOpacity onPress={() => this.doSportClick(data)}>
           <Image
-            source={Icons.ball10}
+            source={data.image}
             style={{ width: 50, height: 50, margin: 5 }}
           />
         </TouchableOpacity>
@@ -217,6 +408,7 @@ class EditProfileScreen extends PureComponent {
       <View style={editscreenstyle.main}>
         <ScrollView bounces={false} alwaysBounceVertical={false}>
           <View style={{ flex: 1 }}>
+            <ProgressCompoment isProgress={this.state.isProgress} />
             <View style={{ marginStart: 10, marginEnd: 10 }}>
               <Text
                 style={{
@@ -245,10 +437,14 @@ class EditProfileScreen extends PureComponent {
                     marginEnd: 5,
                     fontFamily: "OpenSans-Bold"
                   }}
+                  value={this.state.full_name}
                   selectionColor={Colors.black}
                   placeholderTextColor={Colors.black}
                   underlineColorAndroid={Colors.transparent}
-                  placeholder="JOHN SCHUFFER"
+                  placeholder="Your Name"
+                  onChangeText={full_name =>
+                    this.setState({ full_name: full_name })
+                  }
                 />
               </View>
               <Text
@@ -308,7 +504,11 @@ class EditProfileScreen extends PureComponent {
                   }}
                 >
                   <Image
-                    source={this.state.profilePicture==""?Icons.messi:{uri:this.state.profilePicture}}
+                    source={
+                      this.state.profilePicture == ""
+                        ? Icons.messi
+                        : { uri: this.state.profilePicture }
+                    }
                     style={{
                       width: 68,
                       height: 68,
@@ -335,7 +535,7 @@ class EditProfileScreen extends PureComponent {
                   }}
                 >
                   <TouchableOpacity
-                  onPress={()=>this.pickSingleWithCameraProfile(true,true)}
+                    onPress={() => this.pickSingleWithCameraProfile(true, true)}
                     style={{
                       flex: 1
                     }}
@@ -418,7 +618,7 @@ class EditProfileScreen extends PureComponent {
                   }}
                 >
                   <TouchableOpacity
-                  onPress={()=>this.pickSingleProfile(true,true)}
+                    onPress={() => this.pickSingleProfile(true, true)}
                     style={{
                       flex: 1
                     }}
@@ -465,7 +665,7 @@ class EditProfileScreen extends PureComponent {
                     marginStart: 10,
                     marginEnd: 10,
                     fontFamily: "OpenSans-SemiBold",
-                    fontSize: 12,
+                    fontSize: 12
                   }}
                 >
                   Change your cover picture
@@ -484,7 +684,11 @@ class EditProfileScreen extends PureComponent {
                   }}
                 >
                   <Image
-                    source={this.state.coverPicture==""?Icons.toolbarbg:{uri:this.state.coverPicture}}
+                    source={
+                      this.state.coverPicture == ""
+                        ? Icons.toolbarbg
+                        : { uri: this.state.coverPicture }
+                    }
                     style={{
                       width: 68,
                       height: 68,
@@ -511,7 +715,7 @@ class EditProfileScreen extends PureComponent {
                   }}
                 >
                   <TouchableOpacity
-                  onPress={()=>this.pickSingleWithCameraCover(true,false)}
+                    onPress={() => this.pickSingleWithCameraCover(true, false)}
                     style={{
                       flex: 1
                     }}
@@ -594,7 +798,7 @@ class EditProfileScreen extends PureComponent {
                   }}
                 >
                   <TouchableOpacity
-                   onPress={()=>this.pickSingleCover(true,false)}
+                    onPress={() => this.pickSingleCover(true, false)}
                     style={{
                       flex: 1
                     }}
@@ -650,12 +854,13 @@ class EditProfileScreen extends PureComponent {
               You can choose up to 6 sports
             </Text>
             <FlatList
+              style={{ alignSelf: "center" }}
               horizontal={true}
               showsVerticalScrollIndicator={false}
               alwaysBounceVertical={false}
               bounces={false}
               data={this.state.favouriteSport}
-              renderItem={(item, index) => this.renderItem(item)}
+              renderItem={({ item, index }) => this.renderItem(item)}
               keyExtractor={item => item}
             />
             <TouchableOpacity>
@@ -713,19 +918,69 @@ class EditProfileScreen extends PureComponent {
                 }
               ]}
             >
-              <TouchableOpacity onPress={()=>this.doChangeSeePost("everyone")}>
-                <Text style={this.state.isActiveEveryone?editscreenstyle.activeEveryone:editscreenstyle.InActiveEveryone}>Eeveryone</Text>
+              <TouchableOpacity
+                onPress={() => this.doChangeSeePost("everyone")}
+              >
+                <Text
+                  style={
+                    this.state.isActiveEveryone
+                      ? editscreenstyle.activeEveryone
+                      : editscreenstyle.InActiveEveryone
+                  }
+                >
+                  Eeveryone
+                </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={()=>this.doChangeSeePost("yourcrew")} style={{marginStart:5,marginEnd:5}}>
-                <Text style={this.state.isActiveYourCrew?editscreenstyle.activeYourCrew:editscreenstyle.InActiveYourCrew}>Your Crew</Text>
+              <TouchableOpacity
+                onPress={() => this.doChangeSeePost("yourcrew")}
+                style={{ marginStart: 5, marginEnd: 5 }}
+              >
+                <Text
+                  style={
+                    this.state.isActiveYourCrew
+                      ? editscreenstyle.activeYourCrew
+                      : editscreenstyle.InActiveYourCrew
+                  }
+                >
+                  Your Crew
+                </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={()=>this.doChangeSeePost("yourcrewfollower")}>
-                <Text style={this.state.isActiveYourCrewFollower?editscreenstyle.activeYourCrewFollower:editscreenstyle.InActiveYourCrewFollower}>Your Crew & Follower</Text>
+              <TouchableOpacity
+                onPress={() => this.doChangeSeePost("yourcrewfollower")}
+              >
+                <Text
+                  style={
+                    this.state.isActiveYourCrewFollower
+                      ? editscreenstyle.activeYourCrewFollower
+                      : editscreenstyle.InActiveYourCrewFollower
+                  }
+                >
+                  Your Crew & Follower
+                </Text>
               </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={{backgroundColor:"#6da82a"}}>
-                <Text style={{flex:1,fontFamily:'OpenSans-Bold',color:Colors.white,textAlign:'center',padding:5}}>SAVE CHANGES !</Text>
+            <TouchableOpacity
+            onPress={()=>this.doUpdateProfile()}
+              style={{
+                backgroundColor: "#6da82a",
+                height: 40,
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center"
+              }}
+            >
+              <Text
+                style={{
+                  flex: 1,
+                  fontFamily: "OpenSans-Bold",
+                  color: Colors.white,
+                  textAlign: "center",
+                  padding: 5
+                }}
+              >
+                SAVE CHANGES!
+              </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

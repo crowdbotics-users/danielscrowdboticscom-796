@@ -6,6 +6,15 @@ const ApiUrl = {
   registerUrl: BASE_URL + "users/register",
   forgotPasswordUrl: BASE_URL + "users/register",
   updatePasswordUrl: BASE_URL + "users/register",
+  getUserProfile: BASE_URL + "users/edit_profile_data",
+  editUserProfile: BASE_URL + "users/post_profile_data",
+  getCommentsList: BASE_URL + "users/posts/view_comment_all_message",
+  addComment: BASE_URL + "users/posts/add_comment",
+  addPost: BASE_URL + "users/posts/add_post",
+  likePost: BASE_URL + "users/posts/add_like",
+  followUser: BASE_URL + "users/add_follower",
+  sendRequest: BASE_URL + "users/requests/send_request",
+  getPosts: BASE_URL + "users/posts/list",
 };
 
 export default ApiUrl;

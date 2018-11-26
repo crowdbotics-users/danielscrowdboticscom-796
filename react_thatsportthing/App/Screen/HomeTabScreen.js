@@ -14,7 +14,10 @@ import {
   SafeAreaView,
   ActivityIndicator,
   StatusBar,
-  FlatList
+  FlatList,
+  AsyncStorage,
+  NetInfo,
+  Alert
 } from "react-native";
 import Colors from "../Resource/Colors";
 import Icons from "../Resource/Icons";
@@ -27,6 +30,8 @@ import hometabstyles from "../Resource/hometabstyles";
 import WritePostCompoment from "../Compoments/WritePostCompoment";
 import CollapseView from "react-native-collapse-view";
 import searchtabstyles from "../Resource/searchtabstyles";
+import ApiUrl from "../Network/ApiUrl";
+import ProgressCompoment from "../Compoments/ProgressCompoment";
 
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
@@ -42,6 +47,14 @@ class HomeTabScreen extends Component {
     super(props);
 
     this.state = {
+      isProgress: false,
+      full_name: "",
+      profile_image: "",
+      cover_image: "",
+      follower_count: 0,
+      crew_count: 0,
+      post_count: 0,
+      user_name: "",
       tabTitle: "Stream",
       columnCount: 1,
       isStreamActive: true,
@@ -96,6 +109,7 @@ class HomeTabScreen extends Component {
         }
       ],
       filteredData: [],
+      postData:[],
       dataSource1: [
         {
           name: "Mason SCHUFFER",
@@ -244,6 +258,79 @@ class HomeTabScreen extends Component {
     this.setState({
       isLoading: false
     });
+    this.getPostList();
+  }
+  getPostList(){
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if (isConnected) {
+        AsyncStorage.getItem("data")
+          .then(data => {
+            console.log("AsyncStorage");
+            if (data != null) {
+              const myData = JSON.parse(data);
+              console.log(data);
+
+              let postData = {
+                method: "GET",
+                headers: {
+                  Accept: "application/json",
+                  Authorization: "Bearer " + myData.token,
+                  "Content-Type": "multipart/form-data"
+                }
+              };
+
+              this.openProgressbar();
+              this.getPostListApi(postData);
+            } else {
+              console.log(data);
+            }
+          })
+          .done();
+      } else {
+        Alert.alert(
+          "Internet Connection",
+          "Kindly connect to internet then try again"
+        );
+      }
+    });
+  }
+  getPostListApi(bodyData) {
+    fetch(ApiUrl.getPosts, bodyData)
+      .then(response => response.json())
+      .then(responseJson => {
+        this.hideProgressbar();
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+            const result = responseJson.result;
+          
+            this.hideProgressbar();
+            this.setState({
+              dataSource1: result.data
+            });
+            
+            break;
+          }
+          case 401: {
+            this.hideProgressbar();
+            alert(message);
+            console.log(message);
+            break;
+          }
+          case 400: {
+            this.hideProgressbar();
+            alert(message);
+            console.log(message);
+            break;
+          }
+        }
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+      });
   }
   renderRow(data) {
     return (
@@ -254,6 +341,94 @@ class HomeTabScreen extends Component {
         />
       </View>
     );
+  }
+  componentDidMount() {
+    this.doGetUserInfo();
+  }
+  openProgressbar = () => {
+    this.setState({ isProgress: true });
+  };
+  hideProgressbar = () => {
+    this.setState({ isProgress: false });
+  };
+  doGetUserInfoApi(bodyData) {
+    fetch(ApiUrl.getUserProfile, bodyData)
+      .then(response => response.json())
+      .then(responseJson => {
+        this.hideProgressbar();
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+            const result = responseJson.result;
+
+            this.hideProgressbar();
+            this.setState({
+              full_name: result.full_name,
+              profilePicture: result.profile_image,
+              coverPicture: result.cover_image,
+              post_status: result.post_status,
+              follower_count: result.follower_count,
+              crew_count: result.crew_count,
+              post_count: result.post_count,
+              user_name: result.user_name
+            });
+
+            break;
+          }
+          case 401: {
+            this.hideProgressbar();
+            alert(message);
+            console.log(message);
+            break;
+          }
+          case 400: {
+            this.hideProgressbar();
+            alert(message);
+            console.log(message);
+            break;
+          }
+        }
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+      });
+  }
+  doGetUserInfo() {
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if (isConnected) {
+        AsyncStorage.getItem("data")
+          .then(data => {
+            console.log("AsyncStorage");
+            if (data != null) {
+              const myData = JSON.parse(data);
+              console.log(data);
+
+              let postData = {
+                method: "GET",
+                headers: {
+                  Accept: "application/json",
+                  Authorization: "Bearer " + myData.token,
+                  "Content-Type": "multipart/form-data"
+                }
+              };
+
+              this.openProgressbar();
+              this.doGetUserInfoApi(postData);
+            } else {
+              console.log(data);
+            }
+          })
+          .done();
+      } else {
+        Alert.alert(
+          "Internet Connection",
+          "Kindly connect to internet then try again"
+        );
+      }
+    });
   }
   doSearchChangeTab(tabName) {
     if (tabName == "people") {
@@ -410,30 +585,115 @@ class HomeTabScreen extends Component {
         <Text style={{ color: Colors.white, fontFamily: "OpenSans-SemiBold" }}>
           Search for..
         </Text>
-        <View style={[styles.row,{marginTop:5}]}>
-          <TouchableOpacity style={{ flex: 1 }} onPress={()=>this.doSearchChangeTab("people")}>
-            <View style={this.state.isPeopleActive?searchtabstyles.PeopleActiveTab:searchtabstyles.PeopleInactiveTab}>
-              <Text style={this.state.isPeopleActive?searchtabstyles.PeopleActiveTabText:searchtabstyles.PeopleInactiveTabText}>People</Text>
+        <View style={[styles.row, { marginTop: 5 }]}>
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            onPress={() => this.doSearchChangeTab("people")}
+          >
+            <View
+              style={
+                this.state.isPeopleActive
+                  ? searchtabstyles.PeopleActiveTab
+                  : searchtabstyles.PeopleInactiveTab
+              }
+            >
+              <Text
+                style={
+                  this.state.isPeopleActive
+                    ? searchtabstyles.PeopleActiveTabText
+                    : searchtabstyles.PeopleInactiveTabText
+                }
+              >
+                People
+              </Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={{ flex: 1 }} onPress={()=>this.doSearchChangeTab("post")}>
-            <View style={this.state.isPostActive?searchtabstyles.PostActiveTab:searchtabstyles.PostInactiveTab}>
-              <Text style={this.state.isPostActive?searchtabstyles.PostActiveTabText:searchtabstyles.PostInactiveTabText}>Post</Text>
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            onPress={() => this.doSearchChangeTab("post")}
+          >
+            <View
+              style={
+                this.state.isPostActive
+                  ? searchtabstyles.PostActiveTab
+                  : searchtabstyles.PostInactiveTab
+              }
+            >
+              <Text
+                style={
+                  this.state.isPostActive
+                    ? searchtabstyles.PostActiveTabText
+                    : searchtabstyles.PostInactiveTabText
+                }
+              >
+                Post
+              </Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={{ flex: 1 }} onPress={()=>this.doSearchChangeTab("sport")}>
-            <View style={this.state.isSportActive?searchtabstyles.SportActiveTab:searchtabstyles.SportInactiveTab}>
-              <Text style={this.state.isSportActive?searchtabstyles.SportActiveTabText:searchtabstyles.SportInactiveTabText}>Sport</Text>
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            onPress={() => this.doSearchChangeTab("sport")}
+          >
+            <View
+              style={
+                this.state.isSportActive
+                  ? searchtabstyles.SportActiveTab
+                  : searchtabstyles.SportInactiveTab
+              }
+            >
+              <Text
+                style={
+                  this.state.isSportActive
+                    ? searchtabstyles.SportActiveTabText
+                    : searchtabstyles.SportInactiveTabText
+                }
+              >
+                Sport
+              </Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={{ flex: 1 }} onPress={()=>this.doSearchChangeTab("page")}>
-            <View style={this.state.isPageActive?searchtabstyles.PageActiveTab:searchtabstyles.PageInactiveTab}>
-              <Text style={this.state.isPageActive?searchtabstyles.PageActiveTabText:searchtabstyles.PageInactiveTabText}>Page</Text>
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            onPress={() => this.doSearchChangeTab("page")}
+          >
+            <View
+              style={
+                this.state.isPageActive
+                  ? searchtabstyles.PageActiveTab
+                  : searchtabstyles.PageInactiveTab
+              }
+            >
+              <Text
+                style={
+                  this.state.isPageActive
+                    ? searchtabstyles.PageActiveTabText
+                    : searchtabstyles.PageInactiveTabText
+                }
+              >
+                Page
+              </Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={{ flex: 1 }} onPress={()=>this.doSearchChangeTab("location")}>
-            <View style={this.state.isLocationActive?searchtabstyles.LocationActiveTab:searchtabstyles.LocationInactiveTab}>
-              <Text style={this.state.isLocationActive?searchtabstyles.LocationActiveTabText:searchtabstyles.LocationInactiveTabText}>Location</Text>
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            onPress={() => this.doSearchChangeTab("location")}
+          >
+            <View
+              style={
+                this.state.isLocationActive
+                  ? searchtabstyles.LocationActiveTab
+                  : searchtabstyles.LocationInactiveTab
+              }
+            >
+              <Text
+                style={
+                  this.state.isLocationActive
+                    ? searchtabstyles.LocationActiveTabText
+                    : searchtabstyles.LocationInactiveTabText
+                }
+              >
+                Location
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -473,9 +733,17 @@ class HomeTabScreen extends Component {
           <View>
             <BannerCompoment
               tabTitle={this.state.tabTitle}
-              profilePicture={this.state.avatarSource}
+              
               navigation={this.props.navigation}
+              full_name={this.state.full_name}
+              profile_image={this.state.profile_image}
+              cover_image={this.state.cover_image}
+              user_name={this.state.user_name}
+              follower_count={this.state.follower_count}
+              crew_count={this.state.crew_count}
             />
+
+            <ProgressCompoment isProgress={this.state.isProgress}/>
           </View>
           <View>
             <View
@@ -684,7 +952,7 @@ const customstyles = StyleSheet.create({
     paddingTop: 10,
     paddingStart: 10,
     paddingEnd: 10,
-    height:70
+    height: 70
   }
 });
 export default HomeTabScreen;
