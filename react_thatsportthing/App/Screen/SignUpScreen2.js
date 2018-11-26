@@ -15,9 +15,9 @@ class SignUpScreen2 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userName: "ishan.v",
-      password: "123456",
-      cpassword: "123456"
+      userName: "",
+      password: "",
+      cpassword: ""
     };
   }
   static navigationOptions = {
@@ -89,7 +89,7 @@ class SignUpScreen2 extends Component {
               keyboardType="ascii-capable"
               placeholder={"User name"}
               placeholderTextColor={Colors.colorEdittext}
-              selectionColor={Colors.colorEdittext}
+            
               underlineColorAndroid={Colors.transparent}
               returnKeyType="next"
             />
@@ -122,7 +122,7 @@ class SignUpScreen2 extends Component {
               secureTextEntry={true}
               placeholder={"Password"}
               placeholderTextColor={Colors.colorEdittext}
-              selectionColor={Colors.colorEdittext}
+             
               underlineColorAndroid={Colors.transparent}
               returnKeyType="next"
             />
@@ -157,7 +157,7 @@ class SignUpScreen2 extends Component {
               secureTextEntry={true}
               placeholder={"Confirm Password"}
               placeholderTextColor={Colors.colorEdittext}
-              selectionColor={Colors.colorEdittext}
+             
               underlineColorAndroid={Colors.transparent}
               returnKeyType="done"
             />

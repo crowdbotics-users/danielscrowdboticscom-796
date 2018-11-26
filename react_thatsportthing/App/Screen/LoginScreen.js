@@ -23,10 +23,22 @@ class LoginScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userName: "ishan.v@gmail.com",
-      password: "123456789",
+      userName: "",
+      password: "",
       isProgress: false
     };
+    this.getToken();
+  }
+  async getToken() {
+    const fcmToken = await firebase.messaging().getToken();
+
+    if (fcmToken) {
+      console.log("fcmToken", fcmToken);
+      AsyncStorage.setItem("token", fcmToken);
+    } else {
+      console.log("fcmToken", fcmToken);
+      // user doesn't have a device token yet
+    }
   }
   static navigationOptions = {
     header: null
@@ -179,7 +191,7 @@ class LoginScreen extends Component {
               keyboardType="email-address"
               placeholder={"Email Address"}
               placeholderTextColor={Colors.colorEdittext}
-              selectionColor={Colors.colorEdittext}
+             
               underlineColorAndroid={Colors.transparent}
               returnKeyType="next"
             />
@@ -212,7 +224,7 @@ class LoginScreen extends Component {
               placeholder={"Password"}
               value={this.state.password}
               placeholderTextColor={Colors.colorEdittext}
-              selectionColor={Colors.colorEdittext}
+             
               underlineColorAndroid={Colors.transparent}
               returnKeyType="done"
             />

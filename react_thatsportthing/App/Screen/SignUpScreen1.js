@@ -16,8 +16,8 @@ class SignUpScreen1 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      fullName: "Ishan Vyas",
-      EmailAddress: "ishan.v@gmail.com",
+      fullName: "",
+      EmailAddress: "",
       dateOfBirth: "DATE OF BIRTH",
       isDateTimePickerVisible: false,
       postDob:""
@@ -75,7 +75,7 @@ class SignUpScreen1 extends Component {
 
   _handleDatePicked = date => {
     this.setState({ dateOfBirth: Moment(date).format("DD/MM/YYYY") });
-    this.setState({ postDob: Moment(date).format("YYYY/MM/DD") });
+    this.setState({ postDob: Moment(date).format("YYYY-MM-DD") });
     this._hideDateTimePicker();
   };
   render() {
@@ -107,7 +107,7 @@ class SignUpScreen1 extends Component {
               keyboardType="ascii-capable"
               placeholder={"FULL NAME"}
               placeholderTextColor={Colors.colorEdittext}
-              selectionColor={Colors.colorEdittext}
+             
               underlineColorAndroid={Colors.transparent}
               returnKeyType='next'
             />
@@ -141,7 +141,7 @@ class SignUpScreen1 extends Component {
               keyboardType="email-address"
               placeholder={"EMAIL ADDRESS"}
               placeholderTextColor={Colors.colorEdittext}
-              selectionColor={Colors.colorEdittext}
+             
               underlineColorAndroid={Colors.transparent}
               returnKeyType='done'
             />
@@ -179,7 +179,7 @@ class SignUpScreen1 extends Component {
                 editable={false}
                 placeholder={"DATE OF BIRTH"}
                 placeholderTextColor={Colors.colorEdittext}
-                selectionColor={Colors.colorEdittext}
+             
                 underlineColorAndroid={Colors.transparent}
               >
                 {this.state.dateOfBirth}
