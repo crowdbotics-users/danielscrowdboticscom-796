@@ -2,11 +2,13 @@ import React, { Component } from "react";
 import { createDrawerNavigator, createStackNavigator } from "react-navigation";
 import { View, Text, TouchableOpacity } from "react-native";
 import styles from "../Resource/Styles";
-import Color from "../Resource/Colors";
+
 import DrawerContent from "../Compoments/DrawerContent";
 import HomeTabScreen from "./HomeTabScreen";
 import ProfileScreen from "./ProfileScreen";
 import MyCrewScreen from "./MyCrewScreen";
+
+import Colors from "../Resource/Colors";
 
 const HomePageNavigator = createStackNavigator({
   HomeTabScreen: {
@@ -41,11 +43,11 @@ const HomePage = createDrawerNavigator(
     drawerOpenRoute: "DrawerOpen",
     drawerCloseRoute: "DrawerClose",
     drawerToggleRoute: "DrawerToggle",
-    drawerBackgroundColor: Color.navBg,
+    drawerBackgroundColor: Colors.navBg,
     contentOptions: {
-      activeTintColor: Color.white,
+      activeTintColor: Colors.white,
       labelStyle: {
-        color: Color.white
+        color: Colors.white
       }
     }
   }

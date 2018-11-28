@@ -12,13 +12,17 @@ import {
   ListView,
   Platform,
   SafeAreaView,
-  ActivityIndicator
+  ActivityIndicator,
+  NetInfo,
+  Alert,
+  AsyncStorage
 } from "react-native";
 import Colors from "../Resource/Colors";
 import Icons from "../Resource/Icons";
 import styles from "../Resource/Styles";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import { NavigationActions, StackActions } from "react-navigation";
+import ApiUrl from "../Network/ApiUrl";
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
 class ForgotPasswordScreen extends Component {
@@ -32,24 +36,87 @@ class ForgotPasswordScreen extends Component {
       isProgress: false
     };
   }
-  doBack(){
+  doBack() {
     this.props.navigation.goBack();
   }
-  doForgot(screen){
-    const {navigate}=this.props.navigation;
+  doForgot(screen) {
+    const { navigate } = this.props.navigation;
     if (this.state.email == "") {
       alert("Enter Email");
       this.refs.email.focus();
-    }else if (!this.doValidEmail(this.state.email)) {
+    } else if (!this.doValidEmail(this.state.email)) {
       this.refs.email.focus();
       alert("Enter Valid Email Address");
-    }else {
-      this.openProgressbar();
-      setTimeout(() => {
-        this.hideProgressbar();
-        navigate(screen);
-      }, 500);
+    } else {
+      NetInfo.isConnected.fetch().then(isConnected => {
+        if (isConnected) {
+          const bodyData = JSON.stringify({
+            email: this.state.email
+          });
+
+          this.openProgressbar();
+          this.doForgotApi(bodyData, screen);
+        } else {
+          Alert.alert(
+            "Internet Connection",
+            "Kindly connect to internet then try again"
+          );
+        }
+      });
     }
+  }
+  doRedirect(screen, data) {
+    const { navigate } = this.props.navigation;
+    navigate(screen,{data:data})
+  }
+  doForgotApi(bodyData, screen) {
+    const { navigate } = this.props.navigation;
+    fetch(ApiUrl.forgotPasswordUrl, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: bodyData
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        this.hideProgressbar();
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+         
+            const result = responseJson.result;
+            const data = {
+              id: result.id,
+              email: result.email,
+              full_name: result.full_name,
+              profile_image: result.profile_image,
+            };
+  
+            this.doRedirect(screen,data);
+            break;
+          }
+          case 401: {
+            
+            alert(message);
+
+            break;
+          }
+          case 400: {
+         
+            alert(message);
+
+            break;
+          }
+        }
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+      });
   }
   doValidEmail(email) {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -131,7 +198,7 @@ class ForgotPasswordScreen extends Component {
             >
               WILL EXPIRE AFTER 15 MINUTES.
             </Text>
-            <View style={{ marginTop: 40, flex:1 }}>
+            <View style={{ marginTop: 40, flex: 1 }}>
               <TextInput
                 ref={"email"}
                 onChangeText={email => this.setState({ email: email })}
@@ -164,14 +231,16 @@ class ForgotPasswordScreen extends Component {
             </View>
             <ProgressCompoment isProgress={this.state.isProgress} />
 
-            <TouchableOpacity onPress={()=>this.doForgot('OneTimePasswordScreen')} style={{flex:0.25}}>
+            <TouchableOpacity
+              onPress={() => this.doForgot("OneTimePasswordScreen")}
+              style={{ flex: 0.25 }}
+            >
               <View
                 style={{
                   alignContent: "flex-end",
                   backgroundColor: Colors.bgHeader,
                   alignItems: "center",
-                  borderRadius: 10,
-                
+                  borderRadius: 10
                 }}
               >
                 <Text
@@ -187,14 +256,14 @@ class ForgotPasswordScreen extends Component {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>this.doBack()}>
+            <TouchableOpacity onPress={() => this.doBack()}>
               <View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
                   borderRadius: 10,
                   marginTop: 10,
-                  marginBottom: 10,
+                  marginBottom: 10
                 }}
               >
                 <Text

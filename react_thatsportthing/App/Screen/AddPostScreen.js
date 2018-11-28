@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   NetInfo,
   AsyncStorage,
-  Alert
+  Alert,SafeAreaView
 } from "react-native";
 import AddPostHeaderCompoment from "../Compoments/AddPostHeaderCompoment";
 import styles from "../Resource/Styles";

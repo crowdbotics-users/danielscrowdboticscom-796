@@ -17,13 +17,14 @@ import Icons from "../Resource/Icons";
 import GridView from "react-native-gridview";
 import Moment from "moment";
 class ListCompoment extends Component {
-  doRedirect(data) {
-    this.props.navigation.navigate("ProfileScreen", { data: data });
+  doRedirect(screen,data) {
+    this.props.navigation.navigate(screen, { data: data });
   }
   doCommentList(data) {
     this.props.navigation.navigate("CommentListScreen", { data: data });
   }
   renderStream(data) {
+      
     return (
       <SafeAreaView>
         <View
@@ -53,7 +54,7 @@ class ListCompoment extends Component {
               }}
             >
               <Image
-                source={data.image}
+                source={data.users.profile_image==""?Icons.messi:{uri:data.users.profile_image}}
                 style={{
                   width: 34,
                   height: 34,
@@ -65,7 +66,7 @@ class ListCompoment extends Component {
               />
             </View>
             <TouchableOpacity
-              onPress={() => this.doRedirect(data)}
+              onPress={() => this.doRedirect("UserProfileScreen",data)}
               style={{ flex: 1 }}
             >
               <Text
@@ -76,7 +77,7 @@ class ListCompoment extends Component {
                   marginStart: 5
                 }}
               >
-                {JSON.stringify(data.users)}
+                {data.users.full_name}
               </Text>
             </TouchableOpacity>
             <Text
@@ -113,7 +114,7 @@ class ListCompoment extends Component {
             ]}
           >
             <Image
-              source={Icons.ic_like}
+              source={data.is_like?Icons.ic_like:Icons.ic_dislike}
               style={{
                 width: 20,
                 height: 20
@@ -167,7 +168,7 @@ class ListCompoment extends Component {
           style={[
             styles.column,
             styles.card,
-            { alignItems: "center", marginBottom: 8, borderRadius: 10 }
+            { alignItems: "center", marginBottom: 8, borderRadius: 0 }
           ]}
         >
           <View
@@ -454,6 +455,16 @@ class ListCompoment extends Component {
       </View>
     );
   }
+  renderEmpty(){
+    return(<View>
+      <Text style={{
+                      color: Colors.white,
+                      fontFamily: "OpenSans-SemiBold",
+                      fontSize: 11,
+                      textAlign:'center'
+                    }}>No Data Found</Text>
+    </View>);
+  }
   render() {
     if (
       this.props.tabTitle == "Stream" ||
@@ -468,10 +479,10 @@ class ListCompoment extends Component {
             bounces={false}
             numColumns={this.props.columns}
             style={{ marginTop: 5 }}
-            data={this.props.data}
+            data={this.props.streams}
             renderItem={({ item, index }) => this.renderStream(item)}
-            keyExtractor={item => item}
-            nestedScrollEnabled={false}
+            keyExtractor={ (item, index) => index.toString()}
+           ListEmptyComponent={this.renderEmpty()}
           />
         </View>
       );
@@ -509,7 +520,7 @@ class ListCompoment extends Component {
             style={{ marginTop: 8, marginLeft: 8, marginRight: 8 }}
             data={this.props.data}
             renderItem={({ item, index }) => this.renderFriends(item)}
-            keyExtractor={item => item}
+            keyExtractor={ (item, index) => index.toString()}
             nestedScrollEnabled={false}
           />
         </View>
@@ -525,7 +536,7 @@ class ListCompoment extends Component {
             style={{ marginTop: 5 }}
             data={this.props.data}
             renderItem={({ item, index }) => this.renderPost(item)}
-            keyExtractor={item => item}
+            keyExtractor={ (item, index) => index.toString()}
             nestedScrollEnabled={false}
           />
         </View>
@@ -559,7 +570,9 @@ const Liststyles = StyleSheet.create({
 ListCompoment.propTypes = {
   tabTitle: PropTypes.string,
   columns: PropTypes.number,
-  data: PropTypes.object,
+  data: PropTypes.array,
+  streams: PropTypes.array,
+  posts: PropTypes.array,
   noData: PropTypes.bool,
   navigation: PropTypes.object
 };

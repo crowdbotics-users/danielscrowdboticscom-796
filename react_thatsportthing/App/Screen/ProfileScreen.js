@@ -27,7 +27,7 @@ import {
   PagerDotIndicator,
   ViewPager
 } from "rn-viewpager";
-import BannerCompoment from "../Compoments/BannerCompoment";
+import ProfileBannerCompoment from "../Compoments/ProfileBannerCompoment";
 import tabstyles from "../Resource/tabstyles";
 import friendstabstyles from "../Resource/friendstabstyles";
 import picturetabstyles from "../Resource/picturetabstyles";
@@ -39,7 +39,7 @@ class ProfileScreen extends Component {
     const { params = {} } = navigation.state;
 
     return {
-      header: props => <HamburgerIcon {...props} props={navigation} />
+      header: props => <HamburgerIcon {...props} props={navigation} isProfile={true}/>
     };
   };
   constructor(props) {
@@ -47,7 +47,7 @@ class ProfileScreen extends Component {
 
     this.state = {
       noData: false,
-      tabTitle: "Posts",
+      tabTitle: "P",
       columnCount: 1,
       isAllFriends: true,
       isMutualFriends: false,
@@ -102,156 +102,13 @@ class ProfileScreen extends Component {
         }
       ],
       filteredData: [],
-      dataSource1: [
-        {
-          name: "Mason SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Jacob SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 2,
-          followstatus: 1
-        },
-        {
-          name: "William SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Ethan SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "James SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1
-        },
-        {
-          name: "Alexander SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Michael SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Benjamin SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Elijah SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Daniel SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        }
-      ]
+      postData: [],
+      
     };
-    this.setState({ filteredData: this.state.dataSource1 });
+  
   }
 
-  componentWillMount() {
-    this.setState({
-      isLoading: false
-    });
-  }
+  
   renderRow(data) {
     return (
       <View style={[styles.row, { alignItems: "center" }]}>
@@ -337,13 +194,13 @@ class ProfileScreen extends Component {
   }
   searchText = e => {
     let text = e.toLowerCase();
-    let trucks = this.state.dataSource1;
+    let trucks = this.state.postData;
     let filteredName = trucks.filter(item => {
       return item.name.toLowerCase().match(text);
     });
     if (!text || text === "") {
       this.setState({
-        filteredData: this.state.dataSource1
+        filteredData: this.state.postData
       });
     } else if (!Array.isArray(filteredName) && !filteredName.length) {
       // set no data flag to true so as to render flatlist conditionally
@@ -366,8 +223,8 @@ class ProfileScreen extends Component {
           alwaysBounceVertical={false}
         >
           <View>
-            <BannerCompoment
-              tabTitle={this.state.tabTitle}
+            <ProfileBannerCompoment
+              tabTitle={"Crew"}
               profilePicture={this.state.avatarSource}
             />
           </View>
@@ -486,8 +343,9 @@ class ProfileScreen extends Component {
                     <ListCompoment
                       tabTitle={this.state.tabTitle}
                       columns={this.state.columnCount}
-                      data={this.state.dataSource1}
+                      data={this.state.postData}
                       navigation={this.props.navigation}
+                      streams={this.state.postData}
                     />
                   </View>
                   <View>
@@ -570,8 +428,9 @@ class ProfileScreen extends Component {
                     <ListCompoment
                       tabTitle={this.state.tabTitle}
                       columns={this.state.columnCount}
-                      data={this.state.dataSource1}
+                      data={this.state.postData}
                       navigation={this.props.navigation}
+                      streams={this.state.postData}
                     />
                   </View>
                   <View>
@@ -694,10 +553,11 @@ class ProfileScreen extends Component {
                       data={
                         this.state.filteredData.length > 0
                           ? this.state.filteredData
-                          : this.state.dataSource1
+                          : this.state.postData
                       }
                       noData={this.state.noData}
                       navigation={this.props.navigation}
+                      streams={this.state.postData}
                     />
                   </View>
                 </ViewPager>

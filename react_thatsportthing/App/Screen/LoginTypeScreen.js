@@ -7,13 +7,13 @@ import {
   Text,
   Dimensions,
   Image,
-  StatusBar,
   Platform,
   AsyncStorage
 } from "react-native";
 import Icons from "../Resource/Icons";
 import Colors from "../Resource/Colors";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
+
 import firebase from "react-native-firebase";
 import { NavigationActions, StackActions } from "react-navigation";
 import type { Notification, NotificationOpen } from "react-native-firebase";
@@ -116,7 +116,7 @@ class LoginTypeScreen extends Component {
     this.openProgressbar();
     AsyncStorage.getItem("logged")
       .then(data => {
-        console.log("AsyncStorage");
+       
         this.hideProgressbar();
         if (data != null) {
           if (data == "true") {
@@ -190,6 +190,7 @@ class LoginTypeScreen extends Component {
               </View>
             </TouchableOpacity>
             <ProgressCompoment isProgress={this.state.isProgress} />
+            
             <TouchableOpacity onPress={this.doRedirect.bind(this, "SignUp1")}>
               <View
                 style={[
@@ -238,7 +239,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.bgHeader,
     width: Dimensions.get("screen").width,
     marginBottom: Platform.OS == "android" ? 30 : 0,
-    bottom: "0%"
+    bottom: "5%"
   },
   buttonTopView: {
     flexDirection: "row",

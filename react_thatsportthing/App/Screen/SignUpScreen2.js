@@ -15,7 +15,7 @@ class SignUpScreen2 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userName: "",
+     
       password: "",
       cpassword: ""
     };
@@ -29,13 +29,7 @@ class SignUpScreen2 extends Component {
   doRedirect(screen) {
     const { navigate } = this.props.navigation;
     const { userData1 } = this.props.navigation.state.params;
-    if (this.state.userName == "") {
-      this.refs.username.focus();
-      alert("Enter User Name");
-    }else if (this.state.userName.length<5) {
-      this.refs.password.focus();
-      alert("Enter at least 5 letters Username");
-    } else if (this.state.password == "") {
+     if (this.state.password == "") {
       this.refs.password.focus();
       alert("Enter Password");
     }else if (this.state.password.length<6) {
@@ -55,7 +49,7 @@ class SignUpScreen2 extends Component {
         name:userData1.name,
         email:userData1.email,
         bdate:userData1.bdate,
-        username:this.state.userName,
+       
         password:this.state.password,
         cpassword:this.state.cpassword,
       }
@@ -72,37 +66,7 @@ class SignUpScreen2 extends Component {
           <Image style={styles.logoImage} source={Icons.logo} />
         </View>
         <View style={styles.textField}>
-          <View>
-            <TextInput
-            ref={"username"}
-              onChangeText={username => this.setState({ userName: username })}
-              style={[
-                styles.editText,
-                {
-                  fontFamily: "OpenSans-Bold",
-                  borderBottomColor: Colors.colorEdittext,
-                  borderBottomWidth: 1,
-                  paddingBottom: 5
-                }
-              ]}
-              value={this.state.userName}
-              keyboardType="ascii-capable"
-              placeholder={"User name"}
-              placeholderTextColor={Colors.colorEdittext}
-            
-              underlineColorAndroid={Colors.transparent}
-              returnKeyType="next"
-            />
-            <Text
-              style={[
-                styles.editText,
-                styles.labelName,
-                { fontFamily: "OpenSans-SemiBold" }
-              ]}
-            >
-              USERNAME
-            </Text>
-          </View>
+          
 
           <View style={{ marginTop: "10%" }}>
             <TextInput

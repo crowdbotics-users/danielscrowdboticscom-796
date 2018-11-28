@@ -35,7 +35,7 @@ class AddPostHeaderCompoment extends Component {
             fontSize: 14
           }}
         >
-          WRITE A POST
+          WRITE A COMMENT
         </Text>
       </View>
     );

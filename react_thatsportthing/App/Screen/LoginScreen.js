@@ -18,7 +18,7 @@ import Icons from "../Resource/Icons";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import { NavigationActions, StackActions } from "react-navigation";
 import ApiUrl from "../Network/ApiUrl";
-
+import firebase from "react-native-firebase";
 class LoginScreen extends Component {
   constructor(props) {
     super(props);
@@ -60,15 +60,16 @@ class LoginScreen extends Component {
       alert("Enter Password");
       this.refs.password.focus();
     } else {
-      console.log("login api");
+ 
+
       NetInfo.isConnected.fetch().then(isConnected => {
         if (isConnected) {
         
           AsyncStorage.getItem("token")
             .then(data => {
-              console.log("AsyncStorage");
+            
               if (data != null) {
-                console.log(data);
+               
 
                 const bodyData = JSON.stringify({
                   email: this.state.userName,
@@ -80,7 +81,7 @@ class LoginScreen extends Component {
                 this.openProgressbar();
                 this.doLoginApi(bodyData, screen);
               } else {
-                console.log(data);
+              
               }
             })
             .done();
@@ -111,16 +112,19 @@ class LoginScreen extends Component {
 
         switch (status) {
           case 200: {
-            console.log(message);
+         
             this.hideProgressbar();
             const result = responseJson.result;
             const userData = {
               id: result.id,
-              name: result.full_name,
+              full_name: result.full_name,
               email: result.email,
               profile_image: result.profile_image,
               cover_image: result.cover_image,
-              token: result.token
+              follower_count: result.follower_count,
+              crew_count: result.crew_count,
+              user_name: result.user_name,
+              token: result.token,
             };
             const stringifiedArray = JSON.stringify(userData);
             AsyncStorage.setItem("data", stringifiedArray);
@@ -134,13 +138,13 @@ class LoginScreen extends Component {
           case 401: {
             this.hideProgressbar();
             alert(message);
-            console.log(message);
+          
             break;
           }
           case 400: {
             this.hideProgressbar();
             alert(message);
-            console.log(message);
+           
             break;
           }
         }
