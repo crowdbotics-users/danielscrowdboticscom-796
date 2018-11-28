@@ -61,7 +61,7 @@ class SignUpScreen3 extends Component {
                 bodyData.append("dob", userData2.bdate);
                 bodyData.append("device_type", Platform.OS);
                 bodyData.append("fire_base_token", data);
-                bodyData.append("user_name", userData2.username);
+               // bodyData.append("user_name", userData2.username);
                 this.openProgressbar();
                 this.doRegisterApi(bodyData, screen);
               } else {

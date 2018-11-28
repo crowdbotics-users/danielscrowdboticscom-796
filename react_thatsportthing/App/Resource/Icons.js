@@ -28,6 +28,7 @@ const Icons ={
     ic_follow_cancel:require('./Icon/ic_follow_cancel.png'),
     ic_add:require('./Icon/add.png'),
     ic_like:require('./Icon/ic_like.png'),
+    ic_dislike:require('./Icon/ic_dislike.png'),
     ic_comment:require('./Icon/ic_comment.png'),
     ic_share:require('./Icon/ic_share.png'),
     ic_search:require('./Icon/ic_search.png'),

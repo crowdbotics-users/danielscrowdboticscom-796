@@ -8,8 +8,8 @@ import SignUp2 from "./App/Screen/SignUpScreen2";
 import SignUp3 from "./App/Screen/SignUpScreen3";
 import ForgotPasswordScreen from "./App/Screen/ForgotPasswordScreen";
 import HomePage from "./App/Screen/HomePage";
-import HomeTabScreen from "./App/Screen/HomeTabScreen";
-import ProfileScreen from "./App/Screen/ProfileScreen";
+
+
 import EditProfileScreen from "./App/Screen/EditProfileScreen";
 import AddPostScreen from "./App/Screen/AddPostScreen";
 import OneTimePasswordScreen from "./App/Screen/OneTimePasswordScreen";
@@ -19,16 +19,8 @@ import AddCommentScreen from "./App/Screen/AddCommentScreen";
 import MyCrewScreen from "./App/Screen/MyCrewScreen";
 import MyFollowersScreen from "./App/Screen/MyFollowersScreen";
 
-const HomePageNavigator = createStackNavigator({
-  HomeTabScreen: {
-    screen: HomeTabScreen
-  }
-});
-const ProfileScreenNavigator = createStackNavigator({
-  ProfileScreen: {
-    screen: ProfileScreen
-  }
-});
+
+
 const EditProfileScreenNavigator = createStackNavigator({
   EditProfileScreen: {
     screen: EditProfileScreen
@@ -69,8 +61,7 @@ const App = createStackNavigator(
     ForgotPasswordScreen: { screen: ForgotPasswordScreen },
     OneTimePasswordScreen: { screen: OneTimePasswordScreen },
     UpdatePasswordScreen: { screen: UpdatePasswordScreen },
-    HomeTabScreen: { screen: HomePageNavigator },
-    ProfileScreen: { screen: ProfileScreenNavigator },
+    
     EditProfileScreen: {
       screen: EditProfileScreenNavigator,
       navigationOptions: {

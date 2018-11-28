@@ -32,6 +32,10 @@ import CollapseView from "react-native-collapse-view";
 import searchtabstyles from "../Resource/searchtabstyles";
 import ApiUrl from "../Network/ApiUrl";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
+import StreamListComponent from "../Compoments/StreamListCompoment";
+import PostListComponent from "../Compoments/PostListCompoment";
+import TryAgainComponent from "../Compoments/TryAgainComponent";
+import HomeBannerCompoment from "../Compoments/HomeBannerCompoment";
 
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
@@ -40,7 +44,9 @@ class HomeTabScreen extends Component {
     const { params = {} } = navigation.state;
 
     return {
-      header: props => <HamburgerIcon {...props} props={navigation} />
+      header: props => (
+        <HamburgerIcon {...props} props={navigation} isProfile={false} />
+      )
     };
   };
   constructor(props) {
@@ -48,6 +54,8 @@ class HomeTabScreen extends Component {
 
     this.state = {
       isProgress: false,
+      noData: false,
+      isError: false,
       full_name: "",
       profile_image: "",
       cover_image: "",
@@ -60,7 +68,7 @@ class HomeTabScreen extends Component {
       isStreamActive: true,
       isFriendsPostActive: false,
       isSearchActive: false,
-      isLoading: true,
+    
       activeColor: Colors.orange,
       activeTextColor: Colors.white,
       inactiveColor: Colors.white,
@@ -109,166 +117,22 @@ class HomeTabScreen extends Component {
         }
       ],
       filteredData: [],
-      postData:[],
-      dataSource1: [
-        {
-          name: "Mason SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Jacob SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 2,
-          followstatus: 1
-        },
-        {
-          name: "William SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Ethan SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "James SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1
-        },
-        {
-          name: "Alexander SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Michael SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Benjamin SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Elijah SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Daniel SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        }
-      ]
+      postData: []
     };
   }
 
   componentWillMount() {
-    this.setState({
-      isLoading: false
-    });
-    this.getPostList();
+  
   }
-  getPostList(){
+  getPostList() {
     NetInfo.isConnected.fetch().then(isConnected => {
       if (isConnected) {
         AsyncStorage.getItem("data")
           .then(data => {
-            console.log("AsyncStorage");
+           
             if (data != null) {
               const myData = JSON.parse(data);
-              console.log(data);
+          
 
               let postData = {
                 method: "GET",
@@ -282,7 +146,7 @@ class HomeTabScreen extends Component {
               this.openProgressbar();
               this.getPostListApi(postData);
             } else {
-              console.log(data);
+           
             }
           })
           .done();
@@ -298,6 +162,8 @@ class HomeTabScreen extends Component {
     fetch(ApiUrl.getPosts, bodyData)
       .then(response => response.json())
       .then(responseJson => {
+     
+
         this.hideProgressbar();
         const message = responseJson.message;
         const status = responseJson.status;
@@ -305,31 +171,36 @@ class HomeTabScreen extends Component {
         switch (status) {
           case 200: {
             const result = responseJson.result;
-          
-            this.hideProgressbar();
+
             this.setState({
-              dataSource1: result.data
+              postData: result.data
             });
-            
+
             break;
           }
           case 401: {
-            this.hideProgressbar();
+            this.setState({
+              isError: true
+            });
             alert(message);
-            console.log(message);
+        
             break;
           }
           case 400: {
-            this.hideProgressbar();
+            this.setState({
+              isError: true
+            });
             alert(message);
-            console.log(message);
+         
             break;
           }
         }
       })
       .catch(error => {
         this.hideProgressbar();
-        console.log(error);
+        this.setState({
+          isError: true
+        });
       });
   }
   renderRow(data) {
@@ -344,6 +215,7 @@ class HomeTabScreen extends Component {
   }
   componentDidMount() {
     this.doGetUserInfo();
+    this.getPostList();
   }
   openProgressbar = () => {
     this.setState({ isProgress: true });
@@ -351,84 +223,27 @@ class HomeTabScreen extends Component {
   hideProgressbar = () => {
     this.setState({ isProgress: false });
   };
-  doGetUserInfoApi(bodyData) {
-    fetch(ApiUrl.getUserProfile, bodyData)
-      .then(response => response.json())
-      .then(responseJson => {
-        this.hideProgressbar();
-        const message = responseJson.message;
-        const status = responseJson.status;
 
-        switch (status) {
-          case 200: {
-            const result = responseJson.result;
-
-            this.hideProgressbar();
-            this.setState({
-              full_name: result.full_name,
-              profilePicture: result.profile_image,
-              coverPicture: result.cover_image,
-              post_status: result.post_status,
-              follower_count: result.follower_count,
-              crew_count: result.crew_count,
-              post_count: result.post_count,
-              user_name: result.user_name
-            });
-
-            break;
-          }
-          case 401: {
-            this.hideProgressbar();
-            alert(message);
-            console.log(message);
-            break;
-          }
-          case 400: {
-            this.hideProgressbar();
-            alert(message);
-            console.log(message);
-            break;
-          }
+  doGetUserInfo() {
+    AsyncStorage.getItem("data")
+      .then(data => {
+        if (data != null) {
+          const myData = JSON.parse(data);
+          this.setState({
+            full_name: myData.full_name,
+            profilePicture: myData.profile_image,
+            coverPicture: myData.cover_image,
+            post_status: myData.post_status,
+            follower_count: myData.follower_count,
+            crew_count: myData.crew_count,
+            post_count: myData.post_count,
+            user_name: myData.user_name
+          });
+        } else {
+       
         }
       })
-      .catch(error => {
-        this.hideProgressbar();
-        console.log(error);
-      });
-  }
-  doGetUserInfo() {
-    NetInfo.isConnected.fetch().then(isConnected => {
-      if (isConnected) {
-        AsyncStorage.getItem("data")
-          .then(data => {
-            console.log("AsyncStorage");
-            if (data != null) {
-              const myData = JSON.parse(data);
-              console.log(data);
-
-              let postData = {
-                method: "GET",
-                headers: {
-                  Accept: "application/json",
-                  Authorization: "Bearer " + myData.token,
-                  "Content-Type": "multipart/form-data"
-                }
-              };
-
-              this.openProgressbar();
-              this.doGetUserInfoApi(postData);
-            } else {
-              console.log(data);
-            }
-          })
-          .done();
-      } else {
-        Alert.alert(
-          "Internet Connection",
-          "Kindly connect to internet then try again"
-        );
-      }
-    });
+      .done();
   }
   doSearchChangeTab(tabName) {
     if (tabName == "people") {
@@ -702,13 +517,13 @@ class HomeTabScreen extends Component {
   };
   searchText = e => {
     let text = e.toLowerCase();
-    let trucks = this.state.dataSource1;
+    let trucks = this.state.postData;
     let filteredName = trucks.filter(item => {
       return item.name.toLowerCase().match(text);
     });
     if (!text || text === "") {
       this.setState({
-        filteredData: this.state.dataSource1
+        filteredData: this.state.postData
       });
     } else if (!Array.isArray(filteredName) && !filteredName.length) {
       // set no data flag to true so as to render flatlist conditionally
@@ -730,10 +545,9 @@ class HomeTabScreen extends Component {
           showsVerticalScrollIndicator={false}
           alwaysBounceVertical={false}
         >
-          <View>
-            <BannerCompoment
-              tabTitle={this.state.tabTitle}
-              
+          <View style={{ flex: 1 }}>
+            <HomeBannerCompoment
+             
               navigation={this.props.navigation}
               full_name={this.state.full_name}
               profile_image={this.state.profile_image}
@@ -743,7 +557,11 @@ class HomeTabScreen extends Component {
               crew_count={this.state.crew_count}
             />
 
-            <ProgressCompoment isProgress={this.state.isProgress}/>
+            <ProgressCompoment isProgress={this.state.isProgress} />
+            <TryAgainComponent
+              shown={this.state.isError}
+              navigation={this.props.navigation}
+            />
           </View>
           <View>
             <View
@@ -761,12 +579,10 @@ class HomeTabScreen extends Component {
                   alignItems: "center"
                 }}
               >
-                <ActivityIndicator
-                  color={Colors.white}
-                  style={{ display: this.state.isLoading ? "flex" : "none" }}
-                />
+                
+                
                 <ListView
-                  style={{ display: this.state.isLoading ? "none" : "flex" }}
+                
                   horizontal={true}
                   showsVerticalScrollIndicator={false}
                   alwaysBounceVertical={false}
@@ -865,19 +681,15 @@ class HomeTabScreen extends Component {
               >
                 <View>
                   <WritePostCompoment navigation={this.props.navigation} />
-                  <ListCompoment
-                    tabTitle={this.state.tabTitle}
-                    columns={this.state.columnCount}
-                    data={this.state.dataSource1}
+                  <StreamListComponent
+                    streams={this.state.postData}
                     navigation={this.props.navigation}
                   />
                 </View>
                 <View>
                   <WritePostCompoment navigation={this.props.navigation} />
-                  <ListCompoment
-                    tabTitle={this.state.tabTitle}
-                    columns={this.state.columnCount}
-                    data={this.state.dataSource1}
+                  <PostListComponent
+                    posts={this.state.postData}
                     navigation={this.props.navigation}
                   />
                 </View>
@@ -929,11 +741,13 @@ class HomeTabScreen extends Component {
                   <ListCompoment
                     tabTitle={this.state.tabTitle}
                     columns={this.state.columnCount}
+                    streams={this.state.postData}
                     data={
                       this.state.filteredData.length > 0
                         ? this.state.filteredData
-                        : this.state.dataSource1
+                        : this.state.postData
                     }
+                    noData={this.state.noData}
                     navigation={this.props.navigation}
                   />
                 </View>

@@ -7,7 +7,7 @@ import {
   FlatList,
   NetInfo,
   AsyncStorage,
-  Alert,TouchableOpacity
+  Alert,TouchableOpacity,SafeAreaView
 } from "react-native";
 import Colors from "../Resource/Colors";
 import CommentHeaderCompoment from "../Compoments/CommentHeaderCompoment";
@@ -34,6 +34,10 @@ class CommentListScreen extends PureComponent {
     super(props);
 
     this.state = {
+      full_name: '',
+      profile_image: '',
+      description: '',
+      created_at: '',
       isProgress: false,
       loading: false,
       data: [],
@@ -45,7 +49,15 @@ class CommentListScreen extends PureComponent {
     };
   }
   componentDidMount() {
-    this.doCommentList();
+    const { data } = this.props.navigation.state.params;
+    this.setState({
+      full_name:data.users.full_name,
+      profile_image:data.users.profile_image,
+      description:data.description,
+      created_at:data.created_at
+    });
+    console.log("componentDidMount",data);
+    this.doCommentList(data);
   }
   openProgressbar = () => {
     this.setState({ isProgress: true });
@@ -53,21 +65,22 @@ class CommentListScreen extends PureComponent {
   hideProgressbar = () => {
     this.setState({ isProgress: false });
   };
-  doCommentList = () => {
+  doCommentList = (postdata) => {
+      
     NetInfo.isConnected.fetch().then(isConnected => {
       if (isConnected) {
         AsyncStorage.getItem("data")
           .then(data => {
-            console.log("AsyncStorage");
+         
             if (data != null) {
               const myData = JSON.parse(data);
-              console.log(data);
-              const bodyData = JSON.stringify({ post_id: 1 });
+            
+              const bodyData = JSON.stringify({ post_id: postdata.id });
 
               this.openProgressbar();
               this.doCommentListApi(bodyData, myData.token);
             } else {
-              console.log(data);
+           
             }
           })
           .done();
@@ -78,7 +91,7 @@ class CommentListScreen extends PureComponent {
         );
       }
     });
-  };
+  }
   doCommentListApi(bodyData, token) {
     const { page, seed } = this.state;
     fetch(ApiUrl.getCommentsList, {
@@ -99,8 +112,8 @@ class CommentListScreen extends PureComponent {
         switch (status) {
           case 200: {
             const result = responseJson.result;
-            alert(message);
-            this.hideProgressbar();
+           
+          
             this.setState({
               data:
                 page === 1 ? result.data : [...this.state.data, ...result.data],
@@ -112,15 +125,12 @@ class CommentListScreen extends PureComponent {
             break;
           }
           case 401: {
-            this.hideProgressbar();
-
-            console.log(message);
             break;
           }
           case 400: {
-            this.hideProgressbar();
+          
             alert(message);
-            console.log(message);
+           
             break;
           }
         }
@@ -171,7 +181,7 @@ class CommentListScreen extends PureComponent {
                 style={{
                     
                   flex: 1,
-                  color: "#717171",
+                  color: Colors.colorEdittext,
                   fontFamily: "OpenSans-Light",
                   fontSize: 12
                 }}
@@ -193,7 +203,7 @@ class CommentListScreen extends PureComponent {
             <View style={[styles.row,{marginTop:5}]}>
               <Text
                 style={{
-                    color: "#717171",
+                  color: Colors.colorEdittext,
                   fontFamily: "OpenSans-Light",
                   fontSize: 13
                 }}
@@ -234,6 +244,7 @@ class CommentListScreen extends PureComponent {
   }
   render() {
     return (
+      
       <View style={customstyles.container}>
         <View
           style={{
@@ -256,7 +267,7 @@ class CommentListScreen extends PureComponent {
               }}
             >
               <Image
-                source={Icons.messi}
+                source={this.state.profile_image==""?Icons.messi:{uri:this.state.profile_image}}
                 style={{
                   width: 34,
                   height: 34,
@@ -276,7 +287,7 @@ class CommentListScreen extends PureComponent {
                 flex: 1
               }}
             >
-              JOHN SCHUFFER
+             {this.state.full_name}
             </Text>
             <Text
               style={{
@@ -286,7 +297,8 @@ class CommentListScreen extends PureComponent {
                 marginRight: 8
               }}
             >
-              12:35 PM
+            
+             {Moment(this.state.created_at).format("hh:mm A")}
             </Text>
           </View>
           <Text
@@ -296,12 +308,7 @@ class CommentListScreen extends PureComponent {
               fontSize: 12
             }}
           >
-            As Messi maintained his goalscoring form into the second half of the
-            season, the year 2012 saw him break several longstanding records. On
-            7 March, two weeks after scoring four goals in a league fixture
-            against Valencia, he scored five times in a Champions League last
-            16-round match against Bayer Leverkusen, an unprecedented
-            achievement in the history of the competition.
+            {this.state.description}
           </Text>
         </View>
         <ProgressCompoment isProgress={this.state.isProgress} />
@@ -311,6 +318,7 @@ class CommentListScreen extends PureComponent {
               data={this.state.data}
               renderItem={({ item }) => this.renderCommentItem(item)}
               style={{ marginStart: 10, marginEnd: 10, marginBottom: 80 }}
+              keyExtractor={ (item, index) => index.toString()}
             />
           </View>
           <View

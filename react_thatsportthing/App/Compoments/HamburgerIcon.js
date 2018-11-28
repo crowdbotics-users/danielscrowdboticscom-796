@@ -9,7 +9,9 @@ class HamburgerIcon extends Component {
   toggleDrawer = () => {
     this.props.navigation.toggleDrawer();
   };
-
+doBack(){
+  this.props.navigation.goBack(null);
+}
   render() {
     return (
       <View
@@ -20,9 +22,9 @@ class HamburgerIcon extends Component {
           height: 40,
         }}
       >
-        <TouchableOpacity onPress={this.toggleDrawer.bind(this)}>
+        <TouchableOpacity onPress={this.props.isProfile?this.doBack():this.toggleDrawer.bind(this)}>
           <Image
-            source={Icons.ic_menu_icon}
+            source={this.props.isProfile?Icons.ic_back_arrow:Icons.ic_menu_icon}
             style={{ width: 24, height: 21 ,margin:10}}
           />
         </TouchableOpacity>
@@ -43,6 +45,7 @@ class HamburgerIcon extends Component {
 }
 HamburgerIcon.propTypes = {
   title: PropTypes.string,
-  props: PropTypes.object
+  props: PropTypes.object,
+  isProfile:PropTypes.bool
 };
 export default HamburgerIcon;

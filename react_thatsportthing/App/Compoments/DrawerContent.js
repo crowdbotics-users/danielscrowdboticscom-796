@@ -106,9 +106,10 @@ class DrawerContent extends Component {
         switch (status) {
           case 200: {
             console.log(message);
-            this.hideProgressbar();
-            AsyncStorage.setItem("logged", "false");
+           
             AsyncStorage.clear();
+            AsyncStorage.setItem("logged", "false");
+            
             const resetAction = StackActions.reset({
               index: 0,
               key: null,
@@ -119,13 +120,13 @@ class DrawerContent extends Component {
             break;
           }
           case 401: {
-            this.hideProgressbar();
+           
             alert(message);
             console.log(message);
             break;
           }
           case 400: {
-            this.hideProgressbar();
+          
             alert(message);
             console.log(message);
             break;

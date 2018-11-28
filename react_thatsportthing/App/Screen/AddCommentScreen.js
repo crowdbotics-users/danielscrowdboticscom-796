@@ -6,7 +6,7 @@ import {
   Platform,
   ScrollView,
   TextInput,
-  TouchableOpacity,NetInfo,AsyncStorage,Alert
+  TouchableOpacity,NetInfo,AsyncStorage,Alert,SafeAreaView
 } from "react-native";
 import AddCommentHeaderCompoment from "../Compoments/AddPostHeaderCompoment";
 import styles from "../Resource/Styles";
