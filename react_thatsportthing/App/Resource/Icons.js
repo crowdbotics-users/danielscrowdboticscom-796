@@ -24,6 +24,8 @@ const Icons ={
     ball9:require('./Icon/ball9.png'),
     ball10:require('./Icon/ball10.png'),
     ball11:require('./Icon/ball11.png'),
+    ic_back_arrow:require('./Icon/ic_back_arrow.png'),
+    ic_follow_cancel:require('./Icon/ic_follow_cancel.png'),
     ic_add:require('./Icon/add.png'),
     ic_like:require('./Icon/ic_like.png'),
     ic_comment:require('./Icon/ic_comment.png'),

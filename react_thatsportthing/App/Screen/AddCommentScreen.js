@@ -6,56 +6,34 @@ import {
   Platform,
   ScrollView,
   TextInput,
-  TouchableOpacity,
-  NetInfo,
-  AsyncStorage,
-  Alert
+  TouchableOpacity,NetInfo,AsyncStorage,Alert
 } from "react-native";
-import AddPostHeaderCompoment from "../Compoments/AddPostHeaderCompoment";
+import AddCommentHeaderCompoment from "../Compoments/AddPostHeaderCompoment";
 import styles from "../Resource/Styles";
 import Icons from "../Resource/Icons";
 import Colors from "../Resource/Colors";
-import ImagePicker from "react-native-image-crop-picker";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import ApiUrl from "../Network/ApiUrl";
 
-class AddPostScreen extends PureComponent {
+class AddCommentScreen extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       messages: "",
-      isProgress: false,
-      postImage: ""
+      isProgress:false
     };
   }
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
     return {
-      header: props => <AddPostHeaderCompoment {...props} props={navigation} />
+      header: props => <AddCommentHeaderCompoment {...props} props={navigation} />
     };
   };
-  pickSingleWithCamera(cropping, circular = false) {
-    ImagePicker.openCamera({
-      cropping: false,
-      cropperCircleOverlay: circular,
-      compressImageMaxWidth: 640,
-      compressImageMaxHeight: 640,
-      compressImageQuality: 0.5,
-      includeExif: true
-    })
-      .then(image => {
-        console.log("received image", image);
-        this.setState({
-          postImage: image.path
-        });
-      })
-      .catch(e => alert(e));
-  }
-  doAddPost() {
-    if (this.state.messages == "") {
-      this.refs.messages.focus();
-      alert("Write a post");
-    } else {
+  doAddComment() {
+    if(this.state.messages==""){
+      this.refs.message.focus();
+      alert("Write a comment");
+    }else{
       NetInfo.isConnected.fetch().then(isConnected => {
         if (isConnected) {
           AsyncStorage.getItem("data")
@@ -63,19 +41,15 @@ class AddPostScreen extends PureComponent {
               console.log("AsyncStorage");
               if (data != null) {
                 const myData = JSON.parse(data);
-                const bodyData = new FormData();
-                if (postImage != "") {
-                  bodyData.append("post_image", {
-                    uri: this.state.postImage,
-                    type: "image/jpeg",
-                    name: "image1"
-                  });
-                }
-
-                bodyData.append("description", this.state.messages);
-
+                const bodyData = JSON.stringify({
+                  post_id: this.state.post_id,
+                  comment_id: this.state.comment_id,
+                  type: this.state.type,
+                  messages: this.state.messages
+                });
+              
                 this.openProgressbar();
-                this.doAddPostApi(bodyData, myData.token);
+                this.doAddCommentApi(bodyData,myData.token);
               } else {
                 console.log(data);
               }
@@ -89,14 +63,15 @@ class AddPostScreen extends PureComponent {
         }
       });
     }
+    
   }
-  doAddPostApi(bodyData, token) {
-    fetch(ApiUrl.addPost, {
+  doAddCommentApi(bodyData,token) {
+    fetch(ApiUrl.addComment, {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "multipart/form-data",
-        Authorization: "Bearer " + token
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
       },
       body: bodyData
     })
@@ -108,6 +83,7 @@ class AddPostScreen extends PureComponent {
 
         switch (status) {
           case 200: {
+           
             this.props.navigation.goBack(null);
             break;
           }
@@ -193,17 +169,14 @@ class AddPostScreen extends PureComponent {
               }}
             />
             <TextInput
-              ref={"messages"}
-              placeholder="Write a post,share link or picture..."
+            ref={"message"}
+              placeholder="Write a comment..."
               style={{ marginStart: 10, marginEnd: 10 }}
               underlineColorAndroid={Colors.transparent}
               value={this.state.messages}
-              onChangeText={text => {
-                this.setState({ messages: text });
-              }}
+              onChangeText={(text)=>{this.setState({messages:text});}}
             />
-            <Image source={this.state.postImage} />
-            <ProgressCompoment isProgress={this.state.isProgress} />
+            <ProgressCompoment isProgress={this.state.isProgress}/>
           </View>
           <View
             style={{
@@ -254,16 +227,9 @@ class AddPostScreen extends PureComponent {
                   #
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => this.pickSingleWithCamera(true, true)}
-              >
-                <Image
-                  source={Icons.ic_camera_profile}
-                  style={[styles.icon, {}]}
-                />
-              </TouchableOpacity>
+              
               <View style={{ flex: 1 }} />
-              <TouchableOpacity onPress={() => this.doAddPost()}>
+              <TouchableOpacity onPress={()=>this.doAddComment()}>
                 <View
                   style={{
                     backgroundColor: Colors.bgHeader,
@@ -291,4 +257,4 @@ class AddPostScreen extends PureComponent {
   }
 }
 
-export default AddPostScreen;
+export default AddCommentScreen;

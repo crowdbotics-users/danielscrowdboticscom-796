@@ -15,11 +15,30 @@ import Icons from "../Resource/Icons";
 import Colors from "../Resource/Colors";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import firebase from "react-native-firebase";
+import { NavigationActions, StackActions } from "react-navigation";
 import type { Notification, NotificationOpen } from "react-native-firebase";
 class LoginTypeScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.getToken();
+    this.state={
+      isProgress: false
+    }
+  }
   static navigationOptions = {
     header: null
   };
+  async getToken() {
+    const fcmToken = await firebase.messaging().getToken();
+
+    if (fcmToken) {
+      console.log("fcmToken", fcmToken);
+      AsyncStorage.setItem("token", fcmToken);
+    } else {
+      console.log("fcmToken", fcmToken);
+      // user doesn't have a device token yet
+    }
+  }
   async componentDidMount() {
     const notificationOpen: NotificationOpen = await firebase
       .notifications()
@@ -94,6 +113,32 @@ class LoginTypeScreen extends Component {
       console.log("fcmToken", fcmToken);
       // user doesn't have a device token yet
     }
+    this.openProgressbar();
+    AsyncStorage.getItem("logged")
+      .then(data => {
+        console.log("AsyncStorage");
+        this.hideProgressbar();
+        if (data != null) {
+          if (data == "true") {
+            this.doFinish("HomePage");
+          }
+        }
+      })
+      .done();
+  }
+  openProgressbar = () => {
+    this.setState({ isProgress: true });
+  };
+  hideProgressbar = () => {
+    this.setState({ isProgress: false });
+  };
+  doFinish(screen) {
+    const resetAction = StackActions.reset({
+      index: 0,
+      key: null,
+      actions: [NavigationActions.navigate({ routeName: screen })]
+    });
+    this.props.navigation.dispatch(resetAction);
   }
   componentWillUnmount() {
     this.notificationDisplayedListener();
@@ -109,59 +154,65 @@ class LoginTypeScreen extends Component {
     const width = Dimensions.get("screen").width;
     const height = Dimensions.get("screen").height;
     return (
-      <View style={{backgroundColor:Colors.bgHeader,flex:1,justifyContent:'center'}}>
-        
-        
-         <Image source={Icons.ic_splash_logo} style={{width:300,height:300,alignSelf:'center'}}/>
+      <View
+        style={{
+          backgroundColor: Colors.bgHeader,
+          flex: 1,
+          justifyContent: "center"
+        }}
+      >
+        <Image
+          source={Icons.ic_splash_logo}
+          style={{ width: 300, height: 300, alignSelf: "center" }}
+        />
 
-          <View style={styles.mainView}>
-            <View style={styles.buttonTopView}>
-              <TouchableOpacity onPress={this.doRedirect.bind(this, "Login")}>
-                <View
+        <View style={styles.mainView}>
+          <View style={styles.buttonTopView}>
+            <TouchableOpacity onPress={this.doRedirect.bind(this, "Login")}>
+              <View
+                style={[
+                  styles.buttonLogin,
+                  {
+                    borderTopWidth: 1,
+                    borderEndWidth: 1,
+                    borderBottomWidth: 1
+                  }
+                ]}
+              >
+                <Text
                   style={[
-                    styles.buttonLogin,
-                    {
-                      borderTopWidth: 1,
-                      borderEndWidth: 1,
-                      borderBottomWidth: 1
-                    }
+                    styles.buttonText,
+                    { fontFamily: "JosefinSans-Bold" }
                   ]}
                 >
-                  <Text
-                    style={[
-                      styles.buttonText,
-                      { fontFamily: "JosefinSans-Bold" }
-                    ]}
-                  >
-                    LOGIN
-                  </Text>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={this.doRedirect.bind(this, "SignUp1")}>
-                <View
+                  LOGIN
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <ProgressCompoment isProgress={this.state.isProgress} />
+            <TouchableOpacity onPress={this.doRedirect.bind(this, "SignUp1")}>
+              <View
+                style={[
+                  styles.buttonSignUp,
+                  {
+                    borderTopWidth: 1,
+                    borderStartWidth: 1,
+                    borderBottomWidth: 1
+                  }
+                ]}
+              >
+                <Text
                   style={[
-                    styles.buttonSignUp,
-                    {
-                      borderTopWidth: 1,
-                      borderStartWidth: 1,
-                      borderBottomWidth: 1
-                    }
+                    styles.buttonText,
+                    { fontFamily: "JosefinSans-Bold" }
                   ]}
                 >
-                  <Text
-                    style={[
-                      styles.buttonText,
-                      { fontFamily: "JosefinSans-Bold" }
-                    ]}
-                  >
-                    SIGN UP
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
+                  SIGN UP
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
-       
+        </View>
       </View>
     );
   }

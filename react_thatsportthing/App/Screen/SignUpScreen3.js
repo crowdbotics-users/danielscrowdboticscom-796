@@ -11,7 +11,8 @@ import {
   Modal,
   ActivityIndicator,
   AsyncStorage,
-  NetInfo,Platform
+  NetInfo,
+  Platform
 } from "react-native";
 import Colors from "../Resource/Colors";
 import Icons from "../Resource/Icons";
@@ -37,7 +38,7 @@ class SignUpScreen3 extends Component {
     const { navigate } = this.props.navigation;
     const { userData2 } = this.props.navigation.state.params;
     console.log(userData2);
-    
+
     if (this.state.avatarSource == "") {
       alert("Select Picture");
     } else {
@@ -48,13 +49,19 @@ class SignUpScreen3 extends Component {
               console.log("AsyncStorage");
               if (data != null) {
                 console.log(data);
-
-                const bodyData = JSON.stringify({
-                  email: this.state.userName,
-                  password: this.state.password,
-                  device_type: Platform.OS,
-                  fire_base_token: data
+                const bodyData = new FormData();
+                bodyData.append("profile_image", {
+                  uri: this.state.avatarSource,
+                  type: "image/jpeg",
+                  name: "image1"
                 });
+                bodyData.append("full_name", userData2.name);
+                bodyData.append("email", userData2.email);
+                bodyData.append("password", userData2.password);
+                bodyData.append("dob", userData2.bdate);
+                bodyData.append("device_type", Platform.OS);
+                bodyData.append("fire_base_token", data);
+                bodyData.append("user_name", userData2.username);
                 this.openProgressbar();
                 this.doRegisterApi(bodyData, screen);
               } else {
@@ -77,7 +84,7 @@ class SignUpScreen3 extends Component {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json"
+        "Content-Type": "multipart/form-data"
       },
       body: bodyData
     })

@@ -14,6 +14,10 @@ import EditProfileScreen from "./App/Screen/EditProfileScreen";
 import AddPostScreen from "./App/Screen/AddPostScreen";
 import OneTimePasswordScreen from "./App/Screen/OneTimePasswordScreen";
 import UpdatePasswordScreen from "./App/Screen/UpdatePasswordScreen";
+import CommentListScreen from "./App/Screen/CommentListScreen";
+import AddCommentScreen from "./App/Screen/AddCommentScreen";
+import MyCrewScreen from "./App/Screen/MyCrewScreen";
+import MyFollowersScreen from "./App/Screen/MyFollowersScreen";
 
 const HomePageNavigator = createStackNavigator({
   HomeTabScreen: {
@@ -30,9 +34,29 @@ const EditProfileScreenNavigator = createStackNavigator({
     screen: EditProfileScreen
   }
 });
+const MyCrewScreenNavigator = createStackNavigator({
+  MyCrewScreen: {
+    screen: MyCrewScreen
+  }
+});
+const MyFollowersScreenNavigator = createStackNavigator({
+  MyFollowersScreen: {
+    screen: MyFollowersScreen
+  }
+});
 const AddPostScreenNavigator = createStackNavigator({
   AddPostScreen: {
     screen: AddPostScreen
+  }
+});
+const AddCommentScreenNavigator = createStackNavigator({
+  AddCommentScreen: {
+    screen: AddCommentScreen
+  }
+});
+const CommentListScreenNavigator = createStackNavigator({
+  CommentListScreen: {
+    screen: CommentListScreen
   }
 });
 const App = createStackNavigator(
@@ -55,6 +79,30 @@ const App = createStackNavigator(
     },
     AddPostScreen: {
       screen: AddPostScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    AddCommentScreen: {
+      screen: AddCommentScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    MyCrewScreen: {
+      screen: MyCrewScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    MyFollowersScreen: {
+      screen: MyFollowersScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    CommentListScreen: {
+      screen: CommentListScreenNavigator,
       navigationOptions: {
         header: null
       }
