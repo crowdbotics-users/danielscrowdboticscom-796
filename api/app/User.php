@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\Followers;
 use App\Request_data;
+use JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -20,7 +22,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'full_name', 'email', 'password','DOB','profile_image','cover_image','role_id','status'
+        'full_name', 'email', 'password','DOB','profile_image','cover_image','role_id','status','otp','update_name_date','update_otp_date'
     ];
 
     /**
@@ -32,8 +34,7 @@ class User extends Authenticatable implements JWTSubject
         'password', 'remember_token',
     ];
 
-    protected $appends = ['follower_count','crew_count','post_count'];
-
+    protected $appends = ['follower_count','crew_count','post_count','friend_status'];
 
     public function getJWTIdentifier()
     {
@@ -49,8 +50,6 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->roles()->get()->contains('label',$role);
     }
-
-    
 
     public function getProfileImageAttribute()
     {
@@ -92,6 +91,48 @@ class User extends Authenticatable implements JWTSubject
     {
         $follower_count=Followers::where('user_id',$this->attributes['id'])->count();
         return $follower_count;
+    }
+
+    public function getFriendStatusAttribute()
+    {
+        if(app('request')->header('authorization') != null)
+        {
+            $user= JWTAuth::touser(app('request')->header('authorization'));
+            $crew=Request_data::where(function ($query) {
+                            $query->where('sender_id', '=', $this->attributes['id'])
+                            ->orWhere('receiver_id', '=', $this->attributes['id']);
+                        })->where(function ($query) use ($user){
+                            $query->where('sender_id', '=', $user->id)
+                           ->orWhere('receiver_id', '=', $user->id);
+                           })->first();
+            if($crew != null)
+            {
+                if($crew->status == 0)
+                {
+                    return "pending";
+                }
+                else if($crew->status == 1)
+                {
+                    return "accept";
+                }
+                else if($crew->status == 2)
+                {
+                    return "cancel";
+                }
+                else if($crew->status == 3)
+                {
+                    return "reject";
+                }
+            }
+            else
+            {
+                return "";
+            }
+        }
+        
+        return "";
+           
+      
     }
    
     

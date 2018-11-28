@@ -214,6 +214,164 @@ class LoginController extends Controller
         } 
     }
 
+    public function forgot_password(Request $request)
+    {
+        if(isset($request->email))
+        {
+            $user=User::where('email',$request->email)->where('status',1)->first();
+            if($user != null)
+            {
+                $otp = substr(number_format(time() * rand(),0,'',''),0,4);
+                $user->otp = $otp;
+                $user->update_otp_date=Carbon::now();
+                $user->save();
+
+                $subject = "Thatspoting Reset password !";
+				\Mail::send('emails.reset_password', compact('user'), function ($message) use ($user, $subject) {
+					$message->to($user->email)->subject($subject);
+				});
+
+                $result=make_null($user);
+
+                return response()->json([
+                    'result' => $result,
+                    'success' => true,
+                    'message' => 'One time password has been sent on your Email.',
+                    'status'  => 200
+                ], 200);
+            }
+            else
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Your email are not found or you are not actived.',
+                    'status'  => 400
+                ], 200);
+            }
+        }
+        else
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid Parameter.',
+                'status'  => 400
+            ], 200);
+        }
+    }
+
+    public function get_opt(Request $request)
+    {
+        if(isset($request->otp) && isset($request->user_id))
+        {
+            $user_update=User::where('id',$request->user_id)->where("update_otp_date",">",Carbon::now()->subMinutes(15))->first();
+            if($user_update != null)
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You otp has been expired.please try again.',
+                    'status'  => 400
+                ], 200);
+            }
+
+           $user=User::find($request->user_id);
+
+           if($user != null)
+           {
+              
+               if($user->otp != $request->otp)
+               {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'otp does not match.',
+                        'status'  => 400
+                    ], 200);
+               }
+               else
+               {
+                    $user->otp = null;
+                    $user->save();
+
+                    $result=make_null($user);
+
+                    return response()->json([
+                        'result' => $result,
+                        'success' => true,
+                        'message' => 'otp match Sucessfully.',
+                        'status'  => 400
+                    ], 200);
+               }
+           }
+           else
+           {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not Found.',
+                'status'  => 400
+            ], 200);
+           }
+
+
+        }
+        else
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid Parameter.',
+                'status'  => 400
+            ], 200);
+        } 
+    }
+    public function reset_password(Request $request)
+    {
+        $rules = array(
+            'email' => 'required|email',
+            'password'=>'required|same:confirm_password',
+        );
+
+        $validator = \Validator::make($request->all(), $rules, []);
+
+        if ($validator->fails())
+        {
+            $validation = $validator;
+            $status = false;
+            $code = 400;
+            $msgArr = $validator->messages()->toArray();
+            $messages = reset($msgArr)[0];
+
+            return response()->json([
+                'message' =>$messages,
+                'success' => false,
+                'status' => $code],400);
+        }
+
+        $user=User::where('email',$request->email)->first();
+            
+        if($user)
+        {
+            $user->password = bcrypt($request->password);
+            $user->save();
+
+            $result=make_null($user);
+            
+            return response()->json([
+                'data' => $result,
+                'success' => true,
+                'message' => 'Success! Your Password has been changed!',
+                'status'  => 200
+            ], 200);
+        }
+        else
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found.',
+                'status'  => 400
+            ], 200);
+        }
+
+
+
+    }
     public function post_profile(Request $request)
     {
         if(isset($request->name) && isset($request->post_status))
@@ -266,6 +424,7 @@ class LoginController extends Controller
                    }
 
                     $user_update->post_status=$request->post_status;
+                    $user_update->update_name_date=Carbon::now()->format('Y-m-d');
                     $user_update->save();
 
                     return response()->json([

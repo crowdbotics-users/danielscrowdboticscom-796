@@ -20,11 +20,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'users'], function () {
     Route::post('register', 'API\LoginController@register');
     Route::post('login', 'API\LoginController@login');
+    Route::post('forgot_password', 'API\LoginController@forgot_password');
+    Route::post('get_otp', 'API\LoginController@get_opt');
+    Route::post('reset_password', 'API\LoginController@reset_password');
 
     Route::group(['middleware' => 'jwt.verify'], function () {
         Route::get('logout', 'API\LoginController@logout');
-        Route::get('edit_profile_data', 'API\LoginController@edit_profile');
-        Route::post('post_profile_data', 'API\LoginController@post_profile');
+        Route::get('getProfile', 'API\LoginController@edit_profile');
+        Route::post('updateprofile', 'API\LoginController@post_profile');
         Route::post('upload_cover_profile', 'API\UserController@cover_image');
         Route::post('add_follower', 'API\UserController@add_follower');
 

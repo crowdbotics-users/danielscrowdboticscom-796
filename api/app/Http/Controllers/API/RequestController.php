@@ -34,7 +34,6 @@ class RequestController extends Controller
             if($request_search != null)
             {
                 return response()->json([
-                    'result' => $result,
                     'message' => 'You have already send request.',
                     'success' => true,
                     'status' => 400,
@@ -59,8 +58,7 @@ class RequestController extends Controller
             $message['receiver']= make_null($receiver);
             $message['notification'] = array(
                 "body" => $msg,
-                "title" => $title
-             
+                "title" => $title 
             );
 
             $result=send_notification($receiver->fire_base_token,[],$receiver->device_type,$message);
@@ -71,16 +69,16 @@ class RequestController extends Controller
             $data['receiver'] = make_null($receiver);
             $data['target_screen'] = 'child';
             $data['response']=$result;
-      
             
-        $result=(Object)$data;
+            $result=(Object)$data;
 
-        return response()->json([
-            'result' => $result,
-            'message' => 'Success! Badge Request Sent!',
-            'success' => true,
-            'status' => 200,
-        ],200);
+            return response()->json([
+                'result' => $result,
+                'message' => 'Success! Request Sent!',
+                'success' => true,
+                'status' => 200,
+            ],200);
+
         }
         else
         {
@@ -89,6 +87,14 @@ class RequestController extends Controller
                 'message' => 'Invalid Parameter.',
                 'status'  => 400
             ], 200);
+        }
+    }
+
+    public function request_action(Request $request)
+    {
+        if(isset($request->status) && isset($request->receiver_id))
+        {
+            
         }
     }
 }
