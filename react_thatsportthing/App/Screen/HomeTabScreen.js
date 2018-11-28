@@ -180,7 +180,7 @@ class HomeTabScreen extends Component {
           }
           case 401: {
             this.setState({
-              isError: true
+             isError: false
             });
             alert(message);
         
@@ -188,7 +188,7 @@ class HomeTabScreen extends Component {
           }
           case 400: {
             this.setState({
-              isError: true
+              isError: false
             });
             alert(message);
          
@@ -199,7 +199,7 @@ class HomeTabScreen extends Component {
       .catch(error => {
         this.hideProgressbar();
         this.setState({
-          isError: true
+         isError: false
         });
       });
   }

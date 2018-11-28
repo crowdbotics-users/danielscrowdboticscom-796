@@ -12,13 +12,16 @@ import {
   ListView,
   Platform,
   SafeAreaView,
-  ActivityIndicator
+  ActivityIndicator,
+  NetInfo,
+  Alert
 } from "react-native";
 import Colors from "../Resource/Colors";
 import Icons from "../Resource/Icons";
 import styles from "../Resource/Styles";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import { NavigationActions, StackActions } from "react-navigation";
+import ApiUrl from "../Network/ApiUrl";
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
 class UpdatePasswordScreen extends Component {
@@ -31,30 +34,92 @@ class UpdatePasswordScreen extends Component {
       password: "",
       cpassword: "",
       isProgress: false,
-      profilePicture: ""
+      profile_image: "",
+      full_name: ""
     };
+  }
+  componentWillMount() {
+    const { data } = this.props.navigation.state.params;
+
+    this.setState({
+      full_name: data.full_name,
+      profile_image: data.profile_image
+    });
   }
   doBack() {
     this.props.navigation.goBack();
   }
   doForgot(screen) {
     const { navigate } = this.props.navigation;
+    const { data } = this.props.navigation.state.params;
     if (this.state.password == "") {
       alert("Enter Password");
       this.refs.password.focus();
     } else if (this.state.cpassword == "") {
       this.refs.cpassword.focus();
       alert("Enter Confirm Password");
-    }else if(this.state.password!=this.state.cpassword){
+    } else if (this.state.password != this.state.cpassword) {
       this.refs.cpassword.focus();
       alert("Password does not match");
     } else {
-      this.openProgressbar();
-      setTimeout(() => {
-        this.hideProgressbar();
-       this. doFinish(screen);
-      }, 500);
+      NetInfo.isConnected.fetch().then(isConnected => {
+        if (isConnected) {
+          const bodyData = JSON.stringify({
+            email: data.email,
+            password: this.state.password,
+            confirm_password: this.state.cpassword
+          });
+
+          this.openProgressbar();
+          this.doForgotApi(bodyData, screen);
+        } else {
+          Alert.alert(
+            "Internet Connection",
+            "Kindly connect to internet then try again"
+          );
+        }
+      });
     }
+  }
+  doForgotApi(bodyData, screen) {
+    const { navigate } = this.props.navigation;
+    fetch(ApiUrl.updatePasswordUrl, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: bodyData
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        this.hideProgressbar();
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+            const result = responseJson.result;
+            this.doFinish(screen);
+            break;
+          }
+          case 401: {
+            alert(message);
+
+            break;
+          }
+          case 400: {
+            alert(message);
+
+            break;
+          }
+        }
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+        alert(error);
+      });
   }
   doValidEmail(email) {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -96,7 +161,13 @@ class UpdatePasswordScreen extends Component {
               height: "100%"
             }}
           >
-            <View style={{ flexDirection: "row", justifyContent:'center',alignContent:'flex-start' }}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignContent: "flex-start"
+              }}
+            >
               <View style={{ flex: 1 }}>
                 <View
                   style={{
@@ -104,17 +175,16 @@ class UpdatePasswordScreen extends Component {
                     height: 100,
                     borderRadius: 50,
                     backgroundColor: "#F8F6F7",
-                   
+
                     justifyContent: "center",
-                    alignContent: "center",
-                    
+                    alignContent: "center"
                   }}
                 >
                   <Image
                     source={
-                      this.state.profilePicture == ""
+                      this.state.profile_image == ""
                         ? Icons.messi
-                        : { uri: this.state.profilePicture }
+                        : { uri: this.state.profile_image }
                     }
                     style={{
                       width: 98,
@@ -127,32 +197,53 @@ class UpdatePasswordScreen extends Component {
                   />
                 </View>
               </View>
-              
-              <View style={{ flex: 2 , justifyContent:'center',alignContent:'flex-start'}} >
-                <Text style={{
+
+              <View
+                style={{
+                  flex: 2,
+                  justifyContent: "center",
+                  alignContent: "flex-start"
+                }}
+              >
+                <Text
+                  style={{
                     fontFamily: "OpenSans-Bold",
                     fontSize: 14,
                     color: Colors.colorEdittext
-                  }}>HI, JOHN SCHUFFER!</Text>
-                <Text style={{
+                  }}
+                >
+                  HI, {this.state.full_name}!
+                </Text>
+                <Text
+                  style={{
                     fontFamily: "OpenSans-SemiBold",
                     fontSize: 13,
                     color: Colors.colorSearch
-                  }}>WE ARE GLAD TO</Text>
-                <Text style={{
+                  }}
+                >
+                  WE ARE GLAD TO
+                </Text>
+                <Text
+                  style={{
                     fontFamily: "OpenSans-SemiBold",
                     fontSize: 13,
                     color: Colors.colorSearch
-                  }}>SEE YOU AGAIN!</Text>
+                  }}
+                >
+                  SEE YOU AGAIN!
+                </Text>
               </View>
-              
             </View>
-            <Text style={{
-              marginTop:20,
-                    fontFamily: "OpenSans-Bold",
-                    fontSize: 14,
-                    color: Colors.colorEdittext
-                  }}>PLEASE RESET YOUR PASSWORD!</Text>
+            <Text
+              style={{
+                marginTop: 20,
+                fontFamily: "OpenSans-Bold",
+                fontSize: 14,
+                color: Colors.colorEdittext
+              }}
+            >
+              PLEASE RESET YOUR PASSWORD!
+            </Text>
             <View style={{ marginTop: 20 }}>
               <TextInput
                 ref={"password"}
@@ -189,7 +280,9 @@ class UpdatePasswordScreen extends Component {
             <View style={{ marginTop: 30, flex: 0.8 }}>
               <TextInput
                 ref={"cpassword"}
-                onChangeText={cpassword => this.setState({ cpassword:cpassword })}
+                onChangeText={cpassword =>
+                  this.setState({ cpassword: cpassword })
+                }
                 style={[
                   customstyles.editText,
                   {

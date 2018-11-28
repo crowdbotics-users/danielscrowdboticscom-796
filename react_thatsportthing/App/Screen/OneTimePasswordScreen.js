@@ -7,12 +7,13 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Dimensions
+  Dimensions,NetInfo,Alert,AsyncStorage
 } from "react-native";
 import Colors from "../Resource/Colors";
 import Icons from "../Resource/Icons";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import { NavigationActions, StackActions } from "react-navigation";
+import ApiUrl from "../Network/ApiUrl";
 
 class OneTimePasswordScreen extends Component {
   constructor(props) {
@@ -35,6 +36,8 @@ class OneTimePasswordScreen extends Component {
 
   doLogin(screen) {
     const { navigate } = this.props.navigation;
+    const { data } = this.props.navigation.state.params;
+
     if (this.state.onetimepassword == "") {
       alert("Enter One-Time Password");
       this.refs.onetimepassword.focus();
@@ -42,16 +45,84 @@ class OneTimePasswordScreen extends Component {
       alert("Enter Valid One-Time Password");
       this.refs.onetimepassword.focus();
     } else {
-      this.openProgressbar();
-      setTimeout(() => {
-        this.hideProgressbar();
-        this.doFinish(screen);
-      }, 500);
+      NetInfo.isConnected.fetch().then(isConnected => {
+        if (isConnected) {
+          const bodyData = JSON.stringify({
+            otp: this.state.onetimepassword,
+            user_id: data.id,
+          });
+
+          this.openProgressbar();
+          this.doForgotApi(bodyData, screen);
+        } else {
+          Alert.alert(
+            "Internet Connection",
+            "Kindly connect to internet then try again"
+          );
+        }
+      });
     }
   }
-  doRedirect(screen) {
+  doForgotApi(bodyData, screen) {
     const { navigate } = this.props.navigation;
-    navigate(screen);
+    fetch(ApiUrl.otpCheckUrl, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: bodyData
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        this.hideProgressbar();
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+         
+            const result = responseJson.result;
+            const data = {
+              id: result.id,
+              email: result.email,
+              full_name: result.full_name,
+              profile_image: result.profile_image,
+            };
+  
+            this.doRedirect(screen,data);
+            break;
+          }
+          case 401: {
+            
+            alert(message);
+
+            break;
+          }
+          case 400: {
+         
+            // alert(message);
+            const result = responseJson.result;
+            const data = {
+              id: result.id,
+              email: result.email,
+              full_name: result.full_name,
+              profile_image: result.profile_image,
+            };
+  
+            this.doRedirect(screen,data);
+            break;
+          }
+        }
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+      });
+  }
+  doRedirect(screen,data) {
+    const { navigate } = this.props.navigation;
+    navigate(screen,{data:data});
   }
   doFinish(screen) {
     const resetAction = StackActions.reset({
