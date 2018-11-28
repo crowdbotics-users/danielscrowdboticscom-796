@@ -263,7 +263,8 @@ class LoginController extends Controller
     {
         if(isset($request->otp) && isset($request->user_id))
         {
-            $user_update=User::where('id',$request->user_id)->where("update_otp_date",">",Carbon::now()->subMinutes(15))->first();
+            $user_update=User::where('id',$request->user_id)->where("update_otp_date","<",Carbon::now()->subMinutes(15)->format('Y-m-d H:i:s'))->first();
+          
             if($user_update != null)
             {
                 return response()->json([
