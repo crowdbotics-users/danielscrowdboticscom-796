@@ -1,5 +1,5 @@
 {
-  "name": "ThatSportThing",
+  "name": "That Sport Thing",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0-beta.47",
+    "@prince8verma/react-native-snackbar": "^1.2.2",
     "moment": "^2.22.2",
     "react": "16.5.0",
     "react-native": "0.57.1",
@@ -17,6 +18,7 @@
     "react-native-gridview": "^0.1.2",
     "react-native-image-crop-picker": "^0.21.2",
     "react-native-indicators": "^0.13.0",
+    "react-native-loading-spinner-overlay": "^1.0.1",
     "react-native-modal-datetime-picker": "^6.0.0",
     "react-navigation": "^2.17.0",
     "rn-viewpager": "^1.2.9"

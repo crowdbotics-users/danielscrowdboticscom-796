@@ -7,7 +7,7 @@ import {
   FlatList,
   NetInfo,
   AsyncStorage,
-  Alert,TouchableOpacity,SafeAreaView
+  Alert, TouchableOpacity, SafeAreaView
 } from "react-native";
 import Colors from "../Resource/Colors";
 import CommentHeaderCompoment from "../Compoments/CommentHeaderCompoment";
@@ -45,18 +45,18 @@ class CommentListScreen extends PureComponent {
       seed: 1,
       error: null,
       refreshing: false,
-      total:0
+      total: 0
     };
   }
   componentDidMount() {
     const { data } = this.props.navigation.state.params;
     this.setState({
-      full_name:data.users.full_name,
-      profile_image:data.users.profile_image,
-      description:data.description,
-      created_at:data.created_at
+      full_name: data.users.full_name,
+      profile_image: data.users.profile_image,
+      description: data.description,
+      created_at: data.created_at
     });
-    console.log("componentDidMount",data);
+    console.log("componentDidMount", data);
     this.doCommentList(data);
   }
   openProgressbar = () => {
@@ -66,21 +66,21 @@ class CommentListScreen extends PureComponent {
     this.setState({ isProgress: false });
   };
   doCommentList = (postdata) => {
-      
+
     NetInfo.isConnected.fetch().then(isConnected => {
       if (isConnected) {
         AsyncStorage.getItem("data")
           .then(data => {
-         
+
             if (data != null) {
               const myData = JSON.parse(data);
-            
+
               const bodyData = JSON.stringify({ post_id: postdata.id });
 
               this.openProgressbar();
               this.doCommentListApi(bodyData, myData.token);
             } else {
-           
+
             }
           })
           .done();
@@ -112,25 +112,27 @@ class CommentListScreen extends PureComponent {
         switch (status) {
           case 200: {
             const result = responseJson.result;
-           
-          
+
+
             this.setState({
               data:
                 page === 1 ? result.data : [...this.state.data, ...result.data],
               loading: false,
               refreshing: false,
-              total:result.total
+              total: result.total
             });
 
             break;
           }
           case 401: {
+            console.log(message);
+
             break;
           }
           case 400: {
-          
-            alert(message);
-           
+            console.log(message);
+
+
             break;
           }
         }
@@ -145,7 +147,7 @@ class CommentListScreen extends PureComponent {
     return (
       <View>
         <View style={[styles.row]}>
-          <View style={{ flex: 0,marginTop:5 }}>
+          <View style={{ flex: 0, marginTop: 5 }}>
             <View
               style={{
                 width: 40,
@@ -176,10 +178,10 @@ class CommentListScreen extends PureComponent {
             </View>
           </View>
           <View style={{ flex: 1, alignContent: "center" }}>
-          <View style={[styles.row,{marginTop:5}]}>
+            <View style={[styles.row, { marginTop: 5 }]}>
               <Text
                 style={{
-                    
+
                   flex: 1,
                   color: Colors.colorEdittext,
                   fontFamily: "OpenSans-Light",
@@ -188,19 +190,19 @@ class CommentListScreen extends PureComponent {
               >
                 <Text
                   style={{
-                    marginEnd:5,
+                    marginEnd: 5,
                     color: Colors.colorEdittext,
                     fontSize: 13,
                     fontFamily: "OpenSans-Bold"
                   }}
                 >
-                  {item.users.full_name+` `}
+                  {item.users.full_name + ` `}
                 </Text>
-                {` `+item.messages}
-                
+                {` ` + item.messages}
+
               </Text>
             </View>
-            <View style={[styles.row,{marginTop:5}]}>
+            <View style={[styles.row, { marginTop: 5 }]}>
               <Text
                 style={{
                   color: Colors.colorEdittext,
@@ -212,27 +214,27 @@ class CommentListScreen extends PureComponent {
               </Text>
               <TouchableOpacity>
 
-                  <Text
-                style={{
-                    marginStart:5,
-                  color: Colors.colorEdittext,
-                  fontFamily: "OpenSans-Bold",
-                  fontSize: 12
-                }}
-              >
-                Reply ({item.reply_count})
+                <Text
+                  style={{
+                    marginStart: 5,
+                    color: Colors.colorEdittext,
+                    fontFamily: "OpenSans-Bold",
+                    fontSize: 12
+                  }}
+                >
+                  Reply ({item.reply_count})
               </Text>
               </TouchableOpacity>
             </View>
           </View>
-          <View style={{ flex: 0, alignItems: "center",marginTop:8,justifyContent:'center',alignContent:'center' }}>
-            <Image source={Icons.ic_like} style={[styles.icon,{width:20,height:20}]} />
+          <View style={{ flex: 0, alignItems: "center", marginTop: 8, justifyContent: 'center', alignContent: 'center' }}>
+            <Image source={Icons.ic_like} style={[styles.icon, { width: 20, height: 20 }]} />
             <Text
               style={{
                 color: "#717171",
                 fontFamily: "OpenSans-Light",
                 fontSize: 13,
-               
+
               }}
             >
               0
@@ -244,7 +246,7 @@ class CommentListScreen extends PureComponent {
   }
   render() {
     return (
-      
+
       <View style={customstyles.container}>
         <View
           style={{
@@ -267,7 +269,7 @@ class CommentListScreen extends PureComponent {
               }}
             >
               <Image
-                source={this.state.profile_image==""?Icons.messi:{uri:this.state.profile_image}}
+                source={this.state.profile_image == "" ? Icons.messi : { uri: this.state.profile_image }}
                 style={{
                   width: 34,
                   height: 34,
@@ -287,7 +289,7 @@ class CommentListScreen extends PureComponent {
                 flex: 1
               }}
             >
-             {this.state.full_name}
+              {this.state.full_name}
             </Text>
             <Text
               style={{
@@ -297,8 +299,8 @@ class CommentListScreen extends PureComponent {
                 marginRight: 8
               }}
             >
-            
-             {Moment(this.state.created_at).format("hh:mm A")}
+
+              {Moment(this.state.created_at).format("hh:mm A")}
             </Text>
           </View>
           <Text
@@ -318,7 +320,7 @@ class CommentListScreen extends PureComponent {
               data={this.state.data}
               renderItem={({ item }) => this.renderCommentItem(item)}
               style={{ marginStart: 10, marginEnd: 10, marginBottom: 80 }}
-              keyExtractor={ (item, index) => index.toString()}
+              keyExtractor={(item, index) => index.toString()}
             />
           </View>
           <View

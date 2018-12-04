@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, TouchableOpacity, Image, Text } from "react-native";
+import { View, TouchableOpacity, Image, Text,SafeAreaView } from "react-native";
 import PropTypes from "prop-types";
 import Colors from "../Resource/Colors";
 import Icons from "../Resource/Icons";
@@ -14,6 +14,7 @@ doBack(){
 }
   render() {
     return (
+      <SafeAreaView style={{ flex: 1 }}>
       <View
         style={{
           flexDirection: "row",
@@ -40,6 +41,7 @@ doBack(){
           THAT SPORTS THING
         </Text>
       </View>
+      </SafeAreaView>
     );
   }
 }

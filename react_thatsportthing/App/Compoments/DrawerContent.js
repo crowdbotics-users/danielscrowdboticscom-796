@@ -10,7 +10,7 @@ import {
   TextInput,
   Platform,
   NetInfo,
-  Alert
+  Alert, SafeAreaView, ScrollView
 } from "react-native";
 import { NavigationActions, StackActions } from "react-navigation";
 
@@ -22,6 +22,7 @@ import Icon from "../Resource/Icons";
 import Icons from "../Resource/Icons";
 import ApiUrl from "../Network/ApiUrl";
 import ProgressCompoment from "./ProgressCompoment";
+import { showSnackBar } from "@prince8verma/react-native-snackbar";
 
 class DrawerContent extends Component {
   constructor(props) {
@@ -31,6 +32,7 @@ class DrawerContent extends Component {
       username: "",
       useremail: "",
       userimage: "",
+      profile_image: "",
       isActiveTab: false,
       isActiveHome: true,
       isActiveProfile: false,
@@ -43,9 +45,32 @@ class DrawerContent extends Component {
     };
   }
   componentDidMount() {
-    if(this.props.activeDrawer=="home"){
+    if (this.props.activeDrawer == "home") {
       this.doHome();
+
     }
+    this.doGetUserInfo();
+  }
+  doGetUserInfo() {
+    AsyncStorage.getItem("data")
+      .then(data => {
+        if (data != null) {
+          const myData = JSON.parse(data);
+          this.setState({
+            full_name: myData.full_name,
+            profile_image: myData.profile_image,
+            cover_image: myData.cover_image,
+            post_status: myData.post_status,
+            follower_count: myData.follower_count,
+            crew_count: myData.crew_count,
+            post_count: myData.post_count,
+            user_name: myData.user_name
+          });
+        } else {
+
+        }
+      })
+      .done();
   }
   navigateToScreen = route => () => {
     const navigate = NavigationActions.navigate({
@@ -88,6 +113,17 @@ class DrawerContent extends Component {
       }
     });
   }
+  doShowSnackBar(message) {
+    showSnackBar({
+      message: message,
+      position: 'top',
+      backgroundColor: Colors.bgHeader,
+      buttonColor: "#fff",
+      confirmText: '',
+      onConfirm: () => { },
+      duration: 1000
+    });
+  }
   openProgressbar = () => {
     this.setState({ isProgress: true });
   };
@@ -99,17 +135,17 @@ class DrawerContent extends Component {
     fetch(ApiUrl.logoutUrl, bodyData)
       .then(response => response.json())
       .then(responseJson => {
-        this.hideProgressbar();
+
         const message = responseJson.message;
         const status = responseJson.status;
 
         switch (status) {
           case 200: {
             console.log(message);
-           
+
             AsyncStorage.clear();
             AsyncStorage.setItem("logged", "false");
-            
+            this.hideProgressbar();
             const resetAction = StackActions.reset({
               index: 0,
               key: null,
@@ -120,21 +156,22 @@ class DrawerContent extends Component {
             break;
           }
           case 401: {
-           
-            alert(message);
+            this.hideProgressbar();
+            this.doShowSnackBar(message);
             console.log(message);
             break;
           }
           case 400: {
-          
-            alert(message);
+            this.hideProgressbar();
+            this.doShowSnackBar(message);
             console.log(message);
             break;
           }
         }
+
       })
       .catch(error => {
-        this.hideProgressbar();
+
         console.log(error);
       });
   }
@@ -238,413 +275,417 @@ class DrawerContent extends Component {
     this.props.navigation.closeDrawer();
   };
   doRedirect(screen) {
-    
+
     this.props.navigation.navigate(screen);
   }
   render() {
     return (
-      <View
-        style={[
-          styles.container,
-          {
-            backgroundColor: Color.navBg,
-            justifyContent: "flex-start",
-
-            height: 200
-          }
-        ]}
-      >
-        <ProgressCompoment isProgress={this.state.isProgress} />
-        <View
-          style={{
-            backgroundColor: Color.bgHeader,
-            height: 100,
-            justifyContent: "center"
-          }}
-        >
+      <ScrollView>
+        <SafeAreaView style={{ flex: 1 }}>
           <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignContent: "center"
-            }}
+            style={[
+              styles.container,
+              {
+                backgroundColor: Color.navBg,
+                justifyContent: "flex-start",
+
+                height: 200
+              }
+            ]}
           >
+            <ProgressCompoment isProgress={this.state.isProgress} />
             <View
               style={{
-                flex: 1,
-                alignContent: "flex-start",
+                backgroundColor: Color.bgHeader,
+                height: 100,
                 justifyContent: "center"
               }}
             >
-              <Image
-                source={Icons.logo_white}
+              <View
                 style={{
-                  margin: 10,
-                  width: 90,
-                  height: 59
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignContent: "center"
                 }}
-              />
+              >
+                <View
+                  style={{
+                    flex: 1,
+                    alignContent: "flex-start",
+                    justifyContent: "center"
+                  }}
+                >
+                  <Image
+                    source={Icons.logo_white}
+                    style={{
+                      margin: 10,
+                      width: 90,
+                      height: 59
+                    }}
+                  />
+                </View>
+                <View
+                  style={{
+                    margin: 10,
+                    width: 81,
+                    height: 81,
+                    borderRadius: 45,
+                    backgroundColor: "#F8F6F7",
+                    alignSelf: "flex-end",
+                    justifyContent: "flex-end",
+                    alignContent: "flex-end"
+                  }}
+                >
+                  <Image
+                    source={this.state.profile_image == "" ? Icons.messi : { uri: this.state.profile_image }}
+                    style={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: 40,
+                      borderWidth: 1.5,
+                      borderColor: "#D1D0D0",
+                      alignSelf: "center"
+                    }}
+                  />
+                </View>
+              </View>
+            </View>
+            <View>
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#313131",
+                  flexDirection: "row",
+                  padding: Platform.OS == "android" ? 0 : 10,
+                  borderColor: Color.colorSearch,
+                  margin: 10,
+                  borderRadius: 5
+                }}
+              >
+                <Image
+                  source={Icons.ic_search}
+                  style={{ width: 24, height: 24, marginRight: 5, marginLeft: 10 }}
+                />
+                <TextInput
+                  returnKeyType="done"
+                  placeholder="Search.."
+                  style={{
+                    padding: Platform.OS == "android" ? 5 : 0,
+                    color: Color.colorSearch,
+                    flex: 1,
+                    marginLeft: 5,
+                    fontSize: 14,
+                    fontFamily: "OpenSans-SemiBold"
+                  }}
+                  underlineColorAndroid={Color.transparent}
+                  placeholderTextColor={Color.colorSearch}
+                />
+              </View>
             </View>
             <View
-              style={{
-                margin: 10,
-                width: 81,
-                height: 81,
-                borderRadius: 45,
-                backgroundColor: "#F8F6F7",
-                alignSelf: "flex-end",
-                justifyContent: "flex-end",
-                alignContent: "flex-end"
-              }}
-            >
-              <Image
-                source={Icons.messi}
-                style={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: 40,
-                  borderWidth: 1.5,
-                  borderColor: "#D1D0D0",
-                  alignSelf: "center"
-                }}
-              />
+              style={{ height: 2, width: "100%", backgroundColor: Color.bgHeader }}
+            />
+            <View>
+              <View style={{ backgroundColor: Color.navBg }}>
+                <TouchableOpacity onPress={this.doHome.bind(this)}>
+                  <View
+                    style={{
+                      backgroundColor: this.state.isActiveHome
+                        ? "#313131"
+                        : Color.transparent,
+                      flexDirection: "row",
+                      padding: 10,
+                      borderColor: Color.colorSearch,
+                      marginTop: 10
+                    }}
+                  >
+                    <Image
+                      resizeMode="contain"
+                      source={Icons.ic_home}
+                      style={{
+                        width: 24,
+                        height: 24,
+                        marginLeft: 10,
+                        marginRight: 5
+                      }}
+                    />
+                    <Text
+                      style={{
+                        color: Color.colorSearch,
+                        flex: 1,
+                        marginLeft: 5,
+                        fontSize: 16,
+                        fontFamily: "OpenSans-SemiBold"
+                      }}
+                    >
+                      Home
+                </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity onPress={this.doProfile.bind(this)}>
+                  <View
+                    style={{
+                      backgroundColor: this.state.isActiveProfile
+                        ? "#313131"
+                        : Color.navBg,
+                      flexDirection: "row",
+                      padding: 10,
+                      borderColor: Color.colorSearch
+                    }}
+                  >
+                    <Image
+                      source={Icons.ic_profile}
+                      style={{
+                        width: 24,
+                        height: 24,
+                        marginLeft: 10,
+                        marginRight: 5
+                      }}
+                    />
+                    <Text
+                      style={{
+                        color: Color.colorSearch,
+                        flex: 1,
+                        marginLeft: 5,
+                        fontSize: 16,
+                        fontFamily: "OpenSans-SemiBold"
+                      }}
+                    >
+                      My Profile
+                </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity onPress={this.doPosts.bind(this)}>
+                  <View
+                    style={{
+                      backgroundColor: this.state.isActivePosts
+                        ? "#313131"
+                        : Color.navBg,
+                      flexDirection: "row",
+                      padding: 10,
+                      borderColor: Color.colorSearch
+                    }}
+                  >
+                    <Image
+                      source={Icons.ic_posts}
+                      style={{
+                        width: 24,
+                        height: 24,
+                        marginLeft: 10,
+                        marginRight: 5
+                      }}
+                    />
+                    <Text
+                      style={{
+                        color: Color.colorSearch,
+                        flex: 1,
+                        marginLeft: 5,
+                        fontSize: 16,
+                        fontFamily: "OpenSans-SemiBold"
+                      }}
+                    >
+                      My Posts
+                </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity onPress={this.doPhotos.bind(this)}>
+                  <View
+                    style={{
+                      backgroundColor: this.state.isActivePhotos
+                        ? "#313131"
+                        : Color.navBg,
+                      flexDirection: "row",
+                      padding: 10,
+                      borderColor: Color.colorSearch
+                    }}
+                  >
+                    <Image
+                      resizeMode="contain"
+                      source={Icons.ic_photos}
+                      style={{
+                        width: 24,
+                        height: 24,
+                        marginLeft: 10,
+                        marginRight: 5
+                      }}
+                    />
+                    <Text
+                      style={{
+                        color: Color.colorSearch,
+                        flex: 1,
+                        marginLeft: 5,
+                        fontSize: 16,
+                        fontFamily: "OpenSans-SemiBold"
+                      }}
+                    >
+                      Photos
+                </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity onPress={this.doVideos.bind(this)}>
+                  <View
+                    style={{
+                      backgroundColor: this.state.isActiveVideos
+                        ? "#313131"
+                        : Color.navBg,
+                      flexDirection: "row",
+                      padding: 10,
+                      borderColor: Color.colorSearch
+                    }}
+                  >
+                    <Image
+                      resizeMode="contain"
+                      source={Icons.ic_videos}
+                      style={{
+                        width: 24,
+                        height: 24,
+                        marginLeft: 10,
+                        marginRight: 5
+                      }}
+                    />
+                    <Text
+                      style={{
+                        color: Color.colorSearch,
+                        flex: 1,
+                        marginLeft: 5,
+                        fontSize: 16,
+                        fontFamily: "OpenSans-SemiBold"
+                      }}
+                    >
+                      Videos
+                </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity onPress={this.doFriends.bind(this)}>
+                  <View
+                    style={{
+                      backgroundColor: this.state.isActiveFriends
+                        ? "#313131"
+                        : Color.navBg,
+                      flexDirection: "row",
+                      padding: 10,
+                      borderColor: Color.colorSearch
+                    }}
+                  >
+                    <Image
+                      resizeMode="contain"
+                      source={Icons.ic_friends}
+                      style={{
+                        width: 24,
+                        height: 24,
+                        marginLeft: 10,
+                        marginRight: 5
+                      }}
+                    />
+                    <Text
+                      style={{
+                        color: Color.colorSearch,
+                        flex: 1,
+                        marginLeft: 5,
+                        fontSize: 16,
+                        fontFamily: "OpenSans-SemiBold"
+                      }}
+                    >
+                      Crew
+                </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity onPress={this.doAccountSetting.bind(this)}>
+                  <View
+                    style={{
+                      backgroundColor: this.state.isActiveAccountSettings
+                        ? "#313131"
+                        : Color.navBg,
+                      flexDirection: "row",
+                      padding: 10,
+                      borderColor: Color.colorSearch,
+                      marginTop: 30
+                    }}
+                  >
+                    <Image
+                      resizeMode="contain"
+                      source={Icons.ic_account_settings}
+                      style={{
+                        width: 24,
+                        height: 24,
+                        marginLeft: 10,
+                        marginRight: 5
+                      }}
+                    />
+                    <Text
+                      style={{
+                        color: Color.colorSearch,
+                        flex: 1,
+                        marginLeft: 5,
+                        fontSize: 16,
+                        fontFamily: "OpenSans-SemiBold"
+                      }}
+                    >
+                      Account Setting
+                </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity onPress={() => this.doLogout("LoginType")}>
+                  <View
+                    style={{
+                      backgroundColor: this.state.isActiveLogout
+                        ? "#313131"
+                        : Color.navBg,
+                      flexDirection: "row",
+                      padding: 10,
+                      borderColor: Color.colorSearch
+                    }}
+                  >
+                    <Image
+                      resizeMode="contain"
+                      source={Icons.ic_logout}
+                      style={{
+                        width: 24,
+                        height: 24,
+                        marginLeft: 10,
+                        marginRight: 5
+                      }}
+                    />
+                    <Text
+                      style={{
+                        color: Color.colorSearch,
+                        flex: 1,
+                        marginLeft: 5,
+                        fontSize: 16,
+                        fontFamily: "OpenSans-SemiBold"
+                      }}
+                    >
+                      Logout
+                </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-        <View>
-          <View
-            style={{
-              justifyContent: "center",
-              alignContent: "center",
-              alignItems: "center",
-              backgroundColor: "#313131",
-              flexDirection: "row",
-              padding: Platform.OS == "android" ? 0 : 10,
-              borderColor: Color.colorSearch,
-              margin: 10,
-              borderRadius: 5
-            }}
-          >
-            <Image
-              source={Icons.ic_search}
-              style={{ width: 24, height: 24, marginRight: 5, marginLeft: 10 }}
-            />
-            <TextInput
-              returnKeyType="done"
-              placeholder="Search.."
-              style={{
-                padding: Platform.OS == "android" ? 5 : 0,
-                color: Color.colorSearch,
-                flex: 1,
-                marginLeft: 5,
-                fontSize: 14,
-                fontFamily: "OpenSans-SemiBold"
-              }}
-              underlineColorAndroid={Color.transparent}
-              placeholderTextColor={Color.colorSearch}
-            />
-          </View>
-        </View>
-        <View
-          style={{ height: 2, width: "100%", backgroundColor: Color.bgHeader }}
-        />
-        <View>
-          <View style={{ backgroundColor: Color.navBg }}>
-            <TouchableOpacity onPress={this.doHome.bind(this)}>
-              <View
-                style={{
-                  backgroundColor: this.state.isActiveHome
-                    ? "#313131"
-                    : Color.transparent,
-                  flexDirection: "row",
-                  padding: 10,
-                  borderColor: Color.colorSearch,
-                  marginTop: 10
-                }}
-              >
-                <Image
-                  resizeMode="contain"
-                  source={Icons.ic_home}
-                  style={{
-                    width: 24,
-                    height: 24,
-                    marginLeft: 10,
-                    marginRight: 5
-                  }}
-                />
-                <Text
-                  style={{
-                    color: Color.colorSearch,
-                    flex: 1,
-                    marginLeft: 5,
-                    fontSize: 16,
-                    fontFamily: "OpenSans-SemiBold"
-                  }}
-                >
-                  Home
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <TouchableOpacity onPress={this.doProfile.bind(this)}>
-              <View
-                style={{
-                  backgroundColor: this.state.isActiveProfile
-                    ? "#313131"
-                    : Color.navBg,
-                  flexDirection: "row",
-                  padding: 10,
-                  borderColor: Color.colorSearch
-                }}
-              >
-                <Image
-                  source={Icons.ic_profile}
-                  style={{
-                    width: 24,
-                    height: 24,
-                    marginLeft: 10,
-                    marginRight: 5
-                  }}
-                />
-                <Text
-                  style={{
-                    color: Color.colorSearch,
-                    flex: 1,
-                    marginLeft: 5,
-                    fontSize: 16,
-                    fontFamily: "OpenSans-SemiBold"
-                  }}
-                >
-                  My Profile
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <TouchableOpacity onPress={this.doPosts.bind(this)}>
-              <View
-                style={{
-                  backgroundColor: this.state.isActivePosts
-                    ? "#313131"
-                    : Color.navBg,
-                  flexDirection: "row",
-                  padding: 10,
-                  borderColor: Color.colorSearch
-                }}
-              >
-                <Image
-                  source={Icons.ic_posts}
-                  style={{
-                    width: 24,
-                    height: 24,
-                    marginLeft: 10,
-                    marginRight: 5
-                  }}
-                />
-                <Text
-                  style={{
-                    color: Color.colorSearch,
-                    flex: 1,
-                    marginLeft: 5,
-                    fontSize: 16,
-                    fontFamily: "OpenSans-SemiBold"
-                  }}
-                >
-                  My Posts
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <TouchableOpacity onPress={this.doPhotos.bind(this)}>
-              <View
-                style={{
-                  backgroundColor: this.state.isActivePhotos
-                    ? "#313131"
-                    : Color.navBg,
-                  flexDirection: "row",
-                  padding: 10,
-                  borderColor: Color.colorSearch
-                }}
-              >
-                <Image
-                  resizeMode="contain"
-                  source={Icons.ic_photos}
-                  style={{
-                    width: 24,
-                    height: 24,
-                    marginLeft: 10,
-                    marginRight: 5
-                  }}
-                />
-                <Text
-                  style={{
-                    color: Color.colorSearch,
-                    flex: 1,
-                    marginLeft: 5,
-                    fontSize: 16,
-                    fontFamily: "OpenSans-SemiBold"
-                  }}
-                >
-                  Photos
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <TouchableOpacity onPress={this.doVideos.bind(this)}>
-              <View
-                style={{
-                  backgroundColor: this.state.isActiveVideos
-                    ? "#313131"
-                    : Color.navBg,
-                  flexDirection: "row",
-                  padding: 10,
-                  borderColor: Color.colorSearch
-                }}
-              >
-                <Image
-                  resizeMode="contain"
-                  source={Icons.ic_videos}
-                  style={{
-                    width: 24,
-                    height: 24,
-                    marginLeft: 10,
-                    marginRight: 5
-                  }}
-                />
-                <Text
-                  style={{
-                    color: Color.colorSearch,
-                    flex: 1,
-                    marginLeft: 5,
-                    fontSize: 16,
-                    fontFamily: "OpenSans-SemiBold"
-                  }}
-                >
-                  Videos
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <TouchableOpacity onPress={this.doFriends.bind(this)}>
-              <View
-                style={{
-                  backgroundColor: this.state.isActiveFriends
-                    ? "#313131"
-                    : Color.navBg,
-                  flexDirection: "row",
-                  padding: 10,
-                  borderColor: Color.colorSearch
-                }}
-              >
-                <Image
-                  resizeMode="contain"
-                  source={Icons.ic_friends}
-                  style={{
-                    width: 24,
-                    height: 24,
-                    marginLeft: 10,
-                    marginRight: 5
-                  }}
-                />
-                <Text
-                  style={{
-                    color: Color.colorSearch,
-                    flex: 1,
-                    marginLeft: 5,
-                    fontSize: 16,
-                    fontFamily: "OpenSans-SemiBold"
-                  }}
-                >
-                  Crew
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <TouchableOpacity onPress={this.doAccountSetting.bind(this)}>
-              <View
-                style={{
-                  backgroundColor: this.state.isActiveAccountSettings
-                    ? "#313131"
-                    : Color.navBg,
-                  flexDirection: "row",
-                  padding: 10,
-                  borderColor: Color.colorSearch,
-                  marginTop: 30
-                }}
-              >
-                <Image
-                  resizeMode="contain"
-                  source={Icons.ic_account_settings}
-                  style={{
-                    width: 24,
-                    height: 24,
-                    marginLeft: 10,
-                    marginRight: 5
-                  }}
-                />
-                <Text
-                  style={{
-                    color: Color.colorSearch,
-                    flex: 1,
-                    marginLeft: 5,
-                    fontSize: 16,
-                    fontFamily: "OpenSans-SemiBold"
-                  }}
-                >
-                  Account Setting
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <TouchableOpacity onPress={() => this.doLogout("LoginType")}>
-              <View
-                style={{
-                  backgroundColor: this.state.isActiveLogout
-                    ? "#313131"
-                    : Color.navBg,
-                  flexDirection: "row",
-                  padding: 10,
-                  borderColor: Color.colorSearch
-                }}
-              >
-                <Image
-                  resizeMode="contain"
-                  source={Icons.ic_logout}
-                  style={{
-                    width: 24,
-                    height: 24,
-                    marginLeft: 10,
-                    marginRight: 5
-                  }}
-                />
-                <Text
-                  style={{
-                    color: Color.colorSearch,
-                    flex: 1,
-                    marginLeft: 5,
-                    fontSize: 16,
-                    fontFamily: "OpenSans-SemiBold"
-                  }}
-                >
-                  Logout
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
+        </SafeAreaView>
+      </ScrollView>
     );
   }
 }
 
 DrawerContent.propTypes = {
   navigation: PropTypes.object,
-  activeDrawer:PropTypes.string
+  activeDrawer: PropTypes.string
 };
 export default DrawerContent;

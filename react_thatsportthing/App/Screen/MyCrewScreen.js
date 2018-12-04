@@ -185,7 +185,7 @@ class MyCrewScreen extends Component {
   };
   renderFriends(data) {
     return (
-      <SafeAreaView>
+      <SafeAreaView style={{flex:1}}>
         <View
           style={[
             styles.column,

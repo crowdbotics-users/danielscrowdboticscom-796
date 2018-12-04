@@ -22,6 +22,8 @@ import Icons from "../Resource/Icons";
 import ImagePicker from "react-native-image-crop-picker";
 import ApiUrl from "../Network/ApiUrl";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
+import Snackbar, { showSnackBar } from '@prince8verma/react-native-snackbar'
+
 class EditProfileScreen extends PureComponent {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
@@ -101,15 +103,16 @@ class EditProfileScreen extends PureComponent {
     fetch(ApiUrl.getUserProfile, bodyData)
       .then(response => response.json())
       .then(responseJson => {
-        this.hideProgressbar();
+        console.log(responseJson);
+
         const message = responseJson.message;
         const status = responseJson.status;
 
         switch (status) {
           case 200: {
             const result = responseJson.result;
-          
-            this.hideProgressbar();
+
+
             this.setState({
               full_name: result.full_name,
               profilePicture: result.profile_image,
@@ -124,18 +127,19 @@ class EditProfileScreen extends PureComponent {
             break;
           }
           case 401: {
-            this.hideProgressbar();
+
             alert(message);
-            console.log(message);
+
             break;
           }
           case 400: {
-            this.hideProgressbar();
+
             alert(message);
-            console.log(message);
+
             break;
           }
         }
+        this.hideProgressbar();
       })
       .catch(error => {
         this.hideProgressbar();
@@ -147,10 +151,10 @@ class EditProfileScreen extends PureComponent {
       if (isConnected) {
         AsyncStorage.getItem("data")
           .then(data => {
-            console.log("AsyncStorage");
+
             if (data != null) {
               const myData = JSON.parse(data);
-              console.log(data);
+
 
               let postData = {
                 method: "GET",
@@ -252,7 +256,7 @@ class EditProfileScreen extends PureComponent {
       includeExif: true
     })
       .then(image => {
-        console.log("received image", image);
+
         this.setState({
           profilePicture: image.path
         });
@@ -276,7 +280,6 @@ class EditProfileScreen extends PureComponent {
       includeExif: true
     })
       .then(image => {
-        console.log("received image", image);
         this.setState({
           coverPicture: image.path
         });
@@ -316,25 +319,35 @@ class EditProfileScreen extends PureComponent {
       if (isConnected) {
         AsyncStorage.getItem("data")
           .then(data => {
-            console.log("AsyncStorage");
             if (data != null) {
+
+
+
               const myData = JSON.parse(data);
               const bodyData = new FormData();
-              bodyData.append("profile_image", {
-                uri: this.state.profilePicture,
-                type: "image/jpeg",
-                name: "image1"
-              });
-              bodyData.append("cover_image", {
-                uri: this.state.coverPicture,
-                type: "image/jpeg",
-                name: "image1"
-              });
+              if (this.state.profilePicture != "") {
+                bodyData.append("profile_image", {
+                  uri: this.state.profilePicture,
+                  type: "image/jpeg",
+                  name: "image1.jpeg"
+                });
+              }
+              if (this.state.coverPicture != "") {
+                bodyData.append("cover_image", {
+                  uri: this.state.coverPicture,
+                  type: "image/jpeg",
+                  name: "image2.jpeg"
+                });
+              }
+
               bodyData.append("name", this.state.full_name);
               bodyData.append("post_status", this.state.post_status);
-            
+
               this.openProgressbar();
-              this.doUpdateUserInfoApi(bodyData,myData.token);
+              console.log("doUpdateProfile", bodyData);
+              console.log(myData);
+
+              this.doUpdateUserInfoApi(bodyData, myData.token);
             } else {
               console.log(data);
             }
@@ -348,7 +361,7 @@ class EditProfileScreen extends PureComponent {
       }
     });
   }
-  doUpdateUserInfoApi(bodyData,token) {
+  doUpdateUserInfoApi(bodyData, token) {
     fetch(ApiUrl.editUserProfile, {
       method: "POST",
       headers: {
@@ -360,29 +373,29 @@ class EditProfileScreen extends PureComponent {
     })
       .then(response => response.json())
       .then(responseJson => {
-        this.hideProgressbar();
+        console.log("doUpdateUserInfoApi", responseJson);
+
         const message = responseJson.message;
         const status = responseJson.status;
 
         switch (status) {
           case 200: {
-           
-            this.props.navigation.goBack(null);
+            this.doShowSnackBar(message);
+            // this.props.navigation.goBack(null);
             break;
           }
           case 401: {
-            this.hideProgressbar();
-            alert(message);
-            console.log(message);
+
+            this.doShowSnackBar(message);
             break;
           }
           case 400: {
-            this.hideProgressbar();
-            alert(message);
-            console.log(message);
+
+            this.doShowSnackBar(message);
             break;
           }
         }
+        this.hideProgressbar();
       })
       .catch(error => {
         this.hideProgressbar();
@@ -391,7 +404,7 @@ class EditProfileScreen extends PureComponent {
       });
   }
   renderItem(data) {
-    console.log(data);
+
     return (
       <View>
         <TouchableOpacity onPress={() => this.doSportClick(data)}>
@@ -402,6 +415,17 @@ class EditProfileScreen extends PureComponent {
         </TouchableOpacity>
       </View>
     );
+  }
+  doShowSnackBar(message) {
+    showSnackBar({
+      message: message,
+      position: 'top',
+      backgroundColor: Colors.bgHeader,
+      buttonColor: "#fff",
+      confirmText: '',
+      onConfirm: () => { },
+      duration: 1000
+    });
   }
   render() {
     return (
@@ -414,7 +438,7 @@ class EditProfileScreen extends PureComponent {
                 style={{
                   color: Colors.black,
                   marginTop: 10,
-                  marginBottom: 5,
+                  marginBottom: 10,
                   fontFamily: "OpenSans-SemiBold",
                   fontSize: 14
                 }}
@@ -432,7 +456,7 @@ class EditProfileScreen extends PureComponent {
                 <TextInput
                   style={{
                     color: Colors.black,
-                    padding: 0,
+                    padding: Platform.OS == "android" ? 0 : 8,
                     marginStart: 5,
                     marginEnd: 5,
                     fontFamily: "OpenSans-Bold"
@@ -583,6 +607,7 @@ class EditProfileScreen extends PureComponent {
                   }}
                 >
                   <TouchableOpacity
+                    onPress={() => this.pickSingleProfile(true, true)}
                     style={{
                       flex: 1
                     }}
@@ -618,7 +643,7 @@ class EditProfileScreen extends PureComponent {
                   }}
                 >
                   <TouchableOpacity
-                    onPress={() => this.pickSingleProfile(true, true)}
+
                     style={{
                       flex: 1
                     }}
@@ -763,6 +788,7 @@ class EditProfileScreen extends PureComponent {
                   }}
                 >
                   <TouchableOpacity
+                    onPress={() => this.pickSingleCover(true, false)}
                     style={{
                       flex: 1
                     }}
@@ -798,7 +824,7 @@ class EditProfileScreen extends PureComponent {
                   }}
                 >
                   <TouchableOpacity
-                    onPress={() => this.pickSingleCover(true, false)}
+
                     style={{
                       flex: 1
                     }}
@@ -861,7 +887,7 @@ class EditProfileScreen extends PureComponent {
               bounces={false}
               data={this.state.favouriteSport}
               renderItem={({ item, index }) => this.renderItem(item)}
-              keyExtractor={item => item}
+              keyExtractor={(item, index) => index.toString()}
             />
             <TouchableOpacity>
               <View
@@ -961,7 +987,7 @@ class EditProfileScreen extends PureComponent {
             </View>
 
             <TouchableOpacity
-            onPress={()=>this.doUpdateProfile()}
+              onPress={() => this.doUpdateProfile()}
               style={{
                 backgroundColor: "#6da82a",
                 height: 40,

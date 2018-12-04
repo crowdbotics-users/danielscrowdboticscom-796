@@ -139,6 +139,7 @@ class AddPostScreen extends PureComponent {
   };
   render() {
     return (
+      <SafeAreaView style={{flex:1}}>
       <View style={{ backgroundColor: Colors.white, flex: 1 }}>
         <View
           style={{ position: "relative", flex: 1, flexDirection: "column" }}
@@ -287,6 +288,7 @@ class AddPostScreen extends PureComponent {
           </View>
         </View>
       </View>
+      </SafeAreaView>
     );
   }
 }

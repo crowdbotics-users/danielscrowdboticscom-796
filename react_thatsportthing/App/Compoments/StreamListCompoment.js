@@ -27,7 +27,7 @@ class StreamListComponent extends Component {
     };
   }
   doRedirect(data) {
-    this.props.navigation.navigate("ProfileScreen", { data: data });
+    //this.props.navigation.navigate("ProfileScreen", { data: data });
   }
   doCommentList(data) {
     this.props.navigation.navigate("CommentListScreen", { data: data });
@@ -276,6 +276,7 @@ class StreamListComponent extends Component {
           renderItem={({ item, index }) => this.renderStream(item, index)}
           keyExtractor={(item, index) => index.toString()}
           ListEmptyComponent={this.renderEmpty()}
+          scrollEnabled={false}
         />
       </View>
     );

@@ -17,7 +17,7 @@ import Icons from "../Resource/Icons";
 import Moment from "moment";
 class PostListComponent extends Component {
   doRedirect(screen, data) {
-    this.props.navigation.navigate(screen, { data: data });
+    //this.props.navigation.navigate(screen, { data: data });
   }
   doCommentList(data) {
     this.props.navigation.navigate("CommentListScreen", { data: data });
@@ -68,7 +68,7 @@ class PostListComponent extends Component {
               />
             </View>
             <TouchableOpacity
-              onPress={() => this.doRedirect("UserProfileScreen", data)}
+              onPress={() => this.doRedirect("ProfileScreen", data)}
               style={{ flex: 1 }}
             >
               <Text
@@ -189,9 +189,9 @@ class PostListComponent extends Component {
           bounces={false}
           numColumns={1}
           style={{ marginTop: 5 }}
-          data={this.props.streams}
+          data={this.props.posts}
           renderItem={({ item, index }) => this.renderStream(item)}
-          keyExtractor={item => item}
+          keyExtractor={(item, index) => index.toString()}
           ListEmptyComponent={this.renderEmpty()}
         />
       </View>

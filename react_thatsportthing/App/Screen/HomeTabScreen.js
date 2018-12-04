@@ -68,7 +68,7 @@ class HomeTabScreen extends Component {
       isStreamActive: true,
       isFriendsPostActive: false,
       isSearchActive: false,
-    
+
       activeColor: Colors.orange,
       activeTextColor: Colors.white,
       inactiveColor: Colors.white,
@@ -121,18 +121,16 @@ class HomeTabScreen extends Component {
     };
   }
 
-  componentWillMount() {
-  
-  }
+
   getPostList() {
     NetInfo.isConnected.fetch().then(isConnected => {
       if (isConnected) {
         AsyncStorage.getItem("data")
           .then(data => {
-           
+
             if (data != null) {
               const myData = JSON.parse(data);
-          
+
 
               let postData = {
                 method: "GET",
@@ -144,9 +142,10 @@ class HomeTabScreen extends Component {
               };
 
               this.openProgressbar();
+              this.doGetUserInfoApi(postData);
               this.getPostListApi(postData);
             } else {
-           
+
             }
           })
           .done();
@@ -158,11 +157,59 @@ class HomeTabScreen extends Component {
       }
     });
   }
+  doGetUserInfoApi(bodyData) {
+    fetch(ApiUrl.getUserProfile, bodyData)
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+            const result = responseJson.result;
+
+            console.log("doGetUserInfoApi", result);
+
+
+            this.setState({
+              full_name: result.full_name,
+              profile_image: result.profile_image,
+              cover_image: result.cover_image,
+              post_status: result.post_status,
+              follower_count: result.follower_count,
+              crew_count: result.crew_count,
+              post_count: result.post_count,
+              user_name: result.user_name
+            });
+            break;
+          }
+          case 401: {
+
+            console.log(message);
+
+            break;
+          }
+          case 400: {
+
+           console.log(message);
+           
+            break;
+          }
+        }
+        this.hideProgressbar();
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+      });
+  }
   getPostListApi(bodyData) {
     fetch(ApiUrl.getPosts, bodyData)
       .then(response => response.json())
       .then(responseJson => {
-     
+
 
         this.hideProgressbar();
         const message = responseJson.message;
@@ -180,10 +227,10 @@ class HomeTabScreen extends Component {
           }
           case 401: {
             this.setState({
-             isError: false
+              isError: false
             });
             alert(message);
-        
+
             break;
           }
           case 400: {
@@ -191,15 +238,16 @@ class HomeTabScreen extends Component {
               isError: false
             });
             alert(message);
-         
+
             break;
           }
         }
       })
       .catch(error => {
+        alert(error)
         this.hideProgressbar();
         this.setState({
-         isError: false
+          isError: false
         });
       });
   }
@@ -214,7 +262,7 @@ class HomeTabScreen extends Component {
     );
   }
   componentDidMount() {
-    this.doGetUserInfo();
+
     this.getPostList();
   }
   openProgressbar = () => {
@@ -231,8 +279,8 @@ class HomeTabScreen extends Component {
           const myData = JSON.parse(data);
           this.setState({
             full_name: myData.full_name,
-            profilePicture: myData.profile_image,
-            coverPicture: myData.cover_image,
+            profile_image: myData.profile_image,
+            cover_image: myData.cover_image,
             post_status: myData.post_status,
             follower_count: myData.follower_count,
             crew_count: myData.crew_count,
@@ -240,7 +288,7 @@ class HomeTabScreen extends Component {
             user_name: myData.user_name
           });
         } else {
-       
+
         }
       })
       .done();
@@ -287,6 +335,13 @@ class HomeTabScreen extends Component {
         isLocationActive: true
       });
     }
+  }
+  onPageScroll(event) {
+
+    const { offset, position } = event;
+    console.log(position);
+    
+
   }
   doChangeTab(tabName) {
     if (tabName == "stream") {
@@ -539,15 +594,13 @@ class HomeTabScreen extends Component {
   };
   render() {
     return (
-      <SafeAreaView>
+      <SafeAreaView style={{ flex: 1 }}>
         <ScrollView
-          bounces={false}
-          showsVerticalScrollIndicator={false}
-          alwaysBounceVertical={false}
+          
         >
           <View style={{ flex: 1 }}>
             <HomeBannerCompoment
-             
+
               navigation={this.props.navigation}
               full_name={this.state.full_name}
               profile_image={this.state.profile_image}
@@ -579,10 +632,10 @@ class HomeTabScreen extends Component {
                   alignItems: "center"
                 }}
               >
-                
-                
+
+
                 <ListView
-                
+
                   horizontal={true}
                   showsVerticalScrollIndicator={false}
                   alwaysBounceVertical={false}
@@ -675,8 +728,10 @@ class HomeTabScreen extends Component {
 
             <View>
               <ViewPager
+              scrollEnabled={false}
                 style={{ height: Dimensions.get("screen").height }}
                 ref={"viewPager"}
+                onPageScroll={(event) => this.onPageScroll(event)}
                 initialPage={this.state.currentTab}
               >
                 <View>
