@@ -18,11 +18,10 @@ import GridView from "react-native-gridview";
 import Moment from "moment";
 class FriendListComponent extends Component {
   doRedirect(screen,data) {
-    this.props.navigation.navigate(screen, { data: data });
+    this.props.navigation.navigate("ProfileScreen", { data: data });
   }
   doCommentList(data) {
-    this.props.navigation.navigate("CommentListScreen", { data: data });
-  }
+    this.props.navigation.navigate("CommentListScreen", { commentdata: data });  }
   
   renderFriends(data) {
     return (

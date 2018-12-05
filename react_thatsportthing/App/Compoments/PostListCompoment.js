@@ -17,10 +17,11 @@ import Icons from "../Resource/Icons";
 import Moment from "moment";
 class PostListComponent extends Component {
   doRedirect(screen, data) {
-    //this.props.navigation.navigate(screen, { data: data });
+    this.props.navigation.navigate("ProfileScreen", { data: data });
+
   }
   doCommentList(data) {
-    this.props.navigation.navigate("CommentListScreen", { data: data });
+    this.props.navigation.navigate("CommentListScreen", { commentdata: data });
   }
   renderStream(data) {
     return (

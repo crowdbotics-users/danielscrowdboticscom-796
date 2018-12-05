@@ -18,7 +18,7 @@ import GridView from "react-native-gridview";
 import Moment from "moment";
 class PictureListComponent extends Component {
   doRedirect(screen, data) {
-    this.props.navigation.navigate(screen, { data: data });
+    this.props.navigation.navigate("ProfileScreen", { data: data });
   }
 
   renderPictures(data) {

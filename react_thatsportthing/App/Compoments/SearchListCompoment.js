@@ -32,7 +32,7 @@ class SearchListCompoment extends Component {
   }
 
   doCommentList(data) {
-    this.props.navigation.navigate("CommentListScreen", { data: data });
+    this.props.navigation.navigate("CommentListScreen", { commentdata: data });
   }
   doLikePost(postdata, index) {
     NetInfo.isConnected.fetch().then(isConnected => {
