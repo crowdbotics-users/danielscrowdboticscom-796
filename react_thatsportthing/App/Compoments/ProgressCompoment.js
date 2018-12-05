@@ -12,11 +12,22 @@ import {
 import PropTypes from "prop-types";
 import Colors from "../Resource/Colors";
 import { BallIndicator } from "react-native-indicators";
+import Spinner from 'react-native-loading-spinner-overlay';
+
 class ProgressCompoment extends Component {
   render() {
     return (
       <View>
-        <Modal
+        <Spinner
+      
+          visible={this.props.isProgress}
+          textContent={'Loading ...'}
+          animation="fade"
+          customIndicator={ <BallIndicator color={Colors.white}  /> }
+          size="large"
+          textStyle={styles.spinnerTextStyle}
+        />
+        {/* <Modal
           onRequestClose={() => null}
           visible={this.props.isProgress}
           animationType="fade"
@@ -48,44 +59,19 @@ class ProgressCompoment extends Component {
               <BallIndicator color={Colors.white} animationDuration={800}  />
             </View>
           </View>
-        </Modal>
+        </Modal> */}
       </View>
     );
   }
 }
-
-const customstyles = StyleSheet.create({
-  activeTab: {
-    backgroundColor: Colors.bgHeader,
-    width: Dimensions.get("screen").width / 3,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 10,
-    marginLeft: 5,
-    marginRight: 5
-  },
-  activeTabText: {
-    padding: 10,
-    color: Colors.white,
-    fontSize: 15,
-    fontFamily: "OpenSans-SemiBold"
-  },
-  InactiveTab: {
-    backgroundColor: Colors.white,
-    width: Dimensions.get("screen").width / 3,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 10,
-    marginLeft: 5,
-    marginRight: 5
-  },
-  InactiveTabText: {
-    padding: 10,
-    color: Colors.bgHeader,
-    fontSize: 15,
-    fontFamily: "OpenSans-SemiBold"
+const styles = StyleSheet.create({
+  spinnerTextStyle: {
+   
+    color: '#FFF',
+    fontFamily: "OpenSans-SemiBold",
   }
 });
+
 ProgressCompoment.propTypes = {
   isProgress: PropTypes.bool
 };

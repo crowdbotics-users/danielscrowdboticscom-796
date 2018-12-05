@@ -24,7 +24,7 @@ import Icons from "../Resource/Icons";
 import styles from "../Resource/Styles";
 import HamburgerIcon from "../Compoments/HamburgerIcon";
 import ListCompoment from "../Compoments/ListCompoment";
-import { ViewPager, IndicatorViewPager } from "rn-viewpager";
+// import { ViewPager, IndicatorViewPager } from "rn-viewpager";
 import BannerCompoment from "../Compoments/BannerCompoment";
 import hometabstyles from "../Resource/hometabstyles";
 import WritePostCompoment from "../Compoments/WritePostCompoment";
@@ -36,9 +36,9 @@ import StreamListComponent from "../Compoments/StreamListCompoment";
 import PostListComponent from "../Compoments/PostListCompoment";
 import TryAgainComponent from "../Compoments/TryAgainComponent";
 import HomeBannerCompoment from "../Compoments/HomeBannerCompoment";
-import SearchListCompoment from "../Compoments/SearchListCompoment";
+import { Swiper, TitleBar, TabBar } from "react-native-awesome-viewpager";
 
-class HomeTabScreen extends Component {
+class MainTabScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
 
@@ -48,6 +48,13 @@ class HomeTabScreen extends Component {
       )
     };
   };
+  componentDidMount() {
+    try {
+      this.doAPICall();
+    } catch (error) {
+      console.log(error);
+    }
+  }
   constructor(props) {
     super(props);
 
@@ -116,118 +123,22 @@ class HomeTabScreen extends Component {
         }
       ],
       filteredData: [],
-      postData: [],
-      originalPostData: [],
+      postData: []
     };
-    this.getPostList = this.getPostList.bind(this);
   }
-
-  getPostList() {
-    NetInfo.isConnected.fetch().then(isConnected => {
-      if (isConnected) {
-        AsyncStorage.getItem("data")
-          .then(data => {
-            if (data != null) {
-              const myData = JSON.parse(data);
-
-              let postData = {
-                method: "GET",
-                headers: {
-                  Accept: "application/json",
-                  Authorization: "Bearer " + myData.token,
-                  "Content-Type": "multipart/form-data"
-                }
-              };
-
-              this.doGetUserInfoApi(postData);
-              this.getPostListApi(postData);
-            } else {
-            }
-          })
-          .done();
-      } else {
-        Alert.alert(
-          "Internet Connection",
-          "Kindly connect to internet then try again"
-        );
-      }
-    });
-  }
-  doGetUserInfoApi(bodyData) {
-    fetch(ApiUrl.getUserProfile, bodyData)
-      .then(response => response.json())
-      .then(responseJson => {
-        console.log(responseJson);
-
-        const message = responseJson.message;
-        const status = responseJson.status;
-
-        switch (status) {
-          case 200: {
-            const result = responseJson.result;
-            this.setState({
-              full_name: result.full_name,
-              profile_image: result.profile_image,
-              cover_image: result.cover_image,
-              post_status: result.post_status,
-              follower_count: result.follower_count,
-              crew_count: result.crew_count,
-              post_count: result.post_count,
-              user_name: result.user_name
-            });
-            break;
-          }
-          case 401: {
-            console.log(message);
-
-            break;
-          }
-          case 400: {
-            console.log(message);
-
-            break;
-          }
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
-  getPostListApi(bodyData) {
-    fetch(ApiUrl.getPosts, bodyData)
-      .then(response => response.json())
-      .then(responseJson => {
-        const message = responseJson.message;
-        const status = responseJson.status;
-
-        switch (status) {
-          case 200: {
-            const result = responseJson.result;
-
-            this.setState({
-              originalPostData: result.data,
-              postData: result.data,
-            });
-
-            break;
-          }
-          case 401: {
-            console.log(message);
-
-            break;
-          }
-          case 400: {
-            console.log(message);
-
-            break;
-          }
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
+  renderFooter(data) {
+    return (
+      <View style={[styles.row, { alignItems: "center" }]}>
+        <Image
+          source={Icons.ic_add}
+          style={{ width: 50, height: 50, margin: 5 }}
+        />
+      </View>
+    );
   }
   renderRow(data, index) {
+    console.log(data);
+
     return (
       <View style={[styles.row, { alignItems: "center" }]}>
         <Image
@@ -237,39 +148,35 @@ class HomeTabScreen extends Component {
       </View>
     );
   }
-  componentDidMount() {
-    try {
-      this.getPostList();
-    } catch (error) {
-      console.log(error);
+  doChangeTab(tabName) {
+    if (tabName == "stream") {
+      this.setState({
+        tabTitle: "Stream",
+        columnCount: 1,
+        isStreamActive: true,
+        isFriendsPostActive: false,
+        isSearchActive: false
+      });
+      this.refs.viewPager.setPage(0);
+    } else if (tabName == "friendspost") {
+      this.setState({
+        tabTitle: "Friends's Post",
+        columnCount: 1,
+        isStreamActive: false,
+        isFriendsPostActive: true,
+        isSearchActive: false
+      });
+      this.refs.viewPager.setPage(1);
+    } else if (tabName == "search") {
+      this.setState({
+        tabTitle: "Search",
+        columnCount: 1,
+        isStreamActive: false,
+        isFriendsPostActive: false,
+        isSearchActive: true
+      });
+      this.refs.viewPager.setPage(2);
     }
-  }
-  openProgressbar = () => {
-    this.setState({ isProgress: true });
-  };
-  hideProgressbar = () => {
-    this.setState({ isProgress: false });
-  };
-
-  doGetUserInfo() {
-    AsyncStorage.getItem("data")
-      .then(data => {
-        if (data != null) {
-          const myData = JSON.parse(data);
-          this.setState({
-            full_name: myData.full_name,
-            profile_image: myData.profile_image,
-            cover_image: myData.cover_image,
-            post_status: myData.post_status,
-            follower_count: myData.follower_count,
-            crew_count: myData.crew_count,
-            post_count: myData.post_count,
-            user_name: myData.user_name
-          });
-        } else {
-        }
-      })
-      .done();
   }
   doSearchChangeTab(tabName) {
     if (tabName == "people") {
@@ -314,51 +221,140 @@ class HomeTabScreen extends Component {
       });
     }
   }
-  onPageScroll(event) {
-    const { offset, position } = event;
-    console.log(position);
-  }
-  doChangeTab(tabName) {
-    if (tabName == "stream") {
-      this.setState({
-        tabTitle: "Stream",
-        columnCount: 1,
-        isStreamActive: true,
-        isFriendsPostActive: false,
-        isSearchActive: false
-      });
-      this.refs.viewPager.setPage(0);
-    } else if (tabName == "friendspost") {
-      this.setState({
-        tabTitle: "Friends's Post",
-        columnCount: 1,
-        isStreamActive: false,
-        isFriendsPostActive: true,
-        isSearchActive: false
-      });
-      this.refs.viewPager.setPage(1);
-    } else if (tabName == "search") {
-      this.setState({
-        tabTitle: "Search",
-        columnCount: 1,
-        isStreamActive: false,
-        isFriendsPostActive: false,
-        isSearchActive: true
-      });
-      this.refs.viewPager.setPage(2);
-    }
-  }
+  openProgressbar = () => {
+    this.setState({ isProgress: true });
+  };
+  hideProgressbar = () => {
+    this.setState({ isProgress: false });
+  };
+  doAPICall() {
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if (isConnected) {
+        AsyncStorage.getItem("data")
+          .then(data => {
+            if (data != null) {
+              const myData = JSON.parse(data);
 
-  renderFooter(data) {
-    return (
-      <View style={[styles.row, { alignItems: "center" }]}>
-        <Image
-          source={Icons.ic_add}
-          style={{ width: 50, height: 50, margin: 5 }}
-        />
-      </View>
-    );
+              let postData = {
+                method: "GET",
+                headers: {
+                  Accept: "application/json",
+                  Authorization: "Bearer " + myData.token,
+                  "Content-Type": "multipart/form-data"
+                }
+              };
+
+              this.doGetUserInfoApi(postData);
+              this.getPostListApi(postData);
+            } else {
+              console.log(data);
+            }
+          })
+          .done();
+      } else {
+        Alert.alert(
+          "Internet Connection",
+          "Kindly connect to internet then try again"
+        );
+      }
+    });
   }
+  getPostListApi(bodyData) {
+    fetch(ApiUrl.getPosts, bodyData)
+      .then(response => response.json())
+      .then(responseJson => {
+       
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+            const result = responseJson.result;
+
+            this.setState({
+              postData: result.data
+            });
+
+            break;
+          }
+          case 401: {
+           console.log(message);
+           
+
+            break;
+          }
+          case 400: {
+            console.log(message);
+
+            break;
+          }
+        }
+      })
+      .catch(error => {
+       console.log(error);
+       
+       
+       
+      });
+  }
+  doGetUserInfoApi(bodyData) {
+    fetch(ApiUrl.getUserProfile, bodyData)
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log("doGetUserInfoApi", responseJson);
+
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+            const result = responseJson.result;
+            this.setState({
+              full_name: result.full_name,
+              profile_image: result.profile_image,
+              cover_image: result.cover_image,
+              post_status: result.post_status,
+              follower_count: result.follower_count,
+              crew_count: result.crew_count,
+              post_count: result.post_count,
+              user_name: result.user_name
+            });
+            break;
+          }
+          case 401: {
+            break;
+          }
+          case 400: {
+            break;
+          }
+        }
+      })
+      .catch(error => {
+        console.log("doGetUserInfoApi", error);
+      });
+  }
+  searchText = e => {
+    let text = e.toLowerCase();
+    let trucks = this.state.postData;
+    let filteredName = trucks.filter(item => {
+      return item.name.toLowerCase().match(text);
+    });
+    if (!text || text === "") {
+      this.setState({
+        filteredData: this.state.postData
+      });
+    } else if (!Array.isArray(filteredName) && !filteredName.length) {
+      // set no data flag to true so as to render flatlist conditionally
+      this.setState({
+        noData: true
+      });
+    } else if (Array.isArray(filteredName)) {
+      this.setState({
+        noData: false,
+        filteredData: filteredName
+      });
+    }
+  };
   _renderView = collapse => {
     return (
       <View>
@@ -545,53 +541,12 @@ class HomeTabScreen extends Component {
       </View>
     );
   };
-  searchText = e => {
-    if (this.state.originalPostData.length > 0) {
-     
-      
-      if (this.doValidEmail(e)) {
-        let text = e.toLowerCase();
-        let trucks = this.state.originalPostData;
-        let filteredName = trucks.filter(item => {
-          return item.users.full_name.toLowerCase().match(text);
-        });
-        if (!text || text === "") {
-          this.setState({
-            filteredData: this.state.originalPostData
-          });
-        } else if (!Array.isArray(filteredName) && !filteredName.length) {
-          // set no data flag to true so as to render flatlist conditionally
-          this.setState({
-            noData: true
-          });
-        } else if (Array.isArray(filteredName)) {
-          this.setState({
-            noData: false,
-            filteredData: filteredName
-          });
-        }
-      }
-    }
-  };
-  doValidEmail(email) {
-    let reg = /^[a-zA-Z ]+$/;
-    if (reg.test(email) === false) {
-      console.log("Email is Not Correct");
-      return false;
-    } else {
-      console.log("Email is Correct");
-      return true;
-    }
-  }
   render() {
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView
-          showsVerticalScrollIndicator={true}
-          alwaysBounceVertical={false}
-          bounces={false}
-        >
+        <ScrollView>
           <View style={{ flex: 1 }}>
+            <ProgressCompoment isProgress={this.state.isProgress} />
             <HomeBannerCompoment
               navigation={this.props.navigation}
               full_name={this.state.full_name}
@@ -601,194 +556,147 @@ class HomeTabScreen extends Component {
               follower_count={this.state.follower_count}
               crew_count={this.state.crew_count}
             />
-          </View>
-          <View>
-            <View
+            <ImageBackground
+              source={Icons.bg_fav}
               style={{
-                height: 80
+                width: "100%",
+                height: 80,
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center"
               }}
             >
-              <ImageBackground
-                source={Icons.bg_fav}
+              <FlatList
+                horizontal={true}
+                showsVerticalScrollIndicator={false}
+                alwaysBounceVertical={false}
+                bounces={false}
+                numColumns={1}
+                data={this.state.dataSource}
+                ListFooterComponent={this.renderFooter.bind(this)}
+                renderItem={({ item, index }) => this.renderRow(item, index)}
+                keyExtractor={(item, index) => index.toString()}
+              />
+              <Text
                 style={{
-                  width: "100%",
-                  height: 80,
-                  justifyContent: "center",
-                  alignContent: "center",
-                  alignItems: "center"
+                  textAlign: "center",
+                  color: Colors.black,
+                  fontSize: 9,
+                  fontFamily: "OpenSans-SemiBold"
                 }}
               >
-                <FlatList
-                  horizontal={true}
-                  showsVerticalScrollIndicator={true}
-                  alwaysBounceVertical={false}
-                  bounces={false}
-                  numColumns={1}
-                  data={this.state.dataSource}
-                  ListFooterComponent={this.renderFooter.bind(this)}
-                  renderItem={({ item, index }) => this.renderRow(item, index)}
-                  keyExtractor={(item, index) => index.toString()}
-                  scrollEnabled={false}
-                />
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: Colors.black,
-                    fontSize: 9,
-                    fontFamily: "OpenSans-SemiBold"
-                  }}
-                >
-                  FAVORITES
-                </Text>
-              </ImageBackground>
-            </View>
-          </View>
-
-          <View style={{ backgroundColor: "#414141", flexDirection: "column" }}>
+                FAVORITES
+              </Text>
+            </ImageBackground>
             <View
-              style={{
-                flexDirection: "row",
-                marginTop: 10,
-                backgroundColor: Colors.bgHeader,
-                padding: 3
-              }}
+              style={{ backgroundColor: "#414141", flexDirection: "column" }}
             >
-              <TouchableOpacity onPress={() => this.doChangeTab("stream")}>
-                <View
-                  style={
-                    this.state.isStreamActive
-                      ? hometabstyles.StreamActiveTab
-                      : hometabstyles.StreamInactiveTab
-                  }
-                >
-                  <Text
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginTop: 10,
+                  backgroundColor: Colors.bgHeader,
+                  padding: 3
+                }}
+              >
+                <TouchableOpacity onPress={() => this.doChangeTab("stream")}>
+                  <View
                     style={
                       this.state.isStreamActive
-                        ? hometabstyles.StreamActiveTabText
-                        : hometabstyles.StreamInactiveTabText
+                        ? hometabstyles.StreamActiveTab
+                        : hometabstyles.StreamInactiveTab
                     }
                   >
-                    Stream
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.doChangeTab("friendspost")}>
-                <View
-                  style={
-                    this.state.isFriendsPostActive
-                      ? hometabstyles.FriendsPostActiveTab
-                      : hometabstyles.FriendsPostInactiveTab
-                  }
+                    <Text
+                      style={
+                        this.state.isStreamActive
+                          ? hometabstyles.StreamActiveTabText
+                          : hometabstyles.StreamInactiveTabText
+                      }
+                    >
+                      Stream
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => this.doChangeTab("friendspost")}
                 >
-                  <Text
+                  <View
                     style={
                       this.state.isFriendsPostActive
-                        ? hometabstyles.FriendsPostActiveTabText
-                        : hometabstyles.FriendsPostInactiveTabText
+                        ? hometabstyles.FriendsPostActiveTab
+                        : hometabstyles.FriendsPostInactiveTab
                     }
                   >
-                    My Posts
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.doChangeTab("search")}>
-                <View
-                  style={
-                    this.state.isSearchActive
-                      ? hometabstyles.SearchActiveTab
-                      : hometabstyles.SearchInactiveTab
-                  }
-                >
-                  <Text
+                    <Text
+                      style={
+                        this.state.isFriendsPostActive
+                          ? hometabstyles.FriendsPostActiveTabText
+                          : hometabstyles.FriendsPostInactiveTabText
+                      }
+                    >
+                      My Posts
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.doChangeTab("search")}>
+                  <View
                     style={
                       this.state.isSearchActive
-                        ? hometabstyles.SearchActiveTabText
-                        : hometabstyles.SearchInactiveTabText
+                        ? hometabstyles.SearchActiveTab
+                        : hometabstyles.SearchInactiveTab
                     }
                   >
-                    Search
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-
-            <View>
-              <ViewPager
-                scrollEnabled={false}
-                style={{ height: Dimensions.get("screen").height }}
+                    <Text
+                      style={
+                        this.state.isSearchActive
+                          ? hometabstyles.SearchActiveTabText
+                          : hometabstyles.SearchInactiveTabText
+                      }
+                    >
+                      Search
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <Swiper
                 ref={"viewPager"}
-                onPageScroll={event => this.onPageScroll(event)}
-                initialPage={this.state.currentTab}
+                loop={false}
+                autoplay={false}
+                indicator={false}
+                interval={2000}
+                onPageScroll={e => console.log(e, "onPageScroll")}
+                onPageScrollStateChanged={e =>
+                  console.log(e, "onPageScrollStateChanged")
+                }
+                onPageSelected={e => console.log(e, "onPageSelected")}
+                scrollEnabled={false}
+                style={customstyles.container}
               >
-                <View>
+                <View
+                  style={{ backgroundColor: "#448811",flex:1 }}
+                >
                   <WritePostCompoment navigation={this.props.navigation} />
                   <StreamListComponent
                     streams={this.state.postData}
                     navigation={this.props.navigation}
                   />
                 </View>
-                <View>
+                <View
+                  style={{ backgroundColor: "#226677",flex:1 }}
+                >
                   <WritePostCompoment navigation={this.props.navigation} />
                   <PostListComponent
                     posts={this.state.postData}
                     navigation={this.props.navigation}
                   />
                 </View>
-                <View>
-                  <View>
-                    <View
-                      style={{
-                        alignItems: "center",
-                        backgroundColor: "#313131",
-                        flexDirection: "row",
-                        padding: Platform.OS == "android" ? 0 : 10,
-                        borderColor: Colors.colorSearch,
-                        marginTop: 15,
-                        margin: 10,
-                        borderRadius: 5
-                      }}
-                    >
-                      <Image
-                        source={Icons.ic_search}
-                        style={{
-                          width: 24,
-                          height: 24,
-                          marginLeft: 10,
-                          marginRight: 5
-                        }}
-                      />
-                      <TextInput
-                        returnKeyType="done"
-                        placeholder="Search.."
-                        style={{
-                          padding: Platform.OS == "android" ? 5 : 0,
-                          color: Colors.colorSearch,
-                          flex: 1,
-                          marginLeft: 5,
-                          fontSize: 14,
-                          fontFamily: "OpenSans-SemiBold"
-                        }}
-                        placeholderTextColor={Colors.colorSearch}
-                        underlineColorAndroid={Colors.transparent}
-                        onChangeText={text => this.searchText(text)}
-                      />
-                    </View>
-                  </View>
-
-                  <CollapseView
-                    renderCollapseView={this._renderCollapseView}
-                    renderView={this._renderView}
-                  />
-                  <SearchListCompoment
-                    searches={
-                        this.state.filteredData.length > 0
-                          ? this.state.filteredData
-                          : this.state.postData
-                      }
-                    navigation={this.props.navigation}
-                  />
+                <View
+                  style={{ backgroundColor: "#226605",flex:1 }}
+                >
+                  <Text>page 3</Text>
                 </View>
-              </ViewPager>
+              </Swiper>
             </View>
           </View>
         </ScrollView>
@@ -796,7 +704,6 @@ class HomeTabScreen extends Component {
     );
   }
 }
-
 const customstyles = StyleSheet.create({
   collapseView: {
     backgroundColor: Colors.black,
@@ -804,6 +711,10 @@ const customstyles = StyleSheet.create({
     paddingStart: 10,
     paddingEnd: 10,
     height: 70
+  },
+  container: {
+    flex: 1,
+    flexDirection: "column",
   }
 });
-export default HomeTabScreen;
+export default MainTabScreen;

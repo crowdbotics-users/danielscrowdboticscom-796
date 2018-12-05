@@ -19,6 +19,7 @@ import Icons from "../Resource/Icons";
 import ImagePicker from "react-native-image-crop-picker";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import ApiUrl from "../Network/ApiUrl";
+import { showSnackBar } from "@prince8verma/react-native-snackbar";
 
 class SignUpScreen3 extends Component {
   constructor(props) {
@@ -61,7 +62,7 @@ class SignUpScreen3 extends Component {
                 bodyData.append("dob", userData2.bdate);
                 bodyData.append("device_type", Platform.OS);
                 bodyData.append("fire_base_token", data);
-               // bodyData.append("user_name", userData2.username);
+                bodyData.append("user_name", userData2.name);
                 this.openProgressbar();
                 this.doRegisterApi(bodyData, screen);
               } else {
@@ -97,34 +98,19 @@ class SignUpScreen3 extends Component {
         switch (status) {
           case 200: {
             console.log(message);
-
-            /* const result = responseJson.result;
-            const userData = {
-              id: result.id,
-              name: result.full_name,
-              email: result.email,
-              profile_image: result.profile_image,
-              cover_image: result.cover_image,
-              token: result.token
-            };
-            const stringifiedArray = JSON.stringify(userData);
-            AsyncStorage.setItem("data", stringifiedArray);
-            const loginData = {
-              login: "true"         
-            };
-            AsyncStorage.setItem("login", JSON.stringify(loginData)); */
+            this.doShowSnackBar(message);
             navigate(screen);
             break;
           }
           case 401: {
             this.hideProgressbar();
-            alert(message);
+            this.doShowSnackBar(message);
             console.log(message);
             break;
           }
           case 400: {
             this.hideProgressbar();
-            alert(message);
+            this.doShowSnackBar(message);
             console.log(message);
             break;
           }
@@ -134,6 +120,17 @@ class SignUpScreen3 extends Component {
         this.hideProgressbar();
         console.log(error);
       });
+  }
+  doShowSnackBar(message) {
+    showSnackBar({
+      message: message,
+      position: 'top',
+      backgroundColor: Colors.bgHeader,
+      buttonColor: "#fff",
+      confirmText: '',
+      onConfirm: () => { },
+      duration: 1000
+    });
   }
   openProgressbar = () => {
     this.setState({ isProgress: true });

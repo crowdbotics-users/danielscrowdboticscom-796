@@ -18,6 +18,7 @@ import Colors from "../Resource/Colors";
 import ImagePicker from "react-native-image-crop-picker";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import ApiUrl from "../Network/ApiUrl";
+import { showSnackBar } from "@prince8verma/react-native-snackbar";
 
 class AddPostScreen extends PureComponent {
   constructor(props) {
@@ -64,7 +65,7 @@ class AddPostScreen extends PureComponent {
               if (data != null) {
                 const myData = JSON.parse(data);
                 const bodyData = new FormData();
-                if (postImage != "") {
+                if (this.state.postImage != "") {
                   bodyData.append("post_image", {
                     uri: this.state.postImage,
                     type: "image/jpeg",
@@ -108,18 +109,18 @@ class AddPostScreen extends PureComponent {
 
         switch (status) {
           case 200: {
-            this.props.navigation.goBack(null);
+            this.doShowSnackBar(message);
             break;
           }
           case 401: {
             this.hideProgressbar();
-            alert(message);
+            this.doShowSnackBar(message);
             console.log(message);
             break;
           }
           case 400: {
             this.hideProgressbar();
-            alert(message);
+            this.doShowSnackBar(message);
             console.log(message);
             break;
           }
@@ -131,6 +132,17 @@ class AddPostScreen extends PureComponent {
         alert(error);
       });
   }
+  doShowSnackBar(message) {
+    showSnackBar({
+      message: message,
+      position: "top",
+      backgroundColor: Colors.bgHeader,
+      buttonColor: "#fff",
+      confirmText: "",
+      onConfirm: () => {},
+      duration: 1000
+    });
+  }
   openProgressbar = () => {
     this.setState({ isProgress: true });
   };
@@ -139,6 +151,7 @@ class AddPostScreen extends PureComponent {
   };
   render() {
     return (
+      <SafeAreaView style={{flex:1}}>
       <View style={{ backgroundColor: Colors.white, flex: 1 }}>
         <View
           style={{ position: "relative", flex: 1, flexDirection: "column" }}
@@ -202,7 +215,7 @@ class AddPostScreen extends PureComponent {
                 this.setState({ messages: text });
               }}
             />
-            <Image source={this.state.postImage} />
+            <Image source={this.state.postImage!=""?{uri:this.state.postImage}:""} />
             <ProgressCompoment isProgress={this.state.isProgress} />
           </View>
           <View
@@ -287,6 +300,7 @@ class AddPostScreen extends PureComponent {
           </View>
         </View>
       </View>
+      </SafeAreaView>
     );
   }
 }

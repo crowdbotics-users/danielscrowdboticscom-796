@@ -14,6 +14,7 @@ import Icons from "../Resource/Icons";
 import Colors from "../Resource/Colors";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import ApiUrl from "../Network/ApiUrl";
+import { showSnackBar } from "@prince8verma/react-native-snackbar";
 
 class AddCommentScreen extends PureComponent {
   constructor(props) {
@@ -34,6 +35,7 @@ class AddCommentScreen extends PureComponent {
       this.refs.message.focus();
       alert("Write a comment");
     }else{
+      const { post_id } = this.props.navigation.state.params;
       NetInfo.isConnected.fetch().then(isConnected => {
         if (isConnected) {
           AsyncStorage.getItem("data")
@@ -42,13 +44,16 @@ class AddCommentScreen extends PureComponent {
               if (data != null) {
                 const myData = JSON.parse(data);
                 const bodyData = JSON.stringify({
-                  post_id: this.state.post_id,
-                  comment_id: this.state.comment_id,
-                  type: this.state.type,
+                  post_id: post_id,
+                  comment_id: 0,
+                  type: 'comment',
                   messages: this.state.messages
                 });
               
                 this.openProgressbar();
+                console.log(post_id);
+                console.log(bodyData);
+                
                 this.doAddCommentApi(bodyData,myData.token);
               } else {
                 console.log(data);
@@ -84,18 +89,19 @@ class AddCommentScreen extends PureComponent {
         switch (status) {
           case 200: {
            
-            this.props.navigation.goBack(null);
+            //this.props.navigation.goBack(null);
+            this.doShowSnackBar(message);
             break;
           }
           case 401: {
             this.hideProgressbar();
-            alert(message);
+            this.doShowSnackBar(message);
             console.log(message);
             break;
           }
           case 400: {
             this.hideProgressbar();
-            alert(message);
+            this.doShowSnackBar(message);
             console.log(message);
             break;
           }
@@ -107,6 +113,17 @@ class AddCommentScreen extends PureComponent {
         alert(error);
       });
   }
+  doShowSnackBar(message) {
+    showSnackBar({
+      message: message,
+      position: "top",
+      backgroundColor: Colors.bgHeader,
+      buttonColor: "#fff",
+      confirmText: "",
+      onConfirm: () => {},
+      duration: 1000
+    });
+  }
   openProgressbar = () => {
     this.setState({ isProgress: true });
   };
@@ -115,6 +132,7 @@ class AddCommentScreen extends PureComponent {
   };
   render() {
     return (
+      <SafeAreaView style={{flex:1}}>
       <View style={{ backgroundColor: Colors.white, flex: 1 }}>
         <View
           style={{ position: "relative", flex: 1, flexDirection: "column" }}
@@ -253,6 +271,7 @@ class AddCommentScreen extends PureComponent {
           </View>
         </View>
       </View>
+      </SafeAreaView>
     );
   }
 }

@@ -7,7 +7,7 @@ import styles from "../Resource/Styles";
 
 class AddCommentCompoment extends Component {
   toggleDrawer(screen) {
-    this.props.navigation.navigate(screen);
+    this.props.navigation.navigate(screen,{post_id:this.props.post_id});
   }
 
   render() {
@@ -49,6 +49,7 @@ class AddCommentCompoment extends Component {
 }
 AddCommentCompoment.propTypes = {
   title: PropTypes.string,
-  navigation: PropTypes.object
+  navigation: PropTypes.object,
+  post_id:PropTypes.number
 };
 export default AddCommentCompoment

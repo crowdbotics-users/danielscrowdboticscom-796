@@ -190,7 +190,7 @@ class MyFollowersScreen extends Component {
           style={[
             styles.column,
             styles.card,
-            { alignItems: "center", marginBottom: 8, borderRadius: 10 }
+            { alignItems: "center", marginBottom: 1, borderRadius: 0 }
           ]}
         >
           <View
