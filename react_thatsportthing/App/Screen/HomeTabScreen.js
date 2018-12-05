@@ -36,8 +36,7 @@ import StreamListComponent from "../Compoments/StreamListCompoment";
 import PostListComponent from "../Compoments/PostListCompoment";
 import TryAgainComponent from "../Compoments/TryAgainComponent";
 import HomeBannerCompoment from "../Compoments/HomeBannerCompoment";
-
-const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+import SearchListCompoment from "../Compoments/SearchListCompoment";
 
 class HomeTabScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -117,20 +116,19 @@ class HomeTabScreen extends Component {
         }
       ],
       filteredData: [],
-      postData: []
+      postData: [],
+      originalPostData: [],
     };
+    this.getPostList = this.getPostList.bind(this);
   }
-
 
   getPostList() {
     NetInfo.isConnected.fetch().then(isConnected => {
       if (isConnected) {
         AsyncStorage.getItem("data")
           .then(data => {
-
             if (data != null) {
               const myData = JSON.parse(data);
-
 
               let postData = {
                 method: "GET",
@@ -141,11 +139,9 @@ class HomeTabScreen extends Component {
                 }
               };
 
-              this.openProgressbar();
               this.doGetUserInfoApi(postData);
               this.getPostListApi(postData);
             } else {
-
             }
           })
           .done();
@@ -169,10 +165,6 @@ class HomeTabScreen extends Component {
         switch (status) {
           case 200: {
             const result = responseJson.result;
-
-            console.log("doGetUserInfoApi", result);
-
-
             this.setState({
               full_name: result.full_name,
               profile_image: result.profile_image,
@@ -186,22 +178,18 @@ class HomeTabScreen extends Component {
             break;
           }
           case 401: {
-
             console.log(message);
 
             break;
           }
           case 400: {
+            console.log(message);
 
-           console.log(message);
-           
             break;
           }
         }
-        this.hideProgressbar();
       })
       .catch(error => {
-        this.hideProgressbar();
         console.log(error);
       });
   }
@@ -209,9 +197,6 @@ class HomeTabScreen extends Component {
     fetch(ApiUrl.getPosts, bodyData)
       .then(response => response.json())
       .then(responseJson => {
-
-
-        this.hideProgressbar();
         const message = responseJson.message;
         const status = responseJson.status;
 
@@ -220,38 +205,29 @@ class HomeTabScreen extends Component {
             const result = responseJson.result;
 
             this.setState({
-              postData: result.data
+              originalPostData: result.data,
+              postData: result.data,
             });
 
             break;
           }
           case 401: {
-            this.setState({
-              isError: false
-            });
-            alert(message);
+            console.log(message);
 
             break;
           }
           case 400: {
-            this.setState({
-              isError: false
-            });
-            alert(message);
+            console.log(message);
 
             break;
           }
         }
       })
       .catch(error => {
-        alert(error)
-        this.hideProgressbar();
-        this.setState({
-          isError: false
-        });
+        console.log(error);
       });
   }
-  renderRow(data) {
+  renderRow(data, index) {
     return (
       <View style={[styles.row, { alignItems: "center" }]}>
         <Image
@@ -262,8 +238,11 @@ class HomeTabScreen extends Component {
     );
   }
   componentDidMount() {
-
-    this.getPostList();
+    try {
+      this.getPostList();
+    } catch (error) {
+      console.log(error);
+    }
   }
   openProgressbar = () => {
     this.setState({ isProgress: true });
@@ -288,7 +267,6 @@ class HomeTabScreen extends Component {
             user_name: myData.user_name
           });
         } else {
-
         }
       })
       .done();
@@ -337,11 +315,8 @@ class HomeTabScreen extends Component {
     }
   }
   onPageScroll(event) {
-
     const { offset, position } = event;
     console.log(position);
-    
-
   }
   doChangeTab(tabName) {
     if (tabName == "stream") {
@@ -571,36 +546,53 @@ class HomeTabScreen extends Component {
     );
   };
   searchText = e => {
-    let text = e.toLowerCase();
-    let trucks = this.state.postData;
-    let filteredName = trucks.filter(item => {
-      return item.name.toLowerCase().match(text);
-    });
-    if (!text || text === "") {
-      this.setState({
-        filteredData: this.state.postData
-      });
-    } else if (!Array.isArray(filteredName) && !filteredName.length) {
-      // set no data flag to true so as to render flatlist conditionally
-      this.setState({
-        noData: true
-      });
-    } else if (Array.isArray(filteredName)) {
-      this.setState({
-        noData: false,
-        filteredData: filteredName
-      });
+    if (this.state.originalPostData.length > 0) {
+     
+      
+      if (this.doValidEmail(e)) {
+        let text = e.toLowerCase();
+        let trucks = this.state.originalPostData;
+        let filteredName = trucks.filter(item => {
+          return item.users.full_name.toLowerCase().match(text);
+        });
+        if (!text || text === "") {
+          this.setState({
+            filteredData: this.state.originalPostData
+          });
+        } else if (!Array.isArray(filteredName) && !filteredName.length) {
+          // set no data flag to true so as to render flatlist conditionally
+          this.setState({
+            noData: true
+          });
+        } else if (Array.isArray(filteredName)) {
+          this.setState({
+            noData: false,
+            filteredData: filteredName
+          });
+        }
+      }
     }
   };
+  doValidEmail(email) {
+    let reg = /^[a-zA-Z ]+$/;
+    if (reg.test(email) === false) {
+      console.log("Email is Not Correct");
+      return false;
+    } else {
+      console.log("Email is Correct");
+      return true;
+    }
+  }
   render() {
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView
-          
+          showsVerticalScrollIndicator={true}
+          alwaysBounceVertical={false}
+          bounces={false}
         >
           <View style={{ flex: 1 }}>
             <HomeBannerCompoment
-
               navigation={this.props.navigation}
               full_name={this.state.full_name}
               profile_image={this.state.profile_image}
@@ -608,12 +600,6 @@ class HomeTabScreen extends Component {
               user_name={this.state.user_name}
               follower_count={this.state.follower_count}
               crew_count={this.state.crew_count}
-            />
-
-            <ProgressCompoment isProgress={this.state.isProgress} />
-            <TryAgainComponent
-              shown={this.state.isError}
-              navigation={this.props.navigation}
             />
           </View>
           <View>
@@ -632,17 +618,17 @@ class HomeTabScreen extends Component {
                   alignItems: "center"
                 }}
               >
-
-
-                <ListView
-
+                <FlatList
                   horizontal={true}
-                  showsVerticalScrollIndicator={false}
+                  showsVerticalScrollIndicator={true}
                   alwaysBounceVertical={false}
                   bounces={false}
-                  dataSource={ds.cloneWithRows(this.state.dataSource)}
-                  renderRow={this.renderRow.bind(this)}
-                  renderFooter={this.renderFooter.bind(this)}
+                  numColumns={1}
+                  data={this.state.dataSource}
+                  ListFooterComponent={this.renderFooter.bind(this)}
+                  renderItem={({ item, index }) => this.renderRow(item, index)}
+                  keyExtractor={(item, index) => index.toString()}
+                  scrollEnabled={false}
                 />
                 <Text
                   style={{
@@ -728,10 +714,10 @@ class HomeTabScreen extends Component {
 
             <View>
               <ViewPager
-              scrollEnabled={false}
+                scrollEnabled={false}
                 style={{ height: Dimensions.get("screen").height }}
                 ref={"viewPager"}
-                onPageScroll={(event) => this.onPageScroll(event)}
+                onPageScroll={event => this.onPageScroll(event)}
                 initialPage={this.state.currentTab}
               >
                 <View>
@@ -793,16 +779,12 @@ class HomeTabScreen extends Component {
                     renderCollapseView={this._renderCollapseView}
                     renderView={this._renderView}
                   />
-                  <ListCompoment
-                    tabTitle={this.state.tabTitle}
-                    columns={this.state.columnCount}
-                    streams={this.state.postData}
-                    data={
-                      this.state.filteredData.length > 0
-                        ? this.state.filteredData
-                        : this.state.postData
-                    }
-                    noData={this.state.noData}
+                  <SearchListCompoment
+                    searches={
+                        this.state.filteredData.length > 0
+                          ? this.state.filteredData
+                          : this.state.postData
+                      }
                     navigation={this.props.navigation}
                   />
                 </View>

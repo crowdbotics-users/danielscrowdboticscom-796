@@ -20,7 +20,7 @@ import Icons from "../Resource/Icons";
 import Moment from "moment";
 import ApiUrl from "../Network/ApiUrl";
 import { NavigationActions, StackActions } from "react-navigation";
-class StreamListComponent extends Component {
+class SearchListCompoment extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,7 +32,7 @@ class StreamListComponent extends Component {
   }
 
   doCommentList(data) {
-    this.props.navigation.navigate("CommentListScreen", { commentdata: data });
+    this.props.navigation.navigate("CommentListScreen", { data: data });
   }
   doLikePost(postdata, index) {
     NetInfo.isConnected.fetch().then(isConnected => {
@@ -273,7 +273,7 @@ class StreamListComponent extends Component {
           bounces={false}
           numColumns={1}
           style={{ marginTop: 5 }}
-          data={this.props.streams}
+          data={this.props.searches}
           renderItem={({ item, index }) => this.renderStream(item, index)}
           keyExtractor={(item, index) => index.toString()}
           ListEmptyComponent={this.renderEmpty()}
@@ -285,8 +285,8 @@ class StreamListComponent extends Component {
   }
 }
 
-StreamListComponent.propTypes = {
-  streams: PropTypes.array,
+SearchListCompoment.propTypes = {
+  searches: PropTypes.array,
   navigation: PropTypes.object
 };
-export default StreamListComponent;
+export default SearchListCompoment;

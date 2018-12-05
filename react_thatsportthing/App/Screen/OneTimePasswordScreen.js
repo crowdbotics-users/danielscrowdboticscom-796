@@ -14,6 +14,7 @@ import Icons from "../Resource/Icons";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import { NavigationActions, StackActions } from "react-navigation";
 import ApiUrl from "../Network/ApiUrl";
+import { showSnackBar } from "@prince8verma/react-native-snackbar";
 
 class OneTimePasswordScreen extends Component {
   constructor(props) {
@@ -95,7 +96,7 @@ class OneTimePasswordScreen extends Component {
           }
           case 401: {
             
-            alert(message);
+            this.doShowSnackBar(message);
 
             break;
           }
@@ -119,6 +120,17 @@ class OneTimePasswordScreen extends Component {
         this.hideProgressbar();
         console.log(error);
       });
+  }
+  doShowSnackBar(message) {
+    showSnackBar({
+      message: message,
+      position: "top",
+      backgroundColor: Colors.bgHeader,
+      buttonColor: "#fff",
+      confirmText: "",
+      onConfirm: () => {},
+      duration: 1000
+    });
   }
   doRedirect(screen,data) {
     const { navigate } = this.props.navigation;

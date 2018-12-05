@@ -190,6 +190,7 @@ class DrawerContent extends Component {
       isActiveAccountSettings: false,
       isActiveLogout: false
     });
+    this.doRedirect("HomeTabScreen");
     this.closeDrawer();
   };
   doProfile = () => {
@@ -203,6 +204,7 @@ class DrawerContent extends Component {
       isActiveAccountSettings: false,
       isActiveLogout: false
     });
+    this.doRedirect("EditProfileScreen");
     this.closeDrawer();
   };
   doPosts = () => {

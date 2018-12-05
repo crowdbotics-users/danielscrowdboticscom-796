@@ -19,7 +19,7 @@ import ProgressCompoment from "../Compoments/ProgressCompoment";
 import { NavigationActions, StackActions } from "react-navigation";
 import ApiUrl from "../Network/ApiUrl";
 import firebase from "react-native-firebase";
-import Snackbar, { showSnackBar } from '@prince8verma/react-native-snackbar'
+import Snackbar, { showSnackBar } from "@prince8verma/react-native-snackbar";
 
 class LoginScreen extends Component {
   constructor(props) {
@@ -62,28 +62,21 @@ class LoginScreen extends Component {
       alert("Enter Password");
       this.refs.password.focus();
     } else {
-
-
       NetInfo.isConnected.fetch().then(isConnected => {
         if (isConnected) {
-
           AsyncStorage.getItem("token")
             .then(data => {
-
               if (data != null) {
-
-
                 const bodyData = JSON.stringify({
                   email: this.state.userName,
                   password: this.state.password,
                   device_type: Platform.OS,
                   fire_base_token: data
                 });
-                AsyncStorage.setItem("logged", "true");
+
                 this.openProgressbar();
                 this.doLoginApi(bodyData, screen);
               } else {
-
               }
             })
             .done();
@@ -114,7 +107,6 @@ class LoginScreen extends Component {
 
         switch (status) {
           case 200: {
-
             this.hideProgressbar();
             const result = responseJson.result;
             const userData = {
@@ -126,21 +118,12 @@ class LoginScreen extends Component {
               follower_count: result.follower_count,
               crew_count: result.crew_count,
               user_name: result.user_name,
-              token: result.token,
+              token: result.token
             };
             const stringifiedArray = JSON.stringify(userData);
             AsyncStorage.setItem("data", stringifiedArray);
-            const loginData = {
-              login: "true"
-            };
-            AsyncStorage.setItem("login", JSON.stringify(loginData));
-            if (Platform.OS == "android") {
-              this.doFinish(screen);
-            } else {
-              navigate(screen);
-            }
-
-
+            AsyncStorage.setItem("logged", "true");
+            this.doFinish(screen);
             break;
           }
           case 401: {
@@ -165,11 +148,11 @@ class LoginScreen extends Component {
   doShowSnackBar(message) {
     showSnackBar({
       message: message,
-      position: 'top',
+      position: "top",
       backgroundColor: Colors.bgHeader,
       buttonColor: "#fff",
-      confirmText: '',
-      onConfirm: () => { },
+      confirmText: "",
+      onConfirm: () => {},
       duration: 1000
     });
   }
@@ -215,7 +198,6 @@ class LoginScreen extends Component {
               keyboardType="email-address"
               placeholder={"Email Address"}
               placeholderTextColor={Colors.colorEdittext}
-
               underlineColorAndroid={Colors.transparent}
               returnKeyType="next"
             />
@@ -248,7 +230,6 @@ class LoginScreen extends Component {
               placeholder={"Password"}
               value={this.state.password}
               placeholderTextColor={Colors.colorEdittext}
-
               underlineColorAndroid={Colors.transparent}
               returnKeyType="done"
             />

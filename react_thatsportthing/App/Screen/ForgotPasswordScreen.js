@@ -23,6 +23,7 @@ import styles from "../Resource/Styles";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import { NavigationActions, StackActions } from "react-navigation";
 import ApiUrl from "../Network/ApiUrl";
+import { showSnackBar } from "@prince8verma/react-native-snackbar";
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
 class ForgotPasswordScreen extends Component {
@@ -101,13 +102,13 @@ class ForgotPasswordScreen extends Component {
           }
           case 401: {
             
-            alert(message);
+            this.doShowSnackBar(message);
 
             break;
           }
           case 400: {
          
-            alert(message);
+            this.doShowSnackBar(message);
 
             break;
           }
@@ -117,6 +118,17 @@ class ForgotPasswordScreen extends Component {
         this.hideProgressbar();
         console.log(error);
       });
+  }
+  doShowSnackBar(message) {
+    showSnackBar({
+      message: message,
+      position: "top",
+      backgroundColor: Colors.bgHeader,
+      buttonColor: "#fff",
+      confirmText: "",
+      onConfirm: () => {},
+      duration: 1000
+    });
   }
   doValidEmail(email) {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;

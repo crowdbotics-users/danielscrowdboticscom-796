@@ -193,6 +193,7 @@ class PostListComponent extends Component {
           renderItem={({ item, index }) => this.renderStream(item)}
           keyExtractor={(item, index) => index.toString()}
           ListEmptyComponent={this.renderEmpty()}
+          scrollEnabled={false}
         />
       </View>
     );

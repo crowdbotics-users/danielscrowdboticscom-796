@@ -11,7 +11,7 @@ import Colors from "../Resource/Colors";
 import Icons from "../Resource/Icons";
 import styles from "../Resource/Styles";
 
-class HamburgerIcon extends Component {
+class ProfileHeaderCompoment extends Component {
   toggleDrawer = () => {
     this.props.navigation.toggleDrawer();
   };
@@ -34,7 +34,7 @@ class HamburgerIcon extends Component {
           }}
         >
           <TouchableOpacity
-            onPress={()=>this.toggleDrawer()}
+            onPress={()=>this.doBack()}
           >
             <Image
               source={
@@ -59,9 +59,9 @@ class HamburgerIcon extends Component {
     );
   }
 }
-HamburgerIcon.propTypes = {
+ProfileHeaderCompoment.propTypes = {
   title: PropTypes.string,
   props: PropTypes.object,
   isProfile: PropTypes.bool
 };
-export default HamburgerIcon;
+export default ProfileHeaderCompoment;

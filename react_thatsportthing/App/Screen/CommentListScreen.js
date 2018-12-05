@@ -41,6 +41,8 @@ class CommentListScreen extends PureComponent {
       isProgress: false,
       loading: false,
       data: [],
+      extradata: [],
+      post_id: 0,
       page: 1,
       seed: 1,
       error: null,
@@ -49,15 +51,17 @@ class CommentListScreen extends PureComponent {
     };
   }
   componentDidMount() {
-    const { data } = this.props.navigation.state.params;
+    const { commentdata } = this.props.navigation.state.params;
     this.setState({
-      full_name: data.users.full_name,
-      profile_image: data.users.profile_image,
-      description: data.description,
-      created_at: data.created_at
+      full_name: commentdata.users.full_name,
+      profile_image: commentdata.users.profile_image,
+      description: commentdata.description,
+      created_at: commentdata.created_at,
+      post_id: commentdata.id,
     });
-    console.log("componentDidMount", data);
-    this.doCommentList(data);
+   console.log(commentdata);
+   
+    this.doCommentList(commentdata);
   }
   openProgressbar = () => {
     this.setState({ isProgress: true });
@@ -115,8 +119,8 @@ class CommentListScreen extends PureComponent {
 
 
             this.setState({
-              data:
-                page === 1 ? result.data : [...this.state.data, ...result.data],
+              data:                page === 1 ? result.data : [...this.state.data, ...result.data],
+              extradata:                page === 1 ? result.data : [...this.state.data, ...result.data],
               loading: false,
               refreshing: false,
               total: result.total
@@ -317,6 +321,7 @@ class CommentListScreen extends PureComponent {
         <View style={{ position: "relative", flex: 1 }}>
           <View style={{ position: "relative", flex: 3 }}>
             <FlatList
+            extraData={this.state.extradata}
               data={this.state.data}
               renderItem={({ item }) => this.renderCommentItem(item)}
               style={{ marginStart: 10, marginEnd: 10, marginBottom: 80 }}
@@ -334,7 +339,7 @@ class CommentListScreen extends PureComponent {
             <View
               style={{ borderTopColor: Colors.colorLine, borderTopWidth: 1 }}
             >
-              <AddCommentCompoment navigation={this.props.navigation} />
+              <AddCommentCompoment navigation={this.props.navigation} post_id={this.state.post_id}/>
             </View>
           </View>
         </View>

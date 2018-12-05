@@ -5,7 +5,7 @@ import styles from "../Resource/Styles";
 
 import DrawerContent from "../Compoments/DrawerContent";
 import HomeTabScreen from "./HomeTabScreen";
-import ProfileScreen from "./ProfileScreen";
+
 import MyCrewScreen from "./MyCrewScreen";
 
 import Colors from "../Resource/Colors";
@@ -15,11 +15,7 @@ const HomePageNavigator = createStackNavigator({
     screen: HomeTabScreen
   }
 });
-const ProfileScreenNavigator = createStackNavigator({
-  ProfileScreen: {
-    screen: ProfileScreen
-  }
-});
+
 const MyCrewScreenNavigator = createStackNavigator({
   MyCrewScreen: {
     screen: MyCrewScreen
@@ -28,7 +24,6 @@ const MyCrewScreenNavigator = createStackNavigator({
 const HomePage = createDrawerNavigator(
   {
     HomeTabScreen: { screen: HomePageNavigator },
-    ProfileScreen: { screen: ProfileScreenNavigator },
     MyCrewScreen: {
       screen: MyCrewScreenNavigator,
       navigationOptions: {

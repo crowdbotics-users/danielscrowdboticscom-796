@@ -1,5 +1,5 @@
 {
-  "name": "That Sport Thing",
+  "name": "ThatSportThing",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -12,6 +12,7 @@
     "moment": "^2.22.2",
     "react": "16.5.0",
     "react-native": "0.57.1",
+    "react-native-awesome-viewpager": "^1.0.9",
     "react-native-collapse-view": "^1.0.0",
     "react-native-easy-grid-view": "^0.1.1",
     "react-native-firebase": "^5.1.0",

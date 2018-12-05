@@ -22,6 +22,7 @@ import styles from "../Resource/Styles";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import { NavigationActions, StackActions } from "react-navigation";
 import ApiUrl from "../Network/ApiUrl";
+import { showSnackBar } from "@prince8verma/react-native-snackbar";
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
 class UpdatePasswordScreen extends Component {
@@ -44,6 +45,17 @@ class UpdatePasswordScreen extends Component {
     this.setState({
       full_name: data.full_name,
       profile_image: data.profile_image
+    });
+  }
+  doShowSnackBar(message) {
+    showSnackBar({
+      message: message,
+      position: "top",
+      backgroundColor: Colors.bgHeader,
+      buttonColor: "#fff",
+      confirmText: "",
+      onConfirm: () => {},
+      duration: 1000
     });
   }
   doBack() {
@@ -104,12 +116,12 @@ class UpdatePasswordScreen extends Component {
             break;
           }
           case 401: {
-            alert(message);
+            this.doShowSnackBar(message);
 
             break;
           }
           case 400: {
-            alert(message);
+            this.doShowSnackBar(message);
 
             break;
           }

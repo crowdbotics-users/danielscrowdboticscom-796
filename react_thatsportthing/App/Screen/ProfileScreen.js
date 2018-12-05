@@ -14,12 +14,15 @@ import {
   SafeAreaView,
   ActivityIndicator,
   StatusBar,
-  FlatList
+  FlatList,
+  NetInfo,
+  AsyncStorage,
+  Alert
 } from "react-native";
 import Colors from "../Resource/Colors";
 import Icons from "../Resource/Icons";
 import styles from "../Resource/Styles";
-import HamburgerIcon from "../Compoments/HamburgerIcon";
+import ProfileHeaderCompoment from "../Compoments/ProfileHeaderCompoment";
 import ListCompoment from "../Compoments/ListCompoment";
 import {
   PagerTabIndicator,
@@ -32,6 +35,11 @@ import tabstyles from "../Resource/tabstyles";
 import friendstabstyles from "../Resource/friendstabstyles";
 import picturetabstyles from "../Resource/picturetabstyles";
 import Strings from "../Resource/Strings";
+import PictureListComponent from "../Compoments/PictureListCompoment";
+import PostListComponent from "../Compoments/PostListCompoment";
+import ApiUrl from "../Network/ApiUrl";
+import FriendListComponent from "../Compoments/FriendListCompoment";
+
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
 class ProfileScreen extends Component {
@@ -39,7 +47,13 @@ class ProfileScreen extends Component {
     const { params = {} } = navigation.state;
 
     return {
-      header: props => <HamburgerIcon {...props} props={navigation} isProfile={true}/>
+      header: props => (
+        <ProfileHeaderCompoment
+          {...props}
+          props={navigation}
+          isProfile={true}
+        />
+      )
     };
   };
   constructor(props) {
@@ -47,7 +61,11 @@ class ProfileScreen extends Component {
 
     this.state = {
       noData: false,
-      tabTitle: "P",
+      tabTitle: "",
+      full_name: "",
+      profile_image: "",
+      cover_image: "",
+      user_name: "",
       columnCount: 1,
       isAllFriends: true,
       isMutualFriends: false,
@@ -58,12 +76,105 @@ class ProfileScreen extends Component {
       isAllPhotosVideoActive: true,
       isPhotosActive: false,
       isVideoActive: false,
-      isLoading: true,
+      isLoading: false,
       activeColor: Colors.orange,
       activeTextColor: Colors.white,
       inactiveColor: Colors.white,
       inactiveTextColor: Colors.backgroundLogin,
       avatarSource: "",
+      pictures: [
+        {
+          companyname: "ADIDAS",
+          outletname: "Outlets name",
+          time: "09/02/2018 11:10 am",
+          points: "100 Points",
+          image: Icons.player
+        },
+        {
+          companyname: "ADIDAS",
+          outletname: "Outlets name",
+          time: "09/02/2018 11:10 am",
+          points: "100 Points",
+          image: Icons.player
+        },
+        {
+          companyname: "ADIDAS",
+          outletname: "Outlets name",
+          time: "09/02/2018 11:10 am",
+          points: "100 Points",
+          image: Icons.player
+        },
+        {
+          companyname: "ADIDAS",
+          outletname: "Outlets name",
+          time: "09/02/2018 11:10 am",
+          points: "100 Points",
+          image: Icons.player
+        },
+        {
+          companyname: "ADIDAS",
+          outletname: "Outlets name",
+          time: "09/02/2018 11:10 am",
+          points: "100 Points",
+          image: Icons.player
+        },
+        {
+          companyname: "ADIDAS",
+          outletname: "Outlets name",
+          time: "09/02/2018 11:10 am",
+          points: "100 Points",
+          image: Icons.player
+        },
+        {
+          companyname: "ADIDAS",
+          outletname: "Outlets name",
+          time: "09/02/2018 11:10 am",
+          points: "100 Points",
+          image: Icons.player
+        },
+        {
+          companyname: "ADIDAS",
+          outletname: "Outlets name",
+          time: "09/02/2018 11:10 am",
+          points: "100 Points",
+          image: Icons.player
+        },
+        {
+          companyname: "ADIDAS",
+          outletname: "Outlets name",
+          time: "09/02/2018 11:10 am",
+          points: "100 Points",
+          image: Icons.player
+        },
+        {
+          companyname: "ADIDAS",
+          outletname: "Outlets name",
+          time: "09/02/2018 11:10 am",
+          points: "100 Points",
+          image: Icons.player
+        },
+        {
+          companyname: "ADIDAS",
+          outletname: "Outlets name",
+          time: "09/02/2018 11:10 am",
+          points: "100 Points",
+          image: Icons.player
+        },
+        {
+          companyname: "ADIDAS",
+          outletname: "Outlets name",
+          time: "09/02/2018 11:10 am",
+          points: "100 Points",
+          image: Icons.player
+        },
+        {
+          companyname: "ADIDAS",
+          outletname: "Outlets name",
+          time: "09/02/2018 11:10 am",
+          points: "100 Points",
+          image: Icons.player
+        }
+      ],
       dataSource: [
         {
           companyname: "ADIDAS",
@@ -103,12 +214,223 @@ class ProfileScreen extends Component {
       ],
       filteredData: [],
       postData: [],
-      
+      friendListData: [
+        {
+          name: "Mason SCHUFFER",
+          username: "@schufferj",
+          location: "New york City,Newyork",
+          description:
+            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
+          time: "1:32 PM ",
+          likes: "123",
+          commnets: "12",
+          image: Icons.messi,
+          playerImage: Icons.ic_player,
+          friendstatus: 1,
+          followstatus: 1
+        },
+        {
+          name: "Jacob SCHUFFER",
+          username: "@schufferj",
+          location: "New york City,Newyork",
+          description:
+            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
+          time: "1:32 PM ",
+          likes: "123",
+          commnets: "12",
+          image: Icons.messi,
+          playerImage: Icons.ic_player,
+          friendstatus: 2,
+          followstatus: 1
+        },
+        {
+          name: "William SCHUFFER",
+          username: "@schufferj",
+          location: "New york City,Newyork",
+          description:
+            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
+          time: "1:32 PM ",
+          likes: "123",
+          commnets: "12",
+          image: Icons.messi,
+          playerImage: Icons.ic_player,
+          friendstatus: 1,
+          followstatus: 1
+        },
+        {
+          name: "Ethan SCHUFFER",
+          username: "@schufferj",
+          location: "New york City,Newyork",
+          description:
+            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
+          time: "1:32 PM ",
+          likes: "123",
+          commnets: "12",
+          image: Icons.messi,
+          playerImage: Icons.ic_player,
+          friendstatus: 1,
+          followstatus: 1
+        },
+        {
+          name: "James SCHUFFER",
+          username: "@schufferj",
+          location: "New york City,Newyork",
+          description:
+            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
+          time: "1:32 PM ",
+          likes: "123",
+          commnets: "12",
+          image: Icons.messi,
+          playerImage: Icons.ic_player,
+          friendstatus: 1
+        },
+        {
+          name: "Alexander SCHUFFER",
+          username: "@schufferj",
+          location: "New york City,Newyork",
+          description:
+            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
+          time: "1:32 PM ",
+          likes: "123",
+          commnets: "12",
+          image: Icons.messi,
+          playerImage: Icons.ic_player,
+          friendstatus: 1,
+          followstatus: 1
+        },
+        {
+          name: "Michael SCHUFFER",
+          username: "@schufferj",
+          location: "New york City,Newyork",
+          description:
+            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
+          time: "1:32 PM ",
+          likes: "123",
+          commnets: "12",
+          image: Icons.messi,
+          playerImage: Icons.ic_player,
+          friendstatus: 1,
+          followstatus: 1
+        },
+        {
+          name: "Benjamin SCHUFFER",
+          username: "@schufferj",
+          location: "New york City,Newyork",
+          description:
+            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
+          time: "1:32 PM ",
+          likes: "123",
+          commnets: "12",
+          image: Icons.messi,
+          playerImage: Icons.ic_player,
+          friendstatus: 1,
+          followstatus: 1
+        },
+        {
+          name: "Elijah SCHUFFER",
+          username: "@schufferj",
+          location: "New york City,Newyork",
+          description:
+            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
+          time: "1:32 PM ",
+          likes: "123",
+          commnets: "12",
+          image: Icons.messi,
+          playerImage: Icons.ic_player,
+          friendstatus: 1,
+          followstatus: 1
+        },
+        {
+          name: "Daniel SCHUFFER",
+          username: "@schufferj",
+          location: "New york City,Newyork",
+          description:
+            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
+          time: "1:32 PM ",
+          likes: "123",
+          commnets: "12",
+          image: Icons.messi,
+          playerImage: Icons.ic_player,
+          friendstatus: 1,
+          followstatus: 1
+        }
+      ]
     };
-  
   }
+  componentDidMount() {
+    const { data } = this.props.navigation.state.params;
+    console.log(data.users);
+    this.setState({
+      full_name: data.users.full_name,
+      profile_image: data.users.profile_image,
+      cover_image: data.users.cover_image,
+      user_name: data.users.user_name
+    });
+    this.getPostList();
+  }
+  getPostList() {
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if (isConnected) {
+        AsyncStorage.getItem("data")
+          .then(data => {
+            if (data != null) {
+              const myData = JSON.parse(data);
 
-  
+              let postData = {
+                method: "GET",
+                headers: {
+                  Accept: "application/json",
+                  Authorization: "Bearer " + myData.token,
+                  "Content-Type": "multipart/form-data"
+                }
+              };
+
+              this.getPostListApi(postData);
+            } else {
+            }
+          })
+          .done();
+      } else {
+        Alert.alert(
+          "Internet Connection",
+          "Kindly connect to internet then try again"
+        );
+      }
+    });
+  }
+  getPostListApi(bodyData) {
+    fetch(ApiUrl.getPosts, bodyData)
+      .then(response => response.json())
+      .then(responseJson => {
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+            const result = responseJson.result;
+
+            this.setState({
+              postData: result.data
+            });
+
+            break;
+          }
+          case 401: {
+            console.log(message);
+
+            break;
+          }
+          case 400: {
+            console.log(message);
+
+            break;
+          }
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
   renderRow(data) {
     return (
       <View style={[styles.row, { alignItems: "center" }]}>
@@ -192,26 +514,38 @@ class ProfileScreen extends Component {
       this.refs.viewPager.setPage(2);
     }
   }
+  doValidEmail(email) {
+    let reg = /^[a-zA-Z ]+$/;
+    if (reg.test(email) === false) {
+      console.log("Email is Not Correct");
+      return false;
+    } else {
+      console.log("Email is Correct");
+      return true;
+    }
+  }
   searchText = e => {
-    let text = e.toLowerCase();
-    let trucks = this.state.postData;
-    let filteredName = trucks.filter(item => {
-      return item.name.toLowerCase().match(text);
-    });
-    if (!text || text === "") {
-      this.setState({
-        filteredData: this.state.postData
+    if (this.doValidEmail(e)) {
+      let text = e.toLowerCase();
+      let trucks = this.state.friendListData;
+      let filteredName = trucks.filter(item => {
+        return item.name.toLowerCase().match(text);
       });
-    } else if (!Array.isArray(filteredName) && !filteredName.length) {
-      // set no data flag to true so as to render flatlist conditionally
-      this.setState({
-        noData: true
-      });
-    } else if (Array.isArray(filteredName)) {
-      this.setState({
-        noData: false,
-        filteredData: filteredName
-      });
+      if (!text || text === "") {
+        this.setState({
+          filteredData: this.state.friendListData
+        });
+      } else if (!Array.isArray(filteredName) && !filteredName.length) {
+        // set no data flag to true so as to render flatlist conditionally
+        this.setState({
+          noData: true
+        });
+      } else if (Array.isArray(filteredName)) {
+        this.setState({
+          noData: false,
+          filteredData: filteredName
+        });
+      }
     }
   };
   render() {
@@ -226,6 +560,10 @@ class ProfileScreen extends Component {
             <ProfileBannerCompoment
               tabTitle={"Crew"}
               profilePicture={this.state.avatarSource}
+              full_name={this.state.full_name}
+              profile_image={this.state.profile_image}
+              cover_image={this.state.cover_image}
+              user_name={this.state.user_name}
             />
           </View>
           <View>
@@ -243,7 +581,6 @@ class ProfileScreen extends Component {
                 style={{ display: this.state.isLoading ? "flex" : "none" }}
               />
               <ListView
-                style={{ display: this.state.isLoading ? "none" : "flex" }}
                 horizontal={true}
                 showsVerticalScrollIndicator={false}
                 alwaysBounceVertical={false}
@@ -340,12 +677,9 @@ class ProfileScreen extends Component {
                   style={{ flex: 1, height: Dimensions.get("screen").height }}
                 >
                   <View>
-                    <ListCompoment
-                      tabTitle={this.state.tabTitle}
-                      columns={this.state.columnCount}
-                      data={this.state.postData}
+                    <PostListComponent
+                      posts={this.state.postData}
                       navigation={this.props.navigation}
-                      streams={this.state.postData}
                     />
                   </View>
                   <View>
@@ -425,12 +759,9 @@ class ProfileScreen extends Component {
                         </View>
                       </TouchableOpacity>
                     </View>
-                    <ListCompoment
-                      tabTitle={this.state.tabTitle}
-                      columns={this.state.columnCount}
-                      data={this.state.postData}
+                    <PictureListComponent
+                      pictures={this.state.pictures}
                       navigation={this.props.navigation}
-                      streams={this.state.postData}
                     />
                   </View>
                   <View>
@@ -467,6 +798,7 @@ class ProfileScreen extends Component {
                             fontSize: 14,
                             fontFamily: "OpenSans-SemiBold"
                           }}
+                          keyboardType="ascii-capable"
                           placeholderTextColor={Colors.colorSearch}
                           underlineColorAndroid={Colors.transparent}
                           onChangeText={text => this.searchText(text)}
@@ -547,17 +879,13 @@ class ProfileScreen extends Component {
                         </View>
                       </TouchableOpacity>
                     </View>
-                    <ListCompoment
-                      tabTitle={this.state.tabTitle}
-                      columns={this.state.columnCount}
-                      data={
+                    <FriendListComponent
+                      navigation={this.props.navigation}
+                      friendList={
                         this.state.filteredData.length > 0
                           ? this.state.filteredData
-                          : this.state.postData
+                          : this.state.friendListData
                       }
-                      noData={this.state.noData}
-                      navigation={this.props.navigation}
-                      streams={this.state.postData}
                     />
                   </View>
                 </ViewPager>
