@@ -34,6 +34,11 @@ class StreamListComponent extends Component {
   doCommentList(data) {
     this.props.navigation.navigate("CommentListScreen", { commentdata: data });
   }
+  componentDidMount(){
+    this.setState({
+      updatedData:this.props.updateStreams
+    });
+  }
   doLikePost(postdata, index) {
     NetInfo.isConnected.fetch().then(isConnected => {
       if (isConnected) {
@@ -287,6 +292,7 @@ class StreamListComponent extends Component {
 
 StreamListComponent.propTypes = {
   streams: PropTypes.array,
+  updateStreams: PropTypes.array,
   navigation: PropTypes.object
 };
 export default StreamListComponent;

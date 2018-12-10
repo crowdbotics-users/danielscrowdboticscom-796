@@ -24,7 +24,7 @@ class HamburgerIcon extends Component {
   }
   render() {
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView >
         <View
           style={{
             flexDirection: "row",

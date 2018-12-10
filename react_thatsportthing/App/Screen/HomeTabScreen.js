@@ -119,7 +119,6 @@ class HomeTabScreen extends Component {
       postData: [],
       originalPostData: [],
     };
-    this.getPostList = this.getPostList.bind(this);
   }
 
   getPostList() {
@@ -587,6 +586,7 @@ class HomeTabScreen extends Component {
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView
+        style={{ flex: 1 }}
           showsVerticalScrollIndicator={true}
           alwaysBounceVertical={false}
           bounces={false}
@@ -724,6 +724,7 @@ class HomeTabScreen extends Component {
                   <WritePostCompoment navigation={this.props.navigation} />
                   <StreamListComponent
                     streams={this.state.postData}
+                    updateStreams={this.state.originalPostData}
                     navigation={this.props.navigation}
                   />
                 </View>
