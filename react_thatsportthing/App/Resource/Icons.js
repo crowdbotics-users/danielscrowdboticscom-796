@@ -49,6 +49,8 @@ const Icons ={
     ic_close:require('./Icon/ic_close.png'),
     ic_camera_profile:require('./Icon/ic_camera_profile.png'),
     ic_write_camera:require('./Icon/ic_write_camera.png'),
-    ic_write_post:require('./Icon/ic_write_post.png')
+    ic_write_post:require('./Icon/ic_write_post.png'),
+    ic_world:require('./Icon/world.png'),
+    ic_down_arrow_picker:require('./Icon/ic_down_arrow_picker.png'),
 }
 export default Icons;

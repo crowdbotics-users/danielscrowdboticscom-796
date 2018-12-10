@@ -204,7 +204,7 @@ class DrawerContent extends Component {
       isActiveAccountSettings: false,
       isActiveLogout: false
     });
-    this.doRedirect("EditProfileScreen");
+   
     this.closeDrawer();
   };
   doPosts = () => {
@@ -283,7 +283,7 @@ class DrawerContent extends Component {
   render() {
     return (
       <ScrollView>
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView >
           <View
             style={[
               styles.container,
@@ -291,7 +291,7 @@ class DrawerContent extends Component {
                 backgroundColor: Color.navBg,
                 justifyContent: "flex-start",
 
-                height: 200
+                
               }
             ]}
           >

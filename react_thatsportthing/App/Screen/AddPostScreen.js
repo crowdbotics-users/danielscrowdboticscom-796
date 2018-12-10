@@ -9,7 +9,9 @@ import {
   TouchableOpacity,
   NetInfo,
   AsyncStorage,
-  Alert,SafeAreaView
+  Alert,
+  SafeAreaView,
+  StyleSheet
 } from "react-native";
 import AddPostHeaderCompoment from "../Compoments/AddPostHeaderCompoment";
 import styles from "../Resource/Styles";
@@ -19,6 +21,7 @@ import ImagePicker from "react-native-image-crop-picker";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import ApiUrl from "../Network/ApiUrl";
 import { showSnackBar } from "@prince8verma/react-native-snackbar";
+import RNPickerSelect from "react-native-picker-select";
 
 class AddPostScreen extends PureComponent {
   constructor(props) {
@@ -26,7 +29,18 @@ class AddPostScreen extends PureComponent {
     this.state = {
       messages: "",
       isProgress: false,
-      postImage: ""
+      postImage: "",
+      privacy: "all",
+      items: [
+        {
+          label: "Public",
+          value: "all"
+        },
+        {
+          label: "Crew",
+          value: "crew"
+        }
+      ]
     };
   }
   static navigationOptions = ({ navigation }) => {
@@ -151,158 +165,198 @@ class AddPostScreen extends PureComponent {
   };
   render() {
     return (
-      <SafeAreaView style={{flex:1}}>
-      <View style={{ backgroundColor: Colors.white, flex: 1 }}>
-        <View
-          style={{ position: "relative", flex: 1, flexDirection: "column" }}
-        >
-          <View style={{ position: "relative" }}>
-            <View
-              style={[
-                styles.row,
-                { marginStart: 10, marginEnd: 10, alignItems: "center" }
-              ]}
-            >
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ backgroundColor: Colors.white, flex: 1 }}>
+          <View
+            style={{ position: "relative", flex: 1, flexDirection: "column" }}
+          >
+            <View style={{ position: "relative" }}>
+              <View
+                style={[
+                  styles.row,
+                  { marginStart: 10, marginEnd: 10, alignItems: "center" }
+                ]}
+              >
+                <View
+                  style={{
+                    width: 50,
+                    height: 50,
+                    borderRadius: 25,
+                    backgroundColor: "#F8F6F7",
+                    alignSelf: "center",
+                    justifyContent: "center",
+                    alignContent: "center",
+                    marginTop: 10,
+                    marginBottom: 10
+                  }}
+                >
+                  <Image
+                    source={Icons.messi}
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: 22,
+                      borderWidth: 1.5,
+                      borderColor: "#D1D0D0",
+                      alignSelf: "center"
+                    }}
+                  />
+                </View>
+
+                <Text
+                  style={{
+                    flex:1,
+                    marginStart: 10,
+                    color: Colors.black,
+                    fontFamily: "OpenSans-Bold"
+                  }}
+                >
+                  JOHN SCHOFFER
+                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center",borderColor:Colors.colorSearch,borderWidth:1,alignSelf:'center',padding:0 ,borderRadius:4}}>
+                <Image source={Icons.ic_world} style={{width:15,height:15,margin:5,marginEnd:10}}/>
+                  <View style={{alignItems:'center',alignContent:'center',justifyContent:'center',padding:0,margin:0,top:0,bottom:0}}>
+                  <RNPickerSelect
+                  
+                    useNativeAndroidPickerStyle={false}
+                    placeholder={{}}
+                    hideIcon={true}
+                    items={this.state.items}
+                    style={{ ...pickerSelectStyles }}
+                    value={this.state.privacy}
+                    onValueChange={value => {
+                      this.setState({
+                        privacy: value
+                      });
+                    }}
+                  />
+                  </View>
+                  <Image source={Icons.ic_down_arrow_picker} style={{width:15,height:15,margin:5,marginEnd:10}}/>
+                </View>
+              </View>
               <View
                 style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 25,
-                  backgroundColor: "#F8F6F7",
-                  alignSelf: "center",
-                  justifyContent: "center",
-                  alignContent: "center",
-                  marginTop: 10,
-                  marginBottom: 10
+                  borderBottomColor: Colors.colorLine,
+                  borderBottomWidth: 1
                 }}
-              >
-                <Image
-                  source={Icons.messi}
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 22,
-                    borderWidth: 1.5,
-                    borderColor: "#D1D0D0",
-                    alignSelf: "center"
-                  }}
-                />
-              </View>
-
-              <Text
-                style={{
-                  marginStart: 10,
-                  color: Colors.black,
-                  fontFamily: "OpenSans-Bold"
+              />
+              <TextInput
+                ref={"messages"}
+                placeholder="Write a post,share link or picture..."
+                style={{ marginStart: 10, marginEnd: 10 }}
+                underlineColorAndroid={Colors.transparent}
+                value={this.state.messages}
+                onChangeText={text => {
+                  this.setState({ messages: text });
                 }}
-              >
-                JOHN SCHOFFER
-              </Text>
+              />
+              <Image
+                source={
+                  this.state.postImage != ""
+                    ? { uri: this.state.postImage }
+                    : ""
+                }
+              />
+              <ProgressCompoment isProgress={this.state.isProgress} />
             </View>
             <View
               style={{
-                borderBottomColor: Colors.colorLine,
-                borderBottomWidth: 1
+                position: "absolute",
+                bottom: 0,
+                flex: 1,
+                borderTopColor: Colors.colorLine,
+                width: "100%",
+                borderTopWidth: 1,
+                alignItems: "center"
               }}
-            />
-            <TextInput
-              ref={"messages"}
-              placeholder="Write a post,share link or picture..."
-              style={{ marginStart: 10, marginEnd: 10 }}
-              underlineColorAndroid={Colors.transparent}
-              value={this.state.messages}
-              onChangeText={text => {
-                this.setState({ messages: text });
-              }}
-            />
-            <Image source={this.state.postImage!=""?{uri:this.state.postImage}:""} />
-            <ProgressCompoment isProgress={this.state.isProgress} />
-          </View>
-          <View
-            style={{
-              position: "absolute",
-              bottom: 0,
-              flex: 1,
-              borderTopColor: Colors.colorLine,
-              width: "100%",
-              borderTopWidth: 1,
-              alignItems: "center"
-            }}
-          >
-            <View
-              style={[
-                styles.row,
-                {
-                  marginStart: 10,
-                  marginEnd: 10,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  alignContent: "center",
-                  marginTop: 5,
-                  marginBottom: 10
-                }
-              ]}
             >
-              <TouchableOpacity>
-                <Text
-                  style={{
-                    color: Colors.black,
-                    fontFamily: "OpenSans-Bold",
+              <View
+                style={[
+                  styles.row,
+                  {
+                    marginStart: 10,
                     marginEnd: 10,
-                    fontSize: 16
-                  }}
-                >
-                  @
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Text
-                  style={{
-                    color: Colors.black,
-                    fontFamily: "OpenSans-Bold",
-                    marginEnd: 10,
-                    fontSize: 16
-                  }}
-                >
-                  #
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => this.pickSingleWithCamera(true, true)}
+                    alignItems: "center",
+                    justifyContent: "center",
+                    alignContent: "center",
+                    marginTop: 5,
+                    marginBottom: 10
+                  }
+                ]}
               >
-                <Image
-                  source={Icons.ic_camera_profile}
-                  style={[styles.icon, {}]}
-                />
-              </TouchableOpacity>
-              <View style={{ flex: 1 }} />
-              <TouchableOpacity onPress={() => this.doAddPost()}>
-                <View
-                  style={{
-                    backgroundColor: Colors.bgHeader,
-                    borderRadius: 5
-                  }}
-                >
+                <TouchableOpacity>
                   <Text
                     style={{
-                      color: Colors.white,
-                      padding: 5,
+                      color: Colors.black,
                       fontFamily: "OpenSans-Bold",
-                      marginStart: 10,
-                      marginEnd: 10
+                      marginEnd: 10,
+                      fontSize: 16
                     }}
                   >
-                    Post
+                    @
                   </Text>
-                </View>
-              </TouchableOpacity>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Text
+                    style={{
+                      color: Colors.black,
+                      fontFamily: "OpenSans-Bold",
+                      marginEnd: 10,
+                      fontSize: 16
+                    }}
+                  >
+                    #
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => this.pickSingleWithCamera(true, true)}
+                >
+                  <Image
+                    source={Icons.ic_camera_profile}
+                    style={[styles.icon, {}]}
+                  />
+                </TouchableOpacity>
+                <View style={{ flex: 1 }} />
+                <TouchableOpacity onPress={() => this.doAddPost()}>
+                  <View
+                    style={{
+                      backgroundColor: Colors.bgHeader,
+                      borderRadius: 5
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: Colors.white,
+                        padding: 5,
+                        fontFamily: "OpenSans-Bold",
+                        marginStart: 10,
+                        marginEnd: 10
+                      }}
+                    >
+                      Post
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </View>
-      </View>
       </SafeAreaView>
     );
   }
 }
-
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 12,
+    backgroundColor: "white",
+    color: Colors.navBg,
+   
+  },
+  inputAndroid: {
+    fontSize: 12,
+    alignItems: "center",
+    color: Colors.navBg,
+   
+  }
+});
 export default AddPostScreen;
