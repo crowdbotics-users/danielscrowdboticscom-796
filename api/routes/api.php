@@ -41,11 +41,17 @@ Route::group(['prefix' => 'users'], function () {
             Route::post('add_post', 'API\PostController@store');
             Route::post('add_like', 'API\PostController@add_like');
             Route::post('add_comment', 'API\PostController@add_comment');
-            Route::post('view_comment_all_message', 'API\PostController@view_all_message');
+            Route::post('add_comment__like', 'API\PostController@add_comment__like');
+            Route::post('view_comment_all_message', 'API\PostController@view_comment_all_message');
             Route::post('view_reply_all_message', 'API\PostController@view_reply_all_message');
         });
+
         Route::group(['prefix' => 'requests'], function () {
             Route::post('send_request', 'API\RequestController@send_request');
+            Route::post('request_action', 'API\RequestController@request_action');
+            Route::get('send_request_list', 'API\RequestController@send_request_list');
+            Route::get('received_request_list', 'API\RequestController@received_request_list');
+            Route::get('crew_list', 'API\RequestController@crew_list');
         });   
 
     });

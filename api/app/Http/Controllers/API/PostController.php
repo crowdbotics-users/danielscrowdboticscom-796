@@ -53,21 +53,20 @@ class PostController extends Controller
         if(isset($request->description) || isset($request->post_image))
         {
             $post=new Post();
+            
             if(isset($request->description))
             {
                 $post->description=$request->description;
             }
             if(isset($request->post_image))
             {
-               ;
                 $image=$request->post_image;
                 $imageName = str_replace(' ', '_', $request->full_name).'_'.uniqid(time()) . '.' . $image->getClientOriginalExtension();
     
                 uploadImage($image,'uploads/user/post_images/thumbnail',$imageName,'150','150');
                 $image_path = uploadImage($image,'uploads/user/post_images',$imageName,'400','400');
                 $post->post_image = $image_path;
-                
-                
+                 
             }
             $post->user_id=$user->id;
             $post->status = 1;
@@ -176,14 +175,64 @@ class PostController extends Controller
         }
     }
 
-    public function view_all_message(Request $request)
+    public function add_comment__like(Request $request)
+    {
+        $user= JWTAuth::touser($request->header('authorization'));
+        if(isset($request->post_id) && isset($request->comment_id))
+        {
+            $comment_likes_data=CommentsLikes::where('user_id',$user->id)->where('post_id',$request->post_id)
+                        ->where('parent_id',$request->comment_id)->first();
+
+            if($comment_likes_data != null)
+            {
+                $comment_likes_data->delete();
+                $comment_likes=CommentsLikes::find($request->comment_id);
+                $result=make_null($comment_likes);
+
+                return response()->json([
+                    'result' => $result,
+                    'message' => 'Success.',
+                    'success' => true,
+                    'status' => 200,
+                ],200);
+            }
+
+            $comment_like=new CommentsLikes();
+            $comment_like->type='comment-like';
+            $comment_like->user_id=$user->id;
+            $comment_like->post_id=$request->post_id;
+            $comment_like->parent_id=$request->comment_id;
+            $comment_like->status=1;
+            $comment_like->save();
+
+            $comment_likes=CommentsLikes::find($request->comment_id);
+            $result=make_null($comment_likes);
+
+            return response()->json([
+                'result' => $result,
+                'message' => 'Success.',
+                'success' => true,
+                'status' => 200,
+            ],200);
+
+        }
+        else
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid Parameter.',
+                'status'  => 400
+            ], 200);
+        }
+    }
+
+    public function view_comment_all_message(Request $request)
     {
         if(isset($request->post_id))
         {
             $comments=CommentsLikes::with('users')->where('status',1)
               ->where('type','comment')->where('parent_id',0)->where('post_id',$request->post_id)->paginate(10);
 
-           
             $comments=make_null($comments);
             $result['total']=get_api_data(isset($comments['total']) ? $comments['total'] : 0);
             $result['current_page']=get_api_data(isset($comments['current_page']) ? $comments['total'] : 0);

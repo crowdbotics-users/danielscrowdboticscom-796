@@ -78,7 +78,6 @@ class RequestController extends Controller
                 'success' => true,
                 'status' => 200,
             ],200);
-
         }
         else
         {
@@ -92,9 +91,172 @@ class RequestController extends Controller
 
     public function request_action(Request $request)
     {
-        if(isset($request->status) && isset($request->receiver_id))
+        $receiver= JWTAuth::touser($request->header('authorization'));
+
+        if(isset($request->status) && isset($request->sender_id))
         {
-            
+            $sender = User::find($request->sender_id);
+            $request_data=Request_data::where('sender_id',$receiver->id)->where('receiver_id',$sender->id)->first();
+            $request_data->status=$request->status;
+            $request_data->save();
+
+            if($request->status == 1)
+            {
+                $message = array();
+                $title='Request Accepted';
+                $msg=$receiver->full_name.' is accepted your request.';
+        
+                $message['body'] = $msg;
+                $message['message'] = $msg;
+                $message['title'] = $title;
+
+                $message['target_screen'] = 'request';        
+                $message['sender']= make_null($sender);
+                $message['receiver']= make_null($receiver);
+                $message['notification'] = array("body" => $msg,"title" => $title );
+    
+                $result=send_notification($sender->fire_base_token,[],$sender->device_type,$message);
+                
+                $data['title'] = $title;
+                $data['message'] =  $msg;
+                $data['sender'] = make_null($sender);
+                $data['receiver'] = make_null($receiver);
+                $data['target_screen'] = 'child';
+                $data['response']=$result;                
+                $result=(Object)$data;
+
+                return response()->json([
+                    'result' => $result,
+                    'success' => false,
+                    'message' => 'Success.',
+                    'status'  => 200
+                ], 200);
+            }
+
+            $data['sender'] = make_null($sender);
+            $data['receiver'] = make_null($receiver);
+            $result=(Object)$data;
+
+            return response()->json([
+                'result' => $result,
+                'success' => false,
+                'message' => 'Success.',
+                'status'  => 200
+            ], 200);
+
         }
+        else
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid Parameter.',
+                'status'  => 400
+            ], 200);
+        }
+    }
+
+    public function send_request_list(Request $request)
+    {
+        $user=JWTAuth::touser($request->header('authorization'));
+
+        $request_data=Request_data::leftjoin('users','users.id','request.sender_id')->where('request.receiver_id',$user->id)
+                       ->where('request.status',0)->select('users.*')->paginate(10);
+
+        $request_data=make_null($request_data);
+        $result['total']=get_api_data(isset($request_data['total']) ? $request_data['total'] : 0);
+        $result['current_page']=get_api_data(isset($request_data['current_page']) ? $request_data['total'] : 0);
+        $result['prev_page_url']=get_api_data(isset($request_data['prev_page_url']) ? $request_data['prev_page_url'] : 0);
+        $result['next_page_url']=get_api_data(isset($request_data['next_page_url']) ? $request_data['next_page_url'] : 0);
+        $result['data']=$request_data['data'];
+
+        if($result['total'] > 0)
+        {
+            return response()->json([
+                'result' => $result,
+                'message' => 'Request List.',
+                'success' => true,
+                'status' => 200,
+            ],200);
+        }
+        else
+        {
+            return response()->json([
+                'result' => $result,
+                'message' => 'Data Empty.',
+                'success' => true,
+                'status' => 400,
+            ],200);
+        }
+    }
+
+    public function received_request_list(Request $request)
+    {
+        $user=JWTAuth::touser($request->header('authorization'));
+
+        $request_data=Request_data::leftjoin('users','users.id','request.receiver_id')->where('request.sender_id',$user->id)
+                       ->select('users.*')->paginate(10);
+
+        $request_data=make_null($request_data);
+        $result['total']=get_api_data(isset($request_data['total']) ? $request_data['total'] : 0);
+        $result['current_page']=get_api_data(isset($request_data['current_page']) ? $request_data['total'] : 0);
+        $result['prev_page_url']=get_api_data(isset($request_data['prev_page_url']) ? $request_data['prev_page_url'] : 0);
+        $result['next_page_url']=get_api_data(isset($request_data['next_page_url']) ? $request_data['next_page_url'] : 0);
+        $result['data']=$request_data['data'];
+
+        if($result['total'] > 0)
+        {
+            return response()->json([
+                'result' => $result,
+                'message' => 'Request List.',
+                'success' => true,
+                'status' => 200,
+            ],200);
+        }
+        else
+        {
+            return response()->json([
+                'result' => $result,
+                'message' => 'Data Empty.',
+                'success' => true,
+                'status' => 400,
+            ],200);
+        }
+    }
+    public function crew_list(Request $request)
+    {
+        $user=JWTAuth::touser($request->header('authorization'));
+
+        $crew=Request_data::where(function ($query) use ($user){
+              $query->where('sender_id', '=', $user->id)
+              ->orWhere('receiver_id', '=', $user->id);
+               })->where('status',1)->paginate(10);
+        
+        $crew=make_null($crew);
+        
+        $result['total']=get_api_data(isset($crew['total']) ? $crew['total'] : 0);
+        $result['current_page']=get_api_data(isset($crew['current_page']) ? $crew['total'] : 0);
+        $result['prev_page_url']=get_api_data(isset($crew['prev_page_url']) ? $crew['prev_page_url'] : 0);
+        $result['next_page_url']=get_api_data(isset($crew['next_page_url']) ? $crew['next_page_url'] : 0);
+        $result['data']=$crew['data'];
+        
+        if($result['total'] > 0)
+        {
+            return response()->json([
+                'result' => $result,
+                'message' => 'Request List.',
+                'success' => true,
+                'status' => 200,
+            ],200);
+        }
+        else
+        {
+            return response()->json([
+                'result' => $result,
+                'message' => 'Data Empty.',
+                'success' => true,
+                'status' => 400,
+            ],200);
+        }
+     
     }
 }
