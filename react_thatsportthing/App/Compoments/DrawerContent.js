@@ -84,10 +84,8 @@ class DrawerContent extends Component {
       if (isConnected) {
         AsyncStorage.getItem("data")
           .then(data => {
-            console.log("AsyncStorage");
             if (data != null) {
               const myData = JSON.parse(data);
-              console.log(data);
 
               let postData = {
                 method: "GET",
@@ -97,7 +95,7 @@ class DrawerContent extends Component {
                   "Content-Type": "multipart/form-data"
                 }
               };
-
+              this.closeDrawer();
               this.openProgressbar();
               this.doLogoutApi(postData, screen);
             } else {
@@ -117,7 +115,7 @@ class DrawerContent extends Component {
     showSnackBar({
       message: message,
       position: 'top',
-      backgroundColor: Colors.bgHeader,
+      backgroundColor: Color.bgHeader,
       buttonColor: "#fff",
       confirmText: '',
       onConfirm: () => { },
@@ -141,18 +139,13 @@ class DrawerContent extends Component {
 
         switch (status) {
           case 200: {
-            console.log(message);
 
             AsyncStorage.clear();
             AsyncStorage.setItem("logged", "false");
+            
             this.hideProgressbar();
-            const resetAction = StackActions.reset({
-              index: 0,
-              key: null,
-              actions: [NavigationActions.navigate({ routeName: screen })]
-            });
-            dispatch(resetAction);
-            this.closeDrawer();
+            this.doFinish(screen);
+           
             break;
           }
           case 401: {
@@ -174,6 +167,15 @@ class DrawerContent extends Component {
 
         console.log(error);
       });
+  }
+  doFinish(screen){
+    const { navigate, dispatch } = this.props.navigation;
+    const resetAction = StackActions.reset({
+      index: 0,
+      key: null,
+      actions: [NavigationActions.navigate({ routeName: screen })]
+    });
+    dispatch(resetAction);
   }
   doRateUs() {
     Linking.openURL("http://www.goodindiabadindia.com/terms-conditons.html");

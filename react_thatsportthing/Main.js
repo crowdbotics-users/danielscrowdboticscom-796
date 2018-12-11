@@ -18,6 +18,9 @@ import AddCommentScreen from "./App/Screen/AddCommentScreen";
 import MyCrewScreen from "./App/Screen/MyCrewScreen";
 import MyFollowersScreen from "./App/Screen/MyFollowersScreen";
 import ProfileScreen from "./App/Screen/ProfileScreen";
+import ReplyCommentListScreen from "./App/Screen/ReplyCommentListScreen";
+import AddReplyScreen from "./App/Screen/AddReplyScreen";
+import TestScreen from "./App/Screen/TestScreen";
 
 const EditProfileScreenNavigator = createStackNavigator({
   EditProfileScreen: {
@@ -44,9 +47,19 @@ const AddCommentScreenNavigator = createStackNavigator({
     screen: AddCommentScreen
   }
 });
+const AddReplyScreenNavigator = createStackNavigator({
+  AddReplyScreen: {
+    screen: AddReplyScreen
+  }
+});
 const CommentListScreenNavigator = createStackNavigator({
   CommentListScreen: {
     screen: CommentListScreen
+  }
+});
+const ReplyCommentListScreenNavigator = createStackNavigator({
+  ReplyCommentListScreen: {
+    screen: ReplyCommentListScreen
   }
 });
 const ProfileScreenNavigator = createStackNavigator({
@@ -56,6 +69,7 @@ const ProfileScreenNavigator = createStackNavigator({
 });
 const Main = createStackNavigator(
   {
+    TestScreen: { screen: TestScreen },
     LoginType: { screen: LoginType },
     Login: { screen: Login },
     SignUp1: { screen: SignUp1 },
@@ -88,6 +102,12 @@ const Main = createStackNavigator(
         header: null
       }
     },
+    AddReplyScreen: {
+      screen: AddReplyScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
     MyCrewScreen: {
       screen: MyCrewScreenNavigator,
       navigationOptions: {
@@ -102,6 +122,12 @@ const Main = createStackNavigator(
     },
     CommentListScreen: {
       screen: CommentListScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    ReplyCommentListScreen: {
+      screen: ReplyCommentListScreenNavigator,
       navigationOptions: {
         header: null
       }

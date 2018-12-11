@@ -115,7 +115,7 @@ class StreamListComponent extends Component {
           style={[
             styles.column,
             styles.card,
-            { alignItems: "center", marginBottom: 1, borderRadius: 0 }
+            { alignItems: "flex-start", marginBottom: 1, borderRadius: 0 }
           ]}
         >
           <View
@@ -133,7 +133,7 @@ class StreamListComponent extends Component {
                 alignSelf: "center",
                 justifyContent: "center",
                 alignContent: "center",
-                alignItems: "center",
+                alignItems: "flex-start",
                 marginLeft: 10
               }}
             >
@@ -181,13 +181,15 @@ class StreamListComponent extends Component {
           </View>
           <Text
             style={{
+            
               marginTop: 5,
               marginBottom: 5,
               marginLeft: 15,
               marginRight: 8,
               color: "#6C6C6C",
-
-              fontSize: 12
+              textAlign:'left',
+              fontSize: 12,
+              flex:1,
             }}
           >
             {data.description}
@@ -282,8 +284,7 @@ class StreamListComponent extends Component {
           renderItem={({ item, index }) => this.renderStream(item, index)}
           keyExtractor={(item, index) => index.toString()}
           ListEmptyComponent={this.renderEmpty()}
-          nestedScrollEnabled={true}
-          scrollEnabled={false}
+         
         />
       </View>
     );

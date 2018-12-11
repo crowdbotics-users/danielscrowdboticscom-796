@@ -30,7 +30,7 @@ class PostListComponent extends Component {
           style={[
             styles.column,
             styles.card,
-            { alignItems: "center", marginBottom: 1, borderRadius: 0 }
+            { alignItems: "flex-start", marginBottom: 1, borderRadius: 0 }
           ]}
         >
           <View
@@ -194,7 +194,7 @@ class PostListComponent extends Component {
           renderItem={({ item, index }) => this.renderStream(item)}
           keyExtractor={(item, index) => index.toString()}
           ListEmptyComponent={this.renderEmpty()}
-          scrollEnabled={false}
+          
         />
       </View>
     );

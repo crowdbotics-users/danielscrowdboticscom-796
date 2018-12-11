@@ -20,6 +20,8 @@ class AddCommentScreen extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      full_name: "",
+      profile_image: "",
       messages: "",
       isProgress:false
     };
@@ -130,6 +132,22 @@ class AddCommentScreen extends PureComponent {
   hideProgressbar = () => {
     this.setState({ isProgress: false });
   };
+  componentDidMount() {
+    AsyncStorage.getItem("data")
+      .then(data => {
+        console.log("AsyncStorage");
+        if (data != null) {
+          const myData = JSON.parse(data);
+          this.setState({
+            full_name: myData.full_name,
+            profile_image: myData.profile_image,
+          });
+        } else {
+          console.log(data);
+        }
+      })
+      .done();
+  }
   render() {
     return (
       <SafeAreaView style={{flex:1}}>
@@ -158,7 +176,7 @@ class AddCommentScreen extends PureComponent {
                 }}
               >
                 <Image
-                  source={Icons.messi}
+                  source={this.state.profile_image==""?Icons.messi:{uri:this.state.profile_image}}
                   style={{
                     width: 44,
                     height: 44,
@@ -177,7 +195,7 @@ class AddCommentScreen extends PureComponent {
                   fontFamily: "OpenSans-Bold"
                 }}
               >
-                JOHN SCHOFFER
+                {this.state.full_name}
               </Text>
             </View>
             <View
