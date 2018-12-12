@@ -63,8 +63,8 @@ class User extends Authenticatable implements JWTSubject
     }
     public function getCoverImageAttribute()
     {
-		if($this->attributes['cover_image'] && \File::exists(public_path()."/uploads/user/cover/".$this->attributes['cover_image'])){
-			$path = url("/")."/"."uploads/user/cover/";
+		if($this->attributes['cover_image'] && \File::exists(public_path()."/uploads/user/cover/".$this->attributes['id']."/".$this->attributes['cover_image'])){
+			$path = url("/")."/"."uploads/user/cover/".$this->attributes['id']."/";
 			return ($this->attributes['cover_image'])?$path.$this->attributes['cover_image']:'';
 		}else{
 			return "";
