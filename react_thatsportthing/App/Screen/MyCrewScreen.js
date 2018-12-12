@@ -41,6 +41,85 @@ class MyCrewScreen extends Component {
      
     };
   }
+  doRequestAction(status) {
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if (isConnected) {
+        AsyncStorage.getItem("data")
+          .then(data => {
+            console.log("AsyncStorage");
+            if (data != null) {
+              const myData = JSON.parse(data);
+                const bodyData = JSON.stringify({
+                  status:status,
+                  sender_id: myData.id
+                });
+                console.log('cancel',bodyData);
+                
+                this.openProgressbar();
+                 try {
+                  this.doRequestActionApi(bodyData, myData.token);
+                 } catch (error) {
+                   console.log(error);
+                   this.hideProgressbar();
+                   
+                 }
+            } else {
+              console.log(data);
+            }
+          })
+          .done();
+      } else {
+        Alert.alert(
+          "Internet Connection",
+          "Kindly connect to internet then try again"
+        );
+      }
+    });
+  }
+  doRequestActionApi(bodyData, token) {
+    fetch(ApiUrl.requestAction, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      },
+      body: bodyData
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+            //this.props.navigation.goBack(null);
+            this.doShowSnackBar(message);
+            this.hideProgressbar();
+            break;
+          }
+          case 401: {
+            this.doShowSnackBar(message);
+            this.hideProgressbar();
+            console.log(message);
+            break;
+          }
+          case 400: {
+            this.doShowSnackBar(message);
+            this.hideProgressbar();
+            console.log(message);
+            break;
+          }
+        }
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+      });
+  }
+ 
   renderSeparator = () => {
     return (
       <View
@@ -53,6 +132,8 @@ class MyCrewScreen extends Component {
     );
   };
   renderFriends(data,index) {
+    if(data.hasOwnProperty('user_details')){
+      const user_details=data.user_details;
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <View
@@ -82,7 +163,153 @@ class MyCrewScreen extends Component {
                 }}
               >
                 <Image
-                  source={data.profile_image}
+                  source={user_details.profile_image==""?Icons.messi:{uri:user_details.profile_image}}
+                  style={{
+                    width: 68,
+                    height: 68,
+                    borderRadius: 34,
+                    borderWidth: 1.5,
+                    borderColor: "#D1D0D0",
+                    alignSelf: "center"
+                  }}
+                />
+              </View>
+            </View>
+            <View style={{ flex: 3 }}>
+              <Text
+                style={{
+                  color: Colors.black,
+                  fontFamily: "OpenSans-SemiBold",
+                  fontSize: 13
+                }}
+              >
+                {user_details.full_name}
+              </Text>
+              <Text
+                style={{
+                  color: "#6C6C6C",
+                  fontFamily: "OpenSans-SemiBold",
+                  fontSize: 12
+                }}
+              >
+                {Moment(data.created_at).format("DD/MM/YYYY hh:mm A")}
+              </Text>
+              <Text
+                style={{
+                  color: Colors.black,
+                  fontFamily: "OpenSans-SemiBold",
+                  fontSize: 12
+                }}
+              >
+                {user_details.user_name}
+              </Text>
+              <View
+                style={[
+                  styles.row,
+                  {
+                    alignItems: "center"
+                  }
+                ]}
+              >
+                <TouchableOpacity style={{ flex: 1 }} onPress={()=>this.doRequestAction(3)}>
+                  <Text
+                    style={{
+                      color: Colors.black,
+                      fontFamily: "OpenSans-SemiBold",
+                      fontSize: 11
+                    }}
+                  >
+                    Unfriend
+                  </Text>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    borderEndWidth: 1,
+                    borderEndColor: Colors.black,
+                    height: 10
+                  }}
+                />
+
+                <TouchableOpacity style={{ flex: 1 }}>
+                  <Text
+                    style={{
+                      color: Colors.black,
+                      fontFamily: "OpenSans-SemiBold",
+                      fontSize: 11,
+                      marginStart: 8,
+                      marginEnd: 8
+                    }}
+                  >
+                    Send Message
+                  </Text>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    borderEndWidth: 1,
+                    borderEndColor: Colors.black,
+                    height: 10
+                  }}
+                />
+                <TouchableOpacity style={{ flex: 1 }} onPress={()=>this.doFollowFriend(data,index)}>
+                  <Text
+                    style={{
+                      color: Colors.black,
+                      fontFamily: "OpenSans-SemiBold",
+                      fontSize: 11,
+                      marginStart: 8,
+                      marginEnd: 8
+                    }}
+                  >
+                    {data.followstatus == 1
+                      ? "Follow"
+                      : data.followstatus == 2
+                      ? "UnFollow"
+                      : "Follow"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+      
+    }else{
+      console.log('nathi');
+    }
+   
+  }
+  renderSendFriends(data,index) {
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <View
+          style={[
+            styles.column,
+            styles.card,
+            { alignItems: "center", marginBottom: 1, borderRadius: 0 }
+          ]}
+        >
+          <View
+            style={[
+              styles.row,
+              { justifyContent: "center", alignItems: "center", flex: 1 }
+            ]}
+          >
+            <View style={{ flex: 1 }}>
+              <View
+                style={{
+                  width: 72,
+                  height: 72,
+                  borderRadius: 36,
+                  backgroundColor: "#F8F6F7",
+                  alignSelf: "center",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  marginLeft: 8
+                }}
+              >
+                <Image
+                  source={data.profile_image==""?Icons.messi:{uri:data.profile_image}}
                   style={{
                     width: 68,
                     height: 68,
@@ -138,13 +365,163 @@ class MyCrewScreen extends Component {
                       fontSize: 11
                     }}
                   >
-                    {data.status == 0
-                      ? "+Send Request"
-                      : data.status == 1
-                      ? "Cancel Request"
-                      : "+Send Request"}
+                    Cancel Request
                   </Text>
                 </TouchableOpacity>
+                <View
+                  style={{
+                    borderEndWidth: 1,
+                    borderEndColor: Colors.black,
+                    height: 10
+                  }}
+                />
+
+                <TouchableOpacity style={{ flex: 1 }}>
+                  <Text
+                    style={{
+                      color: Colors.black,
+                      fontFamily: "OpenSans-SemiBold",
+                      fontSize: 11,
+                      marginStart: 8,
+                      marginEnd: 8
+                    }}
+                  >
+                    Send Message
+                  </Text>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    borderEndWidth: 1,
+                    borderEndColor: Colors.black,
+                    height: 10
+                  }}
+                />
+                <TouchableOpacity style={{ flex: 1 }} onPress={()=>this.doFollowFriend(data,index)}>
+                  <Text
+                    style={{
+                      color: Colors.black,
+                      fontFamily: "OpenSans-SemiBold",
+                      fontSize: 11,
+                      marginStart: 8,
+                      marginEnd: 8
+                    }}
+                  >
+                    {data.followstatus == 1
+                      ? "Follow"
+                      : data.followstatus == 2
+                      ? "UnFollow"
+                      : "Follow"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
+  renderReceivedFriends(data,index) {
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <View
+          style={[
+            styles.column,
+            styles.card,
+            { alignItems: "center", marginBottom: 1, borderRadius: 0 }
+          ]}
+        >
+          <View
+            style={[
+              styles.row,
+              { justifyContent: "center", alignItems: "center", flex: 1 }
+            ]}
+          >
+            <View style={{ flex: 1 }}>
+              <View
+                style={{
+                  width: 72,
+                  height: 72,
+                  borderRadius: 36,
+                  backgroundColor: "#F8F6F7",
+                  alignSelf: "center",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  marginLeft: 8
+                }}
+              >
+                <Image
+                  source={data.profile_image==""?Icons.messi:{uri:data.profile_image}}
+                  style={{
+                    width: 68,
+                    height: 68,
+                    borderRadius: 34,
+                    borderWidth: 1.5,
+                    borderColor: "#D1D0D0",
+                    alignSelf: "center"
+                  }}
+                />
+              </View>
+            </View>
+            <View style={{ flex: 3 }}>
+              <Text
+                style={{
+                  color: Colors.black,
+                  fontFamily: "OpenSans-SemiBold",
+                  fontSize: 13
+                }}
+              >
+                {data.full_name}
+              </Text>
+              <Text
+                style={{
+                  color: "#6C6C6C",
+                  fontFamily: "OpenSans-SemiBold",
+                  fontSize: 12
+                }}
+              >
+                {Moment(data.created_at).format("DD/MM/YYYY hh:mm A")}
+              </Text>
+              <Text
+                style={{
+                  color: Colors.black,
+                  fontFamily: "OpenSans-SemiBold",
+                  fontSize: 12
+                }}
+              >
+                {data.user_name}
+              </Text>
+              <View
+                style={[
+                  styles.row,
+                  {
+                    alignItems: "center"
+                  }
+                ]}
+              >
+                <View  style={{ flex: 1 }}>
+                <TouchableOpacity onPress={()=>this.doRequestAction(1)}>
+                  <Text
+                    style={{
+                      color: Colors.black,
+                      fontFamily: "OpenSans-SemiBold",
+                      fontSize: 11
+                    }}
+                  >
+                    Confirm Request
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>this.doRequestAction(2)} >
+                  <Text
+                    style={{
+                      color: Colors.black,
+                      fontFamily: "OpenSans-SemiBold",
+                      fontSize: 11
+                    }}
+                  >
+                    Cancel Request
+                  </Text>
+                </TouchableOpacity>
+                </View>
                 <View
                   style={{
                     borderEndWidth: 1,
@@ -368,18 +745,18 @@ class MyCrewScreen extends Component {
           }
           case 401: {
             console.log(message);
-            this.doShowSnackBar(message);
+           
             this.setState({ loading: false, refreshing: false,data:[] });
             break;
           }
           case 400: {
             console.log(message);
-            this.doShowSnackBar(message);
+           
             this.setState({ loading: false, refreshing: false,data:[] });
             break;
           }
           default: {
-            this.doShowSnackBar(message);
+            console.log(message);
             this.setState({ loading: false, refreshing: false,data:[] });
             break;
           }
@@ -700,7 +1077,7 @@ class MyCrewScreen extends Component {
           numColumns={1}
           style={{ marginTop: 8 }}
           data={this.state.data}
-          renderItem={({ item, index }) => this.renderFriends(item,index)}
+          renderItem={({ item, index }) => this.state.isFollowersActive ? this.renderSendFriends(item,index): this.state.isMutualFriends ? this.renderReceivedFriends(item,index): this.renderFriends(item,index)}
           ItemSeparatorComponent={this.renderSeparator}
           keyExtractor={(item, index) => index.toString()}
           nestedScrollEnabled={false}

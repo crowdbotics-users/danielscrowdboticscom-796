@@ -38,6 +38,9 @@ import TryAgainComponent from "../Compoments/TryAgainComponent";
 import HomeBannerCompoment from "../Compoments/HomeBannerCompoment";
 import SearchListCompoment from "../Compoments/SearchListCompoment";
 import NestedScrollView from "react-native-nested-scroll-view";
+import MainTabScreen from "./Tabs/MainTabScreen";
+
+
 
 class HomeTabScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -708,8 +711,11 @@ class HomeTabScreen extends Component {
                 </View>
               </TouchableOpacity>
             </View>
+           {/*  <View style={{flex:1}}>
+            <MainTabScreen/>
+            </View> */}
 
-            <View>
+         <View>
               <ViewPager
                 scrollEnabled={false}
                 style={{ height: Dimensions.get("screen").height*2 }}
@@ -787,7 +793,7 @@ class HomeTabScreen extends Component {
                   />
                 </View>
               </ViewPager>
-            </View>
+            </View>  
           </View>
         </NestedScrollView>
       </SafeAreaView>
