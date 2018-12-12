@@ -416,8 +416,8 @@ class LoginController extends Controller
                         $image=$request->cover_image;
                         $imageName = str_replace(' ', '_', $request->name).'_'.uniqid(time()) . '.' . $image->getClientOriginalExtension();
                 
-                        uploadImage($image,'uploads/user/'.$user->id.'/thumbnail',$imageName,'150','150');
-                        $image_path = uploadImage($image,'uploads/user/'.$user->id.'/',$imageName,'1200','400');
+                        uploadImage($image,'uploads/user/cover/'.$user->id.'/thumbnail',$imageName,'150','150');
+                        $image_path = uploadImage($image,'uploads/user/cover/'.$user->id.'/',$imageName,'1200','400');
                 
                         $user_update->cover_image = $image_path;
                    }
