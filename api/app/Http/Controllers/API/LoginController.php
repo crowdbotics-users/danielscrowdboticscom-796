@@ -26,7 +26,7 @@ class LoginController extends Controller
             'profile_image' => 'required',
             'device_type' => 'required',
             'fire_base_token' => 'required',
-            'user_name' => 'required|unique:users'
+           
         );
        
         $validator = \Validator::make($request->all(), $rules,[]);
@@ -52,7 +52,7 @@ class LoginController extends Controller
         $user->DOB=$request->dob;
         $user->device_type=$request->device_type;
         $user->fire_base_token=$request->fire_base_token;
-        $user->user_name=$request->user_name;
+       
         $user->role_id=1;
         $user->status=1;
 
@@ -401,7 +401,7 @@ class LoginController extends Controller
                 
                         uploadImage($image,'uploads/user/'.$user->id.'/thumbnail',$imageName,'150','150');
                         $image_path = uploadImage($image,'uploads/user/'.$user->id.'/',$imageName,'400','400');
-                
+                        dd($image_path);
                         $user_update->profile_image = $image_path;
                    }
                    else if(isset($request->profile_image) && $request->type='gallery')
