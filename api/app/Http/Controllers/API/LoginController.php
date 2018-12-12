@@ -26,7 +26,7 @@ class LoginController extends Controller
             'profile_image' => 'required',
             'device_type' => 'required',
             'fire_base_token' => 'required',
-            'user_name' => 'required|unique:users'
+           
         );
        
         $validator = \Validator::make($request->all(), $rules,[]);
@@ -52,7 +52,7 @@ class LoginController extends Controller
         $user->DOB=$request->dob;
         $user->device_type=$request->device_type;
         $user->fire_base_token=$request->fire_base_token;
-        $user->user_name=$request->user_name;
+       
         $user->role_id=1;
         $user->status=1;
 
@@ -394,32 +394,34 @@ class LoginController extends Controller
                 {
                    $user_update->full_name=$request->name;
                 }
-                   if(isset($request->profile_image) && $request->type='image')
+              
+                   if($request->hasFile('profile_image') && $request->type='image')
                    {
+                       
                         $image=$request->profile_image;
                         $imageName = str_replace(' ', '_', $request->name).'_'.uniqid(time()) . '.' . $image->getClientOriginalExtension();
                 
                         uploadImage($image,'uploads/user/'.$user->id.'/thumbnail',$imageName,'150','150');
                         $image_path = uploadImage($image,'uploads/user/'.$user->id.'/',$imageName,'400','400');
-                
+                       
                         $user_update->profile_image = $image_path;
                    }
-                   else if(isset($request->profile_image) && $request->type='gallery')
+                   else if($request->hasFile('profile_image') && $request->type='gallery')
                    {
                     $user_update->profile_image = $request->profile_image;
                    }
 
-                   if(isset($request->cover_image) && $request->type='image')
+                   if($request->hasFile('cover_image') && $request->type='image')
                    {
                         $image=$request->cover_image;
                         $imageName = str_replace(' ', '_', $request->name).'_'.uniqid(time()) . '.' . $image->getClientOriginalExtension();
                 
-                        uploadImage($image,'uploads/user/'.$user->id.'/thumbnail',$imageName,'150','150');
-                        $image_path = uploadImage($image,'uploads/user/'.$user->id.'/',$imageName,'1200','400');
+                        uploadImage($image,'uploads/user/cover/'.$user->id.'/thumbnail',$imageName,'150','150');
+                        $image_path = uploadImage($image,'uploads/user/cover/'.$user->id.'/',$imageName,'1200','400');
                 
                         $user_update->cover_image = $image_path;
                    }
-                   else if(isset($request->cover_image) && $request->type='gallery')
+                   else if($request->hasFile('cover_image') && $request->type='gallery')
                    {
                         $user_update->cover_image = $request->cover_image;
                    }
@@ -429,7 +431,6 @@ class LoginController extends Controller
                     $user_update->save();
 
                     return response()->json([
-                        
                         'message' => 'Your Profile Updated Successfully.',
                         'success' => true,
                         'status' => 200,

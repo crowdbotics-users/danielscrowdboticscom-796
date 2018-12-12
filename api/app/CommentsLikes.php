@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class CommentsLikes extends Model
 {
@@ -25,7 +27,7 @@ class CommentsLikes extends Model
 
     protected $fillable = ['messages','type','user_id','post_id','parent_id','status'];
 
-    protected $appends = ['reply_count','comment_like_count'];
+    protected $appends = ['reply_count','comment_like_count','is_like'];
 
     public function getReplyCountAttribute()
     {
@@ -43,5 +45,28 @@ class CommentsLikes extends Model
     public function getCommentLikeCountAttribute()
     {
         return $this->hasMany('App\CommentsLikes', 'parent_id', 'id')->where('type','comment-like')->count();
+    }
+    public function getIsLikeAttribute()
+     {  
+        if(app('request')->header('authorization') != null)
+        {
+
+            $user_follower= JWTAuth::touser(app('request')->header('authorization'));
+        
+            $is_like=CommentsLikes::where('parent_id',$this->attributes['id'])
+                    ->where('user_id',$user_follower->id)
+                    ->where('status',1)
+                    ->where('type','comment-like')->count();
+                    
+            if($is_like > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+   
+        }
     }
 }

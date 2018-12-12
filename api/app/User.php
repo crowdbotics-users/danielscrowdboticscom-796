@@ -53,8 +53,8 @@ class User extends Authenticatable implements JWTSubject
 
     public function getProfileImageAttribute()
     {
-		if($this->attributes['profile_image'] && \File::exists(public_path()."/uploads/user/".$this->attributes['profile_image'])){
-			$path = url("/")."/"."uploads/user/";
+		if($this->attributes['profile_image'] && \File::exists(public_path()."/uploads/user/".$this->attributes['id']."/".$this->attributes['profile_image'])){
+			$path = url("/")."/"."uploads/user/".$this->attributes['id']."/";
 			return ($this->attributes['profile_image'])?$path.$this->attributes['profile_image']:'';
 		}else{
 			return "";
@@ -63,8 +63,8 @@ class User extends Authenticatable implements JWTSubject
     }
     public function getCoverImageAttribute()
     {
-		if($this->attributes['cover_image'] && \File::exists(public_path()."/uploads/user/cover/".$this->attributes['cover_image'])){
-			$path = url("/")."/"."uploads/user/cover/";
+		if($this->attributes['cover_image'] && \File::exists(public_path()."/uploads/user/cover/".$this->attributes['id']."/".$this->attributes['cover_image'])){
+			$path = url("/")."/"."uploads/user/cover/".$this->attributes['id']."/";
 			return ($this->attributes['cover_image'])?$path.$this->attributes['cover_image']:'';
 		}else{
 			return "";
