@@ -394,14 +394,16 @@ class LoginController extends Controller
                 {
                    $user_update->full_name=$request->name;
                 }
+                dd("ok");
                    if(isset($request->profile_image) && $request->type='image')
                    {
+                       
                         $image=$request->profile_image;
                         $imageName = str_replace(' ', '_', $request->name).'_'.uniqid(time()) . '.' . $image->getClientOriginalExtension();
                 
                         uploadImage($image,'uploads/user/'.$user->id.'/thumbnail',$imageName,'150','150');
                         $image_path = uploadImage($image,'uploads/user/'.$user->id.'/',$imageName,'400','400');
-                        dd($image_path);
+                       
                         $user_update->profile_image = $image_path;
                    }
                    else if(isset($request->profile_image) && $request->type='gallery')
