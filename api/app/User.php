@@ -53,8 +53,8 @@ class User extends Authenticatable implements JWTSubject
 
     public function getProfileImageAttribute()
     {
-		if($this->attributes['profile_image'] && \File::exists(public_path()."/uploads/user/".$this->attributes['profile_image'])){
-			$path = url("/")."/"."uploads/user/";
+		if($this->attributes['profile_image'] && \File::exists(public_path()."/uploads/user/".$this->attributes['id']."/".$this->attributes['profile_image'])){
+			$path = url("/")."/"."uploads/user/".$this->attributes['id']."/";
 			return ($this->attributes['profile_image'])?$path.$this->attributes['profile_image']:'';
 		}else{
 			return "";
