@@ -394,7 +394,7 @@ class LoginController extends Controller
                 {
                    $user_update->full_name=$request->name;
                 }
-                dd("ok");
+                dd($request->type);
                    if(isset($request->profile_image) && $request->type='image')
                    {
                        
