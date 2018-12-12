@@ -8,13 +8,21 @@ import {
   Image,
   TextInput,
   SafeAreaView,
-  FlatList
+  FlatList,
+  NetInfo,
+  AsyncStorage,
+  Alert
 } from "react-native";
 import Colors from "../Resource/Colors";
 import CrewHeaderCompoment from "../Compoments/CrewHeaderCompoment";
 import crewtabstyles from "../Resource/crewtabstyles";
 import Icons from "../Resource/Icons";
 import styles from "../Resource/Styles";
+import ProgressCompoment from "../Compoments/ProgressCompoment";
+import ApiUrl from "../Network/ApiUrl";
+import Moment from "moment";
+import { showSnackBar } from "@prince8verma/react-native-snackbar";
+
 class MyCrewScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
@@ -25,150 +33,12 @@ class MyCrewScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isProgress: true,
       isAllFriends: true,
       isMutualFriends: false,
       isFollowersActive: false,
-      dataSource1: [
-        {
-          name: "Mason SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Jacob SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 2,
-          followstatus: 1
-        },
-        {
-          name: "William SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Ethan SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "James SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1
-        },
-        {
-          name: "Alexander SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Michael SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Benjamin SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Elijah SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Daniel SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        }
-      ]
+      data: [],
+     
     };
   }
   renderSeparator = () => {
@@ -177,15 +47,14 @@ class MyCrewScreen extends Component {
         style={{
           height: 1,
           width: "100%",
-          backgroundColor: Colors.colorLine,
-          
+          backgroundColor: Colors.colorLine
         }}
       />
     );
   };
-  renderFriends(data) {
+  renderFriends(data,index) {
     return (
-      <SafeAreaView style={{flex:1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <View
           style={[
             styles.column,
@@ -213,7 +82,7 @@ class MyCrewScreen extends Component {
                 }}
               >
                 <Image
-                  source={data.image}
+                  source={data.profile_image}
                   style={{
                     width: 68,
                     height: 68,
@@ -233,7 +102,7 @@ class MyCrewScreen extends Component {
                   fontSize: 13
                 }}
               >
-                {data.name}
+                {data.full_name}
               </Text>
               <Text
                 style={{
@@ -242,7 +111,7 @@ class MyCrewScreen extends Component {
                   fontSize: 12
                 }}
               >
-                {data.location}
+                {Moment(data.created_at).format("DD/MM/YYYY hh:mm A")}
               </Text>
               <Text
                 style={{
@@ -251,7 +120,7 @@ class MyCrewScreen extends Component {
                   fontSize: 12
                 }}
               >
-                {data.username}
+                {data.user_name}
               </Text>
               <View
                 style={[
@@ -269,11 +138,11 @@ class MyCrewScreen extends Component {
                       fontSize: 11
                     }}
                   >
-                    {data.friendstatus == 1
-                      ? "+ Send Request"
-                      : data.friendstatus == 2
-                      ? "x Unfriend"
-                      : "+ Send Request"}
+                    {data.status == 0
+                      ? "+Send Request"
+                      : data.status == 1
+                      ? "Cancel Request"
+                      : "+Send Request"}
                   </Text>
                 </TouchableOpacity>
                 <View
@@ -304,7 +173,7 @@ class MyCrewScreen extends Component {
                     height: 10
                   }}
                 />
-                <TouchableOpacity style={{ flex: 1 }}>
+                <TouchableOpacity style={{ flex: 1 }} onPress={()=>this.doFollowFriend(data,index)}>
                   <Text
                     style={{
                       color: Colors.black,
@@ -335,19 +204,383 @@ class MyCrewScreen extends Component {
         isMutualFriends: false,
         isFollowersActive: false
       });
+      this.doGetFriendList();
     } else if (tabName == "mutualfriends") {
       this.setState({
         isAllFriends: false,
         isMutualFriends: true,
         isFollowersActive: false
       });
+      this.doGetReceivedRequestList();
     } else if (tabName == "followers") {
       this.setState({
         isAllFriends: false,
         isMutualFriends: false,
         isFollowersActive: true
       });
+      this.doGetSendRequestList();
     }
+  }
+  componentDidMount() {
+    this.doGetFriendList();
+  }
+  doGetFriendList() {
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if (isConnected) {
+        AsyncStorage.getItem("data")
+          .then(data => {
+            if (data != null) {
+              const myData = JSON.parse(data);
+
+              const bodyData = JSON.stringify({
+                post_id: 1,
+                page: 1
+              });
+              this.setState({data:[] });
+              this.openProgressbar();
+              this.doGetFriendListApi(bodyData, myData.token);
+            } else {
+            }
+          })
+          .done();
+      } else {
+        Alert.alert(
+          "Internet Connection",
+          "Kindly connect to internet then try again"
+        );
+      }
+    });
+  }
+  doGetFriendListApi(bodyData, token) {
+    const { page, seed } = this.state;
+    fetch(ApiUrl.getCrewList, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json"
+      }
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        this.hideProgressbar();
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+            const result = responseJson.result;
+
+            this.setState({
+              data:
+                page === 1 ? result.data : [...this.state.data, ...result.data],
+
+              loading: false,
+              refreshing: false,
+              total: result.total
+            });
+
+            break;
+          }
+          case 401: {
+            console.log(message);
+            this.doShowSnackBar(message);
+            this.setState({ loading: false, refreshing: false,data:[] });
+            break;
+          }
+          case 400: {
+            console.log(message);
+            this.doShowSnackBar(message);
+            this.setState({ loading: false, refreshing: false,data:[] });
+            break;
+          }
+          default: {
+            this.setState({ loading: false, refreshing: false,data:[] });
+            this.doShowSnackBar(message);
+            break;
+          }
+        }
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+        alert(error);
+      });
+  }
+  doGetSendRequestList() {
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if (isConnected) {
+        AsyncStorage.getItem("data")
+          .then(data => {
+            if (data != null) {
+              const myData = JSON.parse(data);
+
+              const bodyData = JSON.stringify({
+                post_id: 1,
+                page: 1
+              });
+              this.setState({data:[] });
+              this.openProgressbar();
+              this.doGetSendRequestListApi(bodyData, myData.token);
+            } else {
+            }
+          })
+          .done();
+      } else {
+        Alert.alert(
+          "Internet Connection",
+          "Kindly connect to internet then try again"
+        );
+      }
+    });
+  }
+   
+  doGetSendRequestListApi(bodyData, token) {
+    const { page, seed } = this.state;
+    fetch(ApiUrl.getSendRequestList, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json"
+      }
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        this.hideProgressbar();
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+            const result = responseJson.result;
+
+            this.setState({
+              data:
+                page === 1 ? result.data : [...this.state.data, ...result.data],
+
+              loading: false,
+              refreshing: false,
+              total: result.total
+            });
+
+            break;
+          }
+          case 401: {
+            console.log(message);
+            this.doShowSnackBar(message);
+            this.setState({ loading: false, refreshing: false,data:[] });
+            break;
+          }
+          case 400: {
+            console.log(message);
+            this.doShowSnackBar(message);
+            this.setState({ loading: false, refreshing: false,data:[] });
+            break;
+          }
+          default: {
+            this.doShowSnackBar(message);
+            this.setState({ loading: false, refreshing: false,data:[] });
+            break;
+          }
+        }
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+        alert(error);
+      });
+  }
+  doGetReceivedRequestList() {
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if (isConnected) {
+        AsyncStorage.getItem("data")
+          .then(data => {
+            if (data != null) {
+              const myData = JSON.parse(data);
+
+              const bodyData = JSON.stringify({
+                post_id: 1,
+                page: 1
+              });
+              this.setState({data:[] });
+              this.openProgressbar();
+              this.doGetReceivedRequestListApi(bodyData, myData.token);
+            } else {
+            }
+          })
+          .done();
+      } else {
+        Alert.alert(
+          "Internet Connection",
+          "Kindly connect to internet then try again"
+        );
+      }
+    });
+  }
+  doGetReceivedRequestListApi(bodyData, token) {
+    const { page, seed } = this.state;
+    fetch(ApiUrl.getReceivedRequestList, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json"
+      }
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        this.hideProgressbar();
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+            const result = responseJson.result;
+
+            this.setState({
+              data:
+                page === 1 ? result.data : [...this.state.data, ...result.data],
+
+              loading: false,
+              refreshing: false,
+              total: result.total
+            });
+
+            break;
+          }
+          case 401: {
+            console.log(message);
+            this.doShowSnackBar(message);
+            this.setState({ loading: false, refreshing: false,data:[] });
+            break;
+          }
+          case 400: {
+            console.log(message);
+            this.doShowSnackBar(message);
+            this.setState({ loading: false, refreshing: false,data:[] });
+            break;
+          }
+          default: {
+            this.setState({ loading: false, refreshing: false,data:[] });
+            this.doShowSnackBar(message);
+            break;
+          }
+        }
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+        alert(error);
+      });
+  }
+  doFollowFriend(item,index){
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if (isConnected) {
+        AsyncStorage.getItem("data")
+          .then(data => {
+            if (data != null) {
+              const myData = JSON.parse(data);
+
+              const bodyData = JSON.stringify({
+                user_id: item.id,
+                page: 1
+              });
+              
+              this.openProgressbar();
+              this.doFollowFriendApi(bodyData, myData.token);
+            } else {
+            }
+          })
+          .done();
+      } else {
+        Alert.alert(
+          "Internet Connection",
+          "Kindly connect to internet then try again"
+        );
+      }
+    });
+  }
+  doFollowFriendApi(bodyData,token){
+    fetch(ApiUrl.followUser, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json"
+      },
+      body:bodyData
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        this.hideProgressbar();
+        const message = responseJson.message;
+        const status = responseJson.status;
+        console.log(responseJson);
+        switch (status) {
+          case 200: {
+            const result = responseJson.result;
+
+            this.doShowSnackBar(message);
+
+            break;
+          }
+          case 401: {
+            console.log(message);
+            this.doShowSnackBar(message);
+            
+            break;
+          }
+          case 400: {
+            console.log(message);
+            this.doShowSnackBar(message);
+           
+            break;
+          }
+          default: {
+            this.doShowSnackBar(message);
+            break;
+          }
+        }
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+        alert(error);
+      });
+  }
+  openProgressbar = () => {
+    this.setState({ isProgress: true });
+  };
+  hideProgressbar = () => {
+    this.setState({ isProgress: false });
+  };
+  doShowSnackBar(message) {
+    showSnackBar({
+      message: message,
+      position: "top",
+      backgroundColor: Colors.bgHeader,
+      buttonColor: "#fff",
+      confirmText: "",
+      onConfirm: () => {},
+      duration: 1000
+    });
+  }
+  renderEmpty() {
+    return (
+      <View>
+        <Text
+          style={{
+            color: Colors.colorEdittext,
+            fontFamily: "OpenSans-SemiBold",
+            fontSize: 11,
+            textAlign: "center"
+          }}
+        >
+          No Data Found
+        </Text>
+      </View>
+    );
   }
   render() {
     return (
@@ -466,12 +699,14 @@ class MyCrewScreen extends Component {
           bounces={false}
           numColumns={1}
           style={{ marginTop: 8 }}
-          data={this.state.dataSource1}
-          renderItem={({ item, index }) => this.renderFriends(item)}
+          data={this.state.data}
+          renderItem={({ item, index }) => this.renderFriends(item,index)}
           ItemSeparatorComponent={this.renderSeparator}
-          keyExtractor={item => item}
+          keyExtractor={(item, index) => index.toString()}
           nestedScrollEnabled={false}
+          ListEmptyComponent={this.renderEmpty()}
         />
+        <ProgressCompoment isProgress={this.state.isProgress} />
       </View>
     );
   }

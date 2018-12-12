@@ -13,23 +13,23 @@ import {
   ActivityIndicator
 } from "react-native";
 import Colors from "../Resource/Colors";
-import CommentHeaderCompoment from "../Compoments/CommentHeaderCompoment";
+import ReplyCommentHeaderCompoment from "../Compoments/ReplyCommentHeaderCompoment";
 import styles from "../Resource/Styles";
 import Icons from "../Resource/Icons";
-import AddCommentCompoment from "../Compoments/AddCommentCompoment";
 import ApiUrl from "../Network/ApiUrl";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import Moment from "moment";
-class CommentListScreen extends PureComponent {
+import AddReplyCompoment from "../Compoments/AddReplyCompoment";
+class ReplyCommentListScreen extends PureComponent {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
 
     return {
       header: props => (
-        <CommentHeaderCompoment
+        <ReplyCommentHeaderCompoment
           {...props}
           props={navigation}
-          totalComments={params.commentdata.comment_count}
+          totalComments={params.replycommentdata.reply_count}
         />
       )
     };
@@ -45,9 +45,9 @@ class CommentListScreen extends PureComponent {
       isProgress: false,
       loading: false,
       data: [],
-      updatedData: [],
 
       post_id: 0,
+      comment_id: 0,
       page: 1,
       seed: 1,
       error: null,
@@ -57,17 +57,18 @@ class CommentListScreen extends PureComponent {
     };
   }
   componentDidMount() {
-    const { commentdata } = this.props.navigation.state.params;
+    const { replycommentdata } = this.props.navigation.state.params;
     this.setState({
-      full_name: commentdata.users.full_name,
-      profile_image: commentdata.users.profile_image,
-      description: commentdata.description,
-      created_at: commentdata.created_at,
-      post_id: commentdata.id,
-      comment_count: commentdata.comment_count
+      full_name: replycommentdata.users.full_name,
+      profile_image: replycommentdata.users.profile_image,
+      description: replycommentdata.messages,
+      created_at: replycommentdata.created_at,
+      comment_id: replycommentdata.id,
+      post_id: replycommentdata.post_id,
+      comment_count: replycommentdata.reply_count
     });
 
-    this.doCommentList(commentdata);
+    this.doCommentList(replycommentdata);
   }
   openProgressbar = () => {
     this.setState({ isProgress: true });
@@ -82,17 +83,18 @@ class CommentListScreen extends PureComponent {
         page: this.state.page + 1
       },
       () => {
-        const { commentdata } = this.props.navigation.state.params;
+        const { replycommentdata } = this.props.navigation.state.params;
         this.setState({
-          full_name: commentdata.users.full_name,
-          profile_image: commentdata.users.profile_image,
-          description: commentdata.description,
-          created_at: commentdata.created_at,
-          post_id: commentdata.id,
-          comment_count: commentdata.comment_count
+          full_name: replycommentdata.users.full_name,
+          profile_image: replycommentdata.users.profile_image,
+          description: replycommentdata.messages,
+          created_at: replycommentdata.created_at,
+          comment_id: replycommentdata.id,
+          post_id: replycommentdata.post_id,
+          comment_count: replycommentdata.reply_count
         });
 
-        this.doCommentListLoadMore(commentdata);
+        this.doCommentListLoadMore(replycommentdata);
       }
     );
   };
@@ -105,17 +107,18 @@ class CommentListScreen extends PureComponent {
         refreshing: true
       },
       () => {
-        const { commentdata } = this.props.navigation.state.params;
+        const { replycommentdata } = this.props.navigation.state.params;
         this.setState({
-          full_name: commentdata.users.full_name,
-          profile_image: commentdata.users.profile_image,
-          description: commentdata.description,
-          created_at: commentdata.created_at,
-          post_id: commentdata.id,
-          comment_count: commentdata.comment_count
+          full_name: replycommentdata.users.full_name,
+          profile_image: replycommentdata.users.profile_image,
+          description: replycommentdata.messages,
+          created_at: replycommentdata.created_at,
+          comment_id: replycommentdata.id,
+          post_id: replycommentdata.post_id,
+          comment_count: replycommentdata.reply_count
         });
 
-        this.doCommentListLoadMore(commentdata);
+        this.doCommentListLoadMore(replycommentdata);
       }
     );
   };
@@ -128,7 +131,8 @@ class CommentListScreen extends PureComponent {
               const myData = JSON.parse(data);
 
               const bodyData = JSON.stringify({
-                post_id: postdata.id,
+                post_id: postdata.post_id,
+                parent_id: postdata.id,
                 page: this.state.page
               });
 
@@ -155,7 +159,8 @@ class CommentListScreen extends PureComponent {
               const myData = JSON.parse(data);
 
               const bodyData = JSON.stringify({
-                post_id: postdata.id,
+                post_id: postdata.post_id,
+                parent_id: postdata.id,
                 page: this.state.page
               });
 
@@ -176,7 +181,7 @@ class CommentListScreen extends PureComponent {
 
   doCommentListApi(bodyData, token) {
     const { page, seed } = this.state;
-    fetch(ApiUrl.getCommentsList, {
+    fetch(ApiUrl.getReplyList, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -216,9 +221,9 @@ class CommentListScreen extends PureComponent {
             this.setState({ loading: false, refreshing: false });
             break;
           }
-          default: {
+          default:{
             this.setState({ loading: false, refreshing: false });
-            break;
+            break
           }
         }
       })
@@ -237,87 +242,7 @@ class CommentListScreen extends PureComponent {
       </View>
     );
   };
-  doRedirectReply(item) {
-    this.props.navigation.navigate("ReplyCommentListScreen", {
-      replycommentdata: item
-    });
-  }
-  doLikePost(postdata, index) {
-    NetInfo.isConnected.fetch().then(isConnected => {
-      if (isConnected) {
-        AsyncStorage.getItem("data")
-          .then(data => {
-            if (data != null) {
-              const myData = JSON.parse(data);
-              const bodyData = JSON.stringify({ post_id: postdata.post_id,comment_id:postdata.id });
-
-              this.doLikePostApi(bodyData, myData.token, index);
-            } else {
-            }
-          })
-          .done();
-      } else {
-        Alert.alert(
-          "Internet Connection",
-          "Kindly connect to internet then try again"
-        );
-      }
-    });
-  }
-  doLikePostApi(bodyData, token, index) {
-    fetch(ApiUrl.likeComment, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        Authorization: "Bearer " + token,
-        "Content-Type": "application/json"
-      },
-      body: bodyData
-    })
-      .then(response => response.json())
-      .then(responseJson => {
-        const message = responseJson.message;
-        const status = responseJson.status;
-        const result = responseJson.result;
-       this.changeLikeCount(index, result.comment_like_count, true);
-        switch (status) {
-          case 200: {
-            
-           
-            break;
-          }
-          case 401: {
-            alert(message);
-            break;
-          }
-          case 400: {
-            alert(message);
-
-            break;
-          }
-        }
-      })
-      .catch(error => {
-        console.log(error);
-        alert(error);
-      });
-  }
-  changeLikeCount(index, likes_count, is_like) {
-    let originalData = this.state.data;
-    let copyData =  this.state.data;
-    let updatedData = copyData[index];
-    
-    
-    
-    // updatedData.is_like = is_like;
-    // updatedData.like_count = copyData[index].likes_count;
-    updatedData.comment_like_count = likes_count;
-    originalData[index] = updatedData;
-    this.setState({
-      updatedData: originalData
-    });
-  }
-  renderCommentItem(item,index) {
+  renderCommentItem(item) {
     return (
       <View>
         <View style={[styles.row]}>
@@ -384,7 +309,7 @@ class CommentListScreen extends PureComponent {
               >
                 {Moment(item.created_at).format("hh:mm A")}
               </Text>
-              <TouchableOpacity onPress={() => this.doRedirectReply(item)}>
+              {/* <TouchableOpacity>
                 <Text
                   style={{
                     marginStart: 5,
@@ -395,7 +320,7 @@ class CommentListScreen extends PureComponent {
                 >
                   Reply ({item.reply_count})
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
           <View
@@ -407,7 +332,7 @@ class CommentListScreen extends PureComponent {
               alignContent: "center"
             }}
           >
-            <TouchableOpacity onPress={()=>this.doLikePost(item,index)}>
+            <TouchableOpacity>
               <Image
                 source={Icons.ic_like}
                 style={[styles.icon, { width: 20, height: 20 }]}
@@ -502,13 +427,12 @@ class CommentListScreen extends PureComponent {
         <View style={{ position: "relative", flex: 1 }}>
           <View style={{ position: "relative", flex: 3 }}>
             <FlatList
-            extraData={this.state.updatedData}
               data={this.state.data}
-              renderItem={({ item,index }) => this.renderCommentItem(item,index)}
+              renderItem={({ item }) => this.renderCommentItem(item)}
               style={{ marginStart: 10, marginEnd: 10, marginBottom: 80 }}
               keyExtractor={(item, index) => index.toString()}
               onEndReached={this.handleLoadMore}
-              onEndReachedThreshold={15}
+              onEndReachedThreshold={50}
               onRefresh={this.handleRefresh}
               refreshing={this.state.refreshing}
               ListFooterComponent={this.renderFooter}
@@ -525,9 +449,10 @@ class CommentListScreen extends PureComponent {
             <View
               style={{ borderTopColor: Colors.colorLine, borderTopWidth: 1 }}
             >
-              <AddCommentCompoment
+              <AddReplyCompoment
                 navigation={this.props.navigation}
                 post_id={this.state.post_id}
+                comment_id={this.state.comment_id}
               />
             </View>
           </View>
@@ -539,4 +464,4 @@ class CommentListScreen extends PureComponent {
 const customstyles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.white }
 });
-export default CommentListScreen;
+export default ReplyCommentListScreen;

@@ -110,7 +110,7 @@ class SearchListCompoment extends Component {
           style={[
             styles.column,
             styles.card,
-            { alignItems: "center", marginBottom: 1, borderRadius: 0 }
+            { alignItems: "flex-start", marginBottom: 1, borderRadius: 0 }
           ]}
         >
           <View
@@ -277,8 +277,7 @@ class SearchListCompoment extends Component {
           renderItem={({ item, index }) => this.renderStream(item, index)}
           keyExtractor={(item, index) => index.toString()}
           ListEmptyComponent={this.renderEmpty()}
-          nestedScrollEnabled={true}
-          scrollEnabled={false}
+         
         />
       </View>
     );

@@ -1,18 +1,17 @@
 import React, { Component } from "react";
-import { View, TouchableOpacity, Image, Text,SafeAreaView } from "react-native";
+import { View, TouchableOpacity, Image, Text } from "react-native";
 import PropTypes from "prop-types";
 import Colors from "../Resource/Colors";
 import Icons from "../Resource/Icons";
 import styles from "../Resource/Styles";
 
-class CrewHeaderCompoment extends Component {
+class AddReplyHeaderComponent extends Component {
   toggleDrawer = () => {
     this.props.navigation.goBack(null);
   };
 
   render() {
     return (
-      <SafeAreaView >
       <View
         style={{
           flexDirection: "row",
@@ -23,7 +22,7 @@ class CrewHeaderCompoment extends Component {
       >
         <TouchableOpacity onPress={this.toggleDrawer.bind(this)}>
           <Image
-            source={Icons.ic_back_arrow}
+            source={Icons.ic_close}
             style={{ width: 18, height: 18 ,margin:10}}
           />
         </TouchableOpacity>
@@ -36,15 +35,14 @@ class CrewHeaderCompoment extends Component {
             fontSize: 14
           }}
         >
-          MY CREW
+          WRITE A REPLY
         </Text>
       </View>
-      </SafeAreaView>
     );
   }
 }
-CrewHeaderCompoment.propTypes = {
+AddReplyHeaderComponent.propTypes = {
   title: PropTypes.string,
   props: PropTypes.object
 };
-export default CrewHeaderCompoment;
+export default AddReplyHeaderComponent;

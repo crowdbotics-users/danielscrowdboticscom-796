@@ -64,9 +64,11 @@ class ProfileScreen extends Component {
       tabTitle: "",
       full_name: "",
       profile_image: "",
+      friend_status: "",
       cover_image: "",
       user_name: "",
       columnCount: 1,
+      receiver_id: 1,
       isAllFriends: true,
       isMutualFriends: false,
       isFollowersActive: false,
@@ -359,12 +361,14 @@ class ProfileScreen extends Component {
   }
   componentDidMount() {
     const { data } = this.props.navigation.state.params;
-    console.log(data.users);
+    
     this.setState({
+      receiver_id: data.users.id,
       full_name: data.users.full_name,
       profile_image: data.users.profile_image,
       cover_image: data.users.cover_image,
-      user_name: data.users.user_name
+      user_name: data.users.user_name,
+      friend_status: data.users.friend_status,
     });
     this.getPostList();
   }
@@ -564,6 +568,8 @@ class ProfileScreen extends Component {
               profile_image={this.state.profile_image}
               cover_image={this.state.cover_image}
               user_name={this.state.user_name}
+              receiver_id={this.state.receiver_id}
+              friend_status={this.state.friend_status}
             />
           </View>
           <View>

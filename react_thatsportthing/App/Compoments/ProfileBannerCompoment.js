@@ -6,22 +6,174 @@ import {
   Text,
   StyleSheet,
   Dimensions,
-  ImageBackground
+  ImageBackground,
+  NetInfo,
+  AsyncStorage,
+  Alert
 } from "react-native";
 import PropTypes from "prop-types";
 import Colors from "../Resource/Colors";
 import Icons from "../Resource/Icons";
 import styles from "../Resource/Styles";
+import ApiUrl from "../Network/ApiUrl";
+import ProgressCompoment from "./ProgressCompoment";
+import { showSnackBar } from "@prince8verma/react-native-snackbar";
 
 class ProfileBannerCompoment extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      avatarSource: ""
+      isProgress: false,
+      avatarSource: "",
+      friendStatus: "+Send Request"
     };
   }
+
   doRedirect(screen) {
     this.props.navigation.navigate(screen);
+  }
+  openProgressbar = () => {
+    this.setState({ isProgress: true });
+  };
+  hideProgressbar = () => {
+    this.setState({ isProgress: false });
+  };
+  doShowSnackBar(message) {
+    showSnackBar({
+      message: message,
+      position: "top",
+      backgroundColor: Colors.bgHeader,
+      buttonColor: "#fff",
+      confirmText: "",
+      onConfirm: () => {},
+      duration: 1000
+    });
+  }
+  doSendRequest() {
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if (isConnected) {
+        AsyncStorage.getItem("data")
+          .then(data => {
+            console.log("AsyncStorage");
+            if (data != null) {
+              if (this.props.friend_status == "") {
+                const myData = JSON.parse(data);
+                const bodyData = JSON.stringify({
+                  receiver_id: this.props.receiver_id
+                });
+                this.openProgressbar();
+                this.doSendRequestApi(bodyData, myData.token);
+              } else if (this.props.friend_status == "pending") {
+                const myData = JSON.parse(data);
+                const bodyData = JSON.stringify({
+                  status:2,
+                  sender_id: myData.id
+                });
+                console.log('cancel',bodyData);
+                
+                // this.openProgressbar();
+                // this.doCancelRequestApi(bodyData, myData.token);
+              }
+            } else {
+              console.log(data);
+            }
+          })
+          .done();
+      } else {
+        Alert.alert(
+          "Internet Connection",
+          "Kindly connect to internet then try again"
+        );
+      }
+    });
+  }
+  doSendRequestApi(bodyData, token) {
+    fetch(ApiUrl.sendRequest, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      },
+      body: bodyData
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+            //this.props.navigation.goBack(null);
+            this.doShowSnackBar(message);
+            this.hideProgressbar();
+            break;
+          }
+          case 401: {
+            this.doShowSnackBar(message);
+            this.hideProgressbar();
+            console.log(message);
+            break;
+          }
+          case 400: {
+            this.doShowSnackBar(message);
+            this.hideProgressbar();
+            console.log(message);
+            break;
+          }
+        }
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+        alert(error);
+      });
+  }
+  doCancelRequestApi(bodyData, token) {
+    fetch(ApiUrl.requestAction, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      },
+      body: bodyData
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+            //this.props.navigation.goBack(null);
+            this.doShowSnackBar(message);
+            this.hideProgressbar();
+            break;
+          }
+          case 401: {
+            this.doShowSnackBar(message);
+            this.hideProgressbar();
+            console.log(message);
+            break;
+          }
+          case 400: {
+            this.doShowSnackBar(message);
+            this.hideProgressbar();
+            console.log(message);
+            break;
+          }
+        }
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+        alert(error);
+      });
   }
   render() {
     return (
@@ -34,6 +186,7 @@ class ProfileBannerCompoment extends Component {
           }
           style={{ height: 180 }}
         >
+          <ProgressCompoment isProgress={this.state.isProgress} />
           <View
             style={{
               alignItems: "center",
@@ -100,7 +253,7 @@ class ProfileBannerCompoment extends Component {
                     alignContent: "center"
                   }}
                 >
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={() => this.doSendRequest()}>
                     <Text
                       style={{
                         textAlign: "center",
@@ -111,7 +264,11 @@ class ProfileBannerCompoment extends Component {
                         padding: 10
                       }}
                     >
-                      +Send Request
+                      {this.props.friend_status === ""
+                        ? "+Send Request"
+                        : this.props.friend_status === "pending"
+                        ? "Cancel Request"
+                        : "+Send Request"}
                     </Text>
                   </TouchableOpacity>
                   <View
@@ -185,8 +342,10 @@ ProfileBannerCompoment.propTypes = {
   profile_image: PropTypes.string,
   cover_image: PropTypes.string,
   user_name: PropTypes.string,
+  friend_status: PropTypes.string,
   follower_count: PropTypes.number,
   crew_count: PropTypes.number,
+  receiver_id: PropTypes.number,
   navigation: PropTypes.object
 };
 export default ProfileBannerCompoment;

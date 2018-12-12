@@ -8,13 +8,14 @@ import {
   Dimensions,
   Image,
   Platform,
-  AsyncStorage, ActivityIndicator
+  AsyncStorage,
+  ActivityIndicator
 } from "react-native";
 import Icons from "../Resource/Icons";
 import Colors from "../Resource/Colors";
 import firebase from "react-native-firebase";
 import { BallIndicator } from "react-native-indicators";
-import ProgressCompoment from '../Compoments/ProgressCompoment';
+import ProgressCompoment from "../Compoments/ProgressCompoment";
 import { NavigationActions, StackActions } from "react-navigation";
 import type { Notification, NotificationOpen } from "react-native-firebase";
 class LoginTypeScreen extends Component {
@@ -23,7 +24,7 @@ class LoginTypeScreen extends Component {
     this.getToken();
     this.state = {
       isProgress: false
-    }
+    };
   }
   static navigationOptions = {
     header: null
@@ -48,7 +49,7 @@ class LoginTypeScreen extends Component {
       const notification: Notification = notificationOpen.notification;
       var seen = [];
       alert(
-        JSON.stringify(notification.data, function (key, val) {
+        JSON.stringify(notification.data, function(key, val) {
           if (val != null && typeof val == "object") {
             if (seen.indexOf(val) >= 0) {
               return;
@@ -90,7 +91,7 @@ class LoginTypeScreen extends Component {
         const notification: Notification = notificationOpen.notification;
         var seen = [];
         alert(
-          JSON.stringify(notification.data, function (key, val) {
+          JSON.stringify(notification.data, function(key, val) {
             if (val != null && typeof val == "object") {
               if (seen.indexOf(val) >= 0) {
                 return;
@@ -113,11 +114,11 @@ class LoginTypeScreen extends Component {
       console.log("fcmToken", fcmToken);
       // user doesn't have a device token yet
     }
-    this.openProgressbar();
+    
     AsyncStorage.getItem("logged")
       .then(data => {
+       
 
-        this.hideProgressbar();
         if (data != null) {
           if (data == "true") {
             this.doFinish("HomePage");
@@ -165,17 +166,23 @@ class LoginTypeScreen extends Component {
           source={Icons.ic_splash_logo}
           style={{ width: 300, height: 300, alignSelf: "center" }}
         />
-        <View style={{
-          display: this.state.isProgress ? 'flex' : 'none',
-          position: 'absolute', alignSelf: 'center', width: 120,
-          height: 120,
-          borderRadius: 5,
-          backgroundColor: "rgba(0,0,0,0.5)"
-        }}>
+        {/* <View
+          style={{
+            display: this.state.isProgress ? "flex" : "none",
+            position: "absolute",
+            alignSelf: "center",
+            width: 120,
+            height: 120,
+            borderRadius: 5,
+            backgroundColor: "rgba(0,0,0,0.5)"
+          }}
+        >
           <Text
             style={{
-              alignItems: "center", justifyContent: 'center', marginTop: 15,
-              textAlign: 'center',
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: 15,
+              textAlign: "center",
               fontSize: 16,
               fontWeight: "200",
               fontFamily: "OpenSans-SemiBold",
@@ -183,10 +190,10 @@ class LoginTypeScreen extends Component {
             }}
           >
             Loading ...
-              </Text>
+          </Text>
           <BallIndicator color={Colors.white} animationDuration={800} />
-        </View>
-        {/* <ProgressCompoment isProgress={this.state.isProgress} /> */}
+        </View> */}
+        
         <View style={styles.mainView}>
           <View style={styles.buttonTopView}>
             <TouchableOpacity onPress={this.doRedirect.bind(this, "Login")}>
@@ -210,7 +217,6 @@ class LoginTypeScreen extends Component {
                 </Text>
               </View>
             </TouchableOpacity>
-
 
             <TouchableOpacity onPress={this.doRedirect.bind(this, "SignUp1")}>
               <View

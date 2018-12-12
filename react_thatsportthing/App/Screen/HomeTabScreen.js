@@ -37,6 +37,7 @@ import PostListComponent from "../Compoments/PostListCompoment";
 import TryAgainComponent from "../Compoments/TryAgainComponent";
 import HomeBannerCompoment from "../Compoments/HomeBannerCompoment";
 import SearchListCompoment from "../Compoments/SearchListCompoment";
+import NestedScrollView from "react-native-nested-scroll-view";
 
 class HomeTabScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -119,7 +120,6 @@ class HomeTabScreen extends Component {
       postData: [],
       originalPostData: [],
     };
-    this.getPostList = this.getPostList.bind(this);
   }
 
   getPostList() {
@@ -157,7 +157,6 @@ class HomeTabScreen extends Component {
     fetch(ApiUrl.getUserProfile, bodyData)
       .then(response => response.json())
       .then(responseJson => {
-        console.log(responseJson);
 
         const message = responseJson.message;
         const status = responseJson.status;
@@ -316,7 +315,6 @@ class HomeTabScreen extends Component {
   }
   onPageScroll(event) {
     const { offset, position } = event;
-    console.log(position);
   }
   doChangeTab(tabName) {
     if (tabName == "stream") {
@@ -576,17 +574,16 @@ class HomeTabScreen extends Component {
   doValidEmail(email) {
     let reg = /^[a-zA-Z ]+$/;
     if (reg.test(email) === false) {
-      console.log("Email is Not Correct");
       return false;
     } else {
-      console.log("Email is Correct");
       return true;
     }
   }
   render() {
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView
+        <NestedScrollView
+        style={{ flex: 1 }}
           showsVerticalScrollIndicator={true}
           alwaysBounceVertical={false}
           bounces={false}
@@ -715,7 +712,7 @@ class HomeTabScreen extends Component {
             <View>
               <ViewPager
                 scrollEnabled={false}
-                style={{ height: Dimensions.get("screen").height }}
+                style={{ height: Dimensions.get("screen").height*2 }}
                 ref={"viewPager"}
                 onPageScroll={event => this.onPageScroll(event)}
                 initialPage={this.state.currentTab}
@@ -724,6 +721,7 @@ class HomeTabScreen extends Component {
                   <WritePostCompoment navigation={this.props.navigation} />
                   <StreamListComponent
                     streams={this.state.postData}
+                    updateStreams={this.state.originalPostData}
                     navigation={this.props.navigation}
                   />
                 </View>
@@ -791,7 +789,7 @@ class HomeTabScreen extends Component {
               </ViewPager>
             </View>
           </View>
-        </ScrollView>
+        </NestedScrollView>
       </SafeAreaView>
     );
   }

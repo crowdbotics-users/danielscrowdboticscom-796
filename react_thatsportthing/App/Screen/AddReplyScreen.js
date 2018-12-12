@@ -10,67 +10,39 @@ import {
   NetInfo,
   AsyncStorage,
   Alert,
-  SafeAreaView,
-  StyleSheet
+  SafeAreaView
 } from "react-native";
-import AddPostHeaderCompoment from "../Compoments/AddPostHeaderCompoment";
+import AddReplyHeaderComponent from "../Compoments/AddReplyHeaderCompoment";
 import styles from "../Resource/Styles";
 import Icons from "../Resource/Icons";
 import Colors from "../Resource/Colors";
-import ImagePicker from "react-native-image-crop-picker";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import ApiUrl from "../Network/ApiUrl";
 import { showSnackBar } from "@prince8verma/react-native-snackbar";
-import RNPickerSelect from "react-native-picker-select";
 
-class AddPostScreen extends PureComponent {
+class AddReplyScreen extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      full_name: "",
+      profile_image: "",
       messages: "",
-      isProgress: false,
-      postImage: "",
-      privacy: "all",
-      items: [
-        {
-          label: "Public",
-          value: "all"
-        },
-        {
-          label: "Crew",
-          value: "crew"
-        }
-      ]
+      isProgress: false
     };
   }
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
     return {
-      header: props => <AddPostHeaderCompoment {...props} props={navigation} />
+      header: props => <AddReplyHeaderComponent {...props} props={navigation} />
     };
   };
-  pickSingleWithCamera(cropping, circular = false) {
-    ImagePicker.openCamera({
-      cropping: false,
-      cropperCircleOverlay: circular,
-      compressImageMaxWidth: 640,
-      compressImageMaxHeight: 640,
-      compressImageQuality: 0.5,
-      includeExif: true
-    })
-      .then(image => {
-        console.log("received image", image);
-        this.setState({
-          postImage: image.path
-        });
-      })
-      .catch(e => alert(e));
-  }
-  doAddPost() {
+
+  doAddComment() {
     if (this.state.messages == "") {
-      this.refs.messages.focus();
-      alert("Write a post");
+      this.refs.message.focus();
+      alert("Write a reply");
     } else {
+      const { post_id, comment_id } = this.props.navigation.state.params;
       NetInfo.isConnected.fetch().then(isConnected => {
         if (isConnected) {
           AsyncStorage.getItem("data")
@@ -78,19 +50,18 @@ class AddPostScreen extends PureComponent {
               console.log("AsyncStorage");
               if (data != null) {
                 const myData = JSON.parse(data);
-                const bodyData = new FormData();
-                if (this.state.postImage != "") {
-                  bodyData.append("post_image", {
-                    uri: this.state.postImage,
-                    type: "image/jpeg",
-                    name: "image1"
-                  });
-                }
-
-                bodyData.append("description", this.state.messages);
+                const bodyData = JSON.stringify({
+                  post_id: post_id,
+                  comment_id: comment_id,
+                  type: "reply",
+                  messages: this.state.messages
+                });
 
                 this.openProgressbar();
-                this.doAddPostApi(bodyData, myData.token);
+                console.log(post_id);
+                console.log(bodyData);
+
+                this.doAddCommentApi(bodyData, myData.token);
               } else {
                 console.log(data);
               }
@@ -105,12 +76,12 @@ class AddPostScreen extends PureComponent {
       });
     }
   }
-  doAddPostApi(bodyData, token) {
-    fetch(ApiUrl.addPost, {
+  doAddCommentApi(bodyData, token) {
+    fetch(ApiUrl.addComment, {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
         Authorization: "Bearer " + token
       },
       body: bodyData
@@ -123,6 +94,7 @@ class AddPostScreen extends PureComponent {
 
         switch (status) {
           case 200: {
+            //this.props.navigation.goBack(null);
             this.doShowSnackBar(message);
             break;
           }
@@ -163,6 +135,22 @@ class AddPostScreen extends PureComponent {
   hideProgressbar = () => {
     this.setState({ isProgress: false });
   };
+  componentDidMount() {
+    AsyncStorage.getItem("data")
+      .then(data => {
+        console.log("AsyncStorage");
+        if (data != null) {
+          const myData = JSON.parse(data);
+          this.setState({
+            full_name: myData.full_name,
+            profile_image: myData.profile_image,
+          });
+        } else {
+          console.log(data);
+        }
+      })
+      .done();
+  }
   render() {
     return (
       <SafeAreaView style={{ flex: 1 }}>
@@ -191,7 +179,7 @@ class AddPostScreen extends PureComponent {
                   }}
                 >
                   <Image
-                    source={Icons.messi}
+                    source={this.state.profile_image==""?Icons.messi:{uri:this.state.profile_image}}
                     style={{
                       width: 44,
                       height: 44,
@@ -205,34 +193,13 @@ class AddPostScreen extends PureComponent {
 
                 <Text
                   style={{
-                    flex:1,
                     marginStart: 10,
                     color: Colors.black,
                     fontFamily: "OpenSans-Bold"
                   }}
                 >
-                  JOHN SCHOFFER
+                  {this.state.full_name}
                 </Text>
-                <View style={{ flexDirection: "row", alignItems: "center",borderColor:Colors.colorSearch,borderWidth:1,alignSelf:'center',padding:0 ,borderRadius:4}}>
-                <Image source={Icons.ic_world} style={{width:15,height:15,margin:5,marginEnd:10}}/>
-                  <View style={{alignItems:'center',alignContent:'center',justifyContent:'center',padding:0,margin:0,top:0,bottom:0}}>
-                  <RNPickerSelect
-                  
-                    useNativeAndroidPickerStyle={false}
-                    placeholder={{}}
-                    hideIcon={true}
-                    items={this.state.items}
-                    style={{ ...pickerSelectStyles }}
-                    value={this.state.privacy}
-                    onValueChange={value => {
-                      this.setState({
-                        privacy: value
-                      });
-                    }}
-                  />
-                  </View>
-                  <Image source={Icons.ic_down_arrow_picker} style={{width:15,height:15,margin:5,marginEnd:10}}/>
-                </View>
               </View>
               <View
                 style={{
@@ -241,21 +208,14 @@ class AddPostScreen extends PureComponent {
                 }}
               />
               <TextInput
-                ref={"messages"}
-                placeholder="Write a post,share link or picture..."
+                ref={"message"}
+                placeholder="Write a reply..."
                 style={{ marginStart: 10, marginEnd: 10 }}
                 underlineColorAndroid={Colors.transparent}
                 value={this.state.messages}
                 onChangeText={text => {
                   this.setState({ messages: text });
                 }}
-              />
-              <Image
-                source={
-                  this.state.postImage != ""
-                    ? { uri: this.state.postImage }
-                    : ""
-                }
               />
               <ProgressCompoment isProgress={this.state.isProgress} />
             </View>
@@ -308,16 +268,9 @@ class AddPostScreen extends PureComponent {
                     #
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => this.pickSingleWithCamera(true, true)}
-                >
-                  <Image
-                    source={Icons.ic_camera_profile}
-                    style={[styles.icon, {}]}
-                  />
-                </TouchableOpacity>
+
                 <View style={{ flex: 1 }} />
-                <TouchableOpacity onPress={() => this.doAddPost()}>
+                <TouchableOpacity onPress={() => this.doAddComment()}>
                   <View
                     style={{
                       backgroundColor: Colors.bgHeader,
@@ -345,18 +298,5 @@ class AddPostScreen extends PureComponent {
     );
   }
 }
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    fontSize: 12,
-    backgroundColor: "white",
-    color: Colors.navBg,
-   
-  },
-  inputAndroid: {
-    fontSize: 12,
-    alignItems: "center",
-    color: Colors.navBg,
-   
-  }
-});
-export default AddPostScreen;
+
+export default AddReplyScreen;

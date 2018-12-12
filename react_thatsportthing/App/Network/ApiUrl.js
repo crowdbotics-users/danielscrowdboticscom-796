@@ -10,12 +10,18 @@ const ApiUrl = {
   getUserProfile: BASE_URL + "users/getProfile",
   editUserProfile: BASE_URL + "users/updateprofile",
   getCommentsList: BASE_URL + "users/posts/view_comment_all_message",
+  getReplyList: BASE_URL + "users/posts/view_reply_all_message",
   addComment: BASE_URL + "users/posts/add_comment",
   addPost: BASE_URL + "users/posts/add_post",
   likePost: BASE_URL + "users/posts/add_like",
+  likeComment: BASE_URL + "users/posts/add_comment__like",
   followUser: BASE_URL + "users/add_follower",
   sendRequest: BASE_URL + "users/requests/send_request",
+  requestAction: BASE_URL + "users/requests/request_action",
   getPosts: BASE_URL + "users/posts/list",
+  getCrewList: BASE_URL + "users/requests/crew_list",
+  getSendRequestList: BASE_URL + "users/requests/send_request_list",
+  getReceivedRequestList: BASE_URL + "users/requests/received_request_list",
 };
 
 export default ApiUrl;
