@@ -126,16 +126,13 @@
             // The message that is to appear on the dialog.
             $tAlert = $message['message'];
             $tscreen = $message['target_screen'];
-            $tsender_name = $message['sender']['first_name']." ".$message['sender']['last_name'];
-            $tsender_image = $message['sender']['user_image'];
-            $tsender_batch_id = $message['sender']['batch_id'];
-            $tsender_child_age = $message['sender']['child_age'];
-            $tsender_gender = $message['sender']['gender'];
-            $treceiver_name = $message['receiver']['first_name']." ".$message['receiver']['last_name'];
-            $treceiver_image = $message['receiver']['user_image'];
-            $treceiver_batch_id = $message['receiver']['batch_id'];
-            $treceiver_child_age = $message['receiver']['child_age'];
-            $treceiver_gender = $message['receiver']['gender'];
+            $tsender_name = $message['sender']['full_name'];
+            $tsender_image = $message['sender']['profile_image'];
+          
+            $treceiver_name = $message['receiver']['full_name'];
+            $treceiver_image = $message['receiver']['profile_image'];
+          
+           
             
 
             // The Badge Number for the Application Icon (integer >=0).
@@ -159,15 +156,11 @@
                 'sound' => $tSound,
                 'tagert_screen' => $tscreen,
                 'sender_image' => $tsender_image,
-                'sender_batch_id' => $tsender_batch_id,
-                'sender_child_age' => $tsender_child_age,
-                'sender_gender' => $tsender_gender,
+               
                 'sender_name' => $tsender_name,
                 'receiver_name' => $treceiver_name,
                 'receiver_image' => $treceiver_image,
-                'receiver_batch_id' => $treceiver_batch_id,
-                'receiver_child_age' => $treceiver_child_age,
-                'receiver_gender' => $treceiver_gender,
+               
 
             );
 
