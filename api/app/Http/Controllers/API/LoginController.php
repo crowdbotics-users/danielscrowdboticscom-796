@@ -394,8 +394,8 @@ class LoginController extends Controller
                 {
                    $user_update->full_name=$request->name;
                 }
-                dd($request->type);
-                   if(isset($request->profile_image) && $request->type='image')
+              
+                   if($request->hasFile('profile_image') && $request->type='image')
                    {
                        
                         $image=$request->profile_image;
@@ -406,12 +406,12 @@ class LoginController extends Controller
                        
                         $user_update->profile_image = $image_path;
                    }
-                   else if(isset($request->profile_image) && $request->type='gallery')
+                   else if($request->hasFile('profile_image') && $request->type='gallery')
                    {
                     $user_update->profile_image = $request->profile_image;
                    }
 
-                   if(isset($request->cover_image) && $request->type='image')
+                   if($request->hasFile('cover_image') && $request->type='image')
                    {
                         $image=$request->cover_image;
                         $imageName = str_replace(' ', '_', $request->name).'_'.uniqid(time()) . '.' . $image->getClientOriginalExtension();
@@ -421,7 +421,7 @@ class LoginController extends Controller
                 
                         $user_update->cover_image = $image_path;
                    }
-                   else if(isset($request->cover_image) && $request->type='gallery')
+                   else if($request->hasFile('cover_image') && $request->type='gallery')
                    {
                         $user_update->cover_image = $request->cover_image;
                    }
@@ -431,7 +431,6 @@ class LoginController extends Controller
                     $user_update->save();
 
                     return response()->json([
-                        
                         'message' => 'Your Profile Updated Successfully.',
                         'success' => true,
                         'status' => 200,
