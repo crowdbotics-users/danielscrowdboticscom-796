@@ -48,21 +48,25 @@ class CommentsLikes extends Model
     }
     public function getIsLikeAttribute()
      {  
-        $user_follower= JWTAuth::touser(app('request')->header('authorization'));
-       
-        $is_like=CommentsLikes::where('parent_id',$this->attributes['id'])
-                ->where('user_id',$user_follower->id)
-                ->where('status',1)
-                ->where('type','comment-like')->count();
-                
-        if($is_like > 0)
+        if(app('request')->header('authorization') != null)
         {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+
+            $user_follower= JWTAuth::touser(app('request')->header('authorization'));
+        
+            $is_like=CommentsLikes::where('parent_id',$this->attributes['id'])
+                    ->where('user_id',$user_follower->id)
+                    ->where('status',1)
+                    ->where('type','comment-like')->count();
+                    
+            if($is_like > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
    
-     }
+        }
+    }
 }
