@@ -11,7 +11,8 @@ import {
   AsyncStorage,
   Alert,
   SafeAreaView,
-  StyleSheet
+  StyleSheet,
+  Dimensions
 } from "react-native";
 import AddPostHeaderCompoment from "../Compoments/AddPostHeaderCompoment";
 import styles from "../Resource/Styles";
@@ -59,7 +60,7 @@ class AddPostScreen extends PureComponent {
       includeExif: true
     })
       .then(image => {
-        console.log("received image", image);
+        console.log("received image", image.path);
         this.setState({
           postImage: image.path
         });
@@ -168,9 +169,15 @@ class AddPostScreen extends PureComponent {
       <SafeAreaView style={{ flex: 1 }}>
         <View style={{ backgroundColor: Colors.white, flex: 1 }}>
           <View
-            style={{ position: "relative", flex: 1, flexDirection: "column" }}
+            style={{
+              position: "relative",
+              flex: 1,
+              flexDirection: "column"
+            }}
           >
-            <View style={{ position: "relative" }}>
+            <View
+              style={{ position: "relative",  flex: 1 }}
+            >
               <View
                 style={[
                   styles.row,
@@ -205,7 +212,7 @@ class AddPostScreen extends PureComponent {
 
                 <Text
                   style={{
-                    flex:1,
+                    flex: 1,
                     marginStart: 10,
                     color: Colors.black,
                     fontFamily: "OpenSans-Bold"
@@ -213,25 +220,50 @@ class AddPostScreen extends PureComponent {
                 >
                   JOHN SCHOFFER
                 </Text>
-                <View style={{ flexDirection: "row", alignItems: "center",borderColor:Colors.colorSearch,borderWidth:1,alignSelf:'center',padding:0 ,borderRadius:4}}>
-                <Image source={Icons.ic_world} style={{width:15,height:15,margin:5,marginEnd:10}}/>
-                  <View style={{alignItems:'center',alignContent:'center',justifyContent:'center',padding:0,margin:0,top:0,bottom:0}}>
-                  <RNPickerSelect
-                  
-                    useNativeAndroidPickerStyle={false}
-                    placeholder={{}}
-                    hideIcon={true}
-                    items={this.state.items}
-                    style={{ ...pickerSelectStyles }}
-                    value={this.state.privacy}
-                    onValueChange={value => {
-                      this.setState({
-                        privacy: value
-                      });
-                    }}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    borderColor: Colors.colorSearch,
+                    borderWidth: 1,
+                    alignSelf: "center",
+                    padding: 0,
+                    borderRadius: 4
+                  }}
+                >
+                  <Image
+                    source={Icons.ic_world}
+                    style={{ width: 15, height: 15, margin: 5, marginEnd: 10 }}
                   />
+                  <View
+                    style={{
+                      alignItems: "center",
+                      alignContent: "center",
+                      justifyContent: "center",
+                      padding: 0,
+                      margin: 0,
+                      top: 0,
+                      bottom: 0
+                    }}
+                  >
+                    <RNPickerSelect
+                      useNativeAndroidPickerStyle={false}
+                      placeholder={{}}
+                      hideIcon={true}
+                      items={this.state.items}
+                      style={{ ...pickerSelectStyles }}
+                      value={this.state.privacy}
+                      onValueChange={value => {
+                        this.setState({
+                          privacy: value
+                        });
+                      }}
+                    />
                   </View>
-                  <Image source={Icons.ic_down_arrow_picker} style={{width:15,height:15,margin:5,marginEnd:10}}/>
+                  <Image
+                    source={Icons.ic_down_arrow_picker}
+                    style={{ width: 15, height: 15, margin: 5, marginEnd: 10 }}
+                  />
                 </View>
               </View>
               <View
@@ -240,25 +272,44 @@ class AddPostScreen extends PureComponent {
                   borderBottomWidth: 1
                 }}
               />
+              
+              <ScrollView>
               <TextInput
                 ref={"messages"}
                 placeholder="Write a post,share link or picture..."
-                style={{ marginStart: 10, marginEnd: 10 }}
+                style={{
+                  marginStart: 10,
+                  marginEnd: 10
+                }}
                 underlineColorAndroid={Colors.transparent}
                 value={this.state.messages}
                 onChangeText={text => {
                   this.setState({ messages: text });
                 }}
               />
+
+              <ProgressCompoment isProgress={this.state.isProgress} />
+           
               <Image
+                resizeMode='contain'
+                style={{
+                 
+
+                 flexWrap:'wrap',
+                
+                  height: Dimensions.get('window').height/2,
+                  width: Dimensions.get('window').width
+                }}
                 source={
                   this.state.postImage != ""
                     ? { uri: this.state.postImage }
                     : ""
                 }
               />
-              <ProgressCompoment isProgress={this.state.isProgress} />
+              </ScrollView>
+            
             </View>
+
             <View
               style={{
                 position: "absolute",
@@ -267,7 +318,8 @@ class AddPostScreen extends PureComponent {
                 borderTopColor: Colors.colorLine,
                 width: "100%",
                 borderTopWidth: 1,
-                alignItems: "center"
+                alignItems: "center",
+                backgroundColor:Colors.white
               }}
             >
               <View
@@ -280,7 +332,8 @@ class AddPostScreen extends PureComponent {
                     justifyContent: "center",
                     alignContent: "center",
                     marginTop: 5,
-                    marginBottom: 10
+                    marginBottom: 10,
+                    backgroundColor:Colors.white
                   }
                 ]}
               >
@@ -349,14 +402,12 @@ const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
     fontSize: 12,
     backgroundColor: "white",
-    color: Colors.navBg,
-   
+    color: Colors.navBg
   },
   inputAndroid: {
     fontSize: 12,
     alignItems: "center",
-    color: Colors.navBg,
-   
+    color: Colors.navBg
   }
 });
 export default AddPostScreen;
