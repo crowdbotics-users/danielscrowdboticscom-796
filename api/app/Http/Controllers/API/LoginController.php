@@ -464,5 +464,38 @@ class LoginController extends Controller
 
     }
 
+    public function verify_email(Request $request)
+    {
+        if(isset($request->email))
+        {
+            $user_update=User::where('email',$request->email)->first();
+
+            if($user_update != null)
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email id Already Exits.',
+                    'status'  => 400
+                ], 200);
+            }
+            else
+            {
+                return response()->json([
+                    'message' => 'Success.',
+                    'success' => true,
+                    'status' => 200,
+                ],200);
+            }
+        }
+        else
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid Parameter.',
+                'status'  => 400
+            ], 200);
+        }
+    }
+
     
 }

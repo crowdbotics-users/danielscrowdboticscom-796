@@ -23,6 +23,7 @@ Route::group(['prefix' => 'users'], function () {
     Route::post('forgot_password', 'API\LoginController@forgot_password');
     Route::post('get_otp', 'API\LoginController@get_opt');
     Route::post('reset_password', 'API\LoginController@reset_password');
+    Route::post('verify_email', 'API\LoginController@verify_email');
     
 
     Route::group(['middleware' => 'jwt.verify'], function () {
