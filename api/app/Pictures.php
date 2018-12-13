@@ -25,4 +25,15 @@ class Pictures extends Model
     protected $table = 'pictures';
 
     protected $fillable = ['user_id','image_url','status'];
+
+    public function getImageUrlAttribute()
+    {
+        if($this->attributes['image_url'] && \File::exists(public_path()."/uploads/user/post_images/".$this->attributes['image_url'])){
+            $path = url("/")."/"."uploads/user/post_images/";
+            return ($this->attributes['image_url'])?$path.$this->attributes['image_url']:'';
+        }else{
+            return "";
+        }	
+        
+    }
 }

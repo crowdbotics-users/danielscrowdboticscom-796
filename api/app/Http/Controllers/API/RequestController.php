@@ -225,12 +225,29 @@ class RequestController extends Controller
     public function crew_list(Request $request)
     {
         $user=JWTAuth::touser($request->header('authorization'));
+        $user_id=isset($request->user_id)?$request->user_id:$user->id;
+     
 
-        $crew=Request_data::where(function ($query) use ($user){
-              $query->where('sender_id', '=', $user->id)
-              ->orWhere('receiver_id', '=', $user->id);
-               })->where('status',1)->paginate(10);
+        $crew=Request_data::where(function ($query) use ($user_id){
+              $query->where('sender_id', '=', $user_id)
+              ->orWhere('receiver_id', '=', $user_id);
+               })->where('status',1)->get();
+
+        if(count($crew) > 0)
+        {
+            $crew=User::whereIn('id',crew_data($crew,$user_id))->paginate(10);   
+        }
+        else
+        {
+            return response()->json([
+               
+                'message' => 'Data Empty.',
+                'success' => true,
+                'status' => 400,
+            ],200);
+        }
         
+
         $crew=make_null($crew);
         
         $result['total']=get_api_data(isset($crew['total']) ? $crew['total'] : 0);
@@ -251,12 +268,99 @@ class RequestController extends Controller
         else
         {
             return response()->json([
-                'result' => $result,
+             
                 'message' => 'Data Empty.',
                 'success' => true,
                 'status' => 400,
             ],200);
         }
      
+    }
+    public function mutual_list(Request $request)
+    {
+        $user=JWTAuth::touser($request->header('authorization'));
+
+        if(isset($request->user_id))
+        {
+            $profile_user=User::find($request->user_id);
+         
+            if($profile_user == null)
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User not found.',
+                    'status'  => 400
+                ], 200);
+            }
+
+            $crew=Request_data::where(function ($query) use ($user){
+                $query->where('sender_id', '=', $user->id)
+                ->orWhere('receiver_id', '=', $user->id);
+                })->where('status',1)->get();
+            
+                if(count($crew) == 0)
+                {
+                    return response()->json([        
+                        'message' => 'Data Empty.',
+                        'success' => true,
+                        'status' => 400,
+                    ],200);
+                }
+
+            $crew=crew_data($crew,$user->id);  
+                
+            $profile_user_crew=Request_data::where(function ($query) use ($profile_user){
+                $query->where('sender_id', '=', $profile_user->id)
+                ->orWhere('receiver_id', '=', $profile_user->id);
+                })->where('status',1)->get();
+            
+            if(count($profile_user_crew) == 0)
+            {
+                return response()->json([        
+                    'message' => 'Data Empty.',
+                    'success' => true,
+                    'status' => 400,
+                ],200);
+            }
+
+            $profile_user_crew=crew_data($profile_user_crew,$profile_user->id);  
+
+            $mutual_friend=User::whereIn('id',$crew)->whereIn('id',$profile_user_crew)->paginate(10);
+
+            $mutual_friend=make_null($mutual_friend);
+
+            $result['total']=get_api_data(isset($mutual_friend['total']) ? $mutual_friend['total'] : 0);
+            $result['current_page']=get_api_data(isset($mutual_friend['current_page']) ? $mutual_friend['total'] : 0);
+            $result['prev_page_url']=get_api_data(isset($mutual_friend['prev_page_url']) ? $mutual_friend['prev_page_url'] : 0);
+            $result['next_page_url']=get_api_data(isset($mutual_friend['next_page_url']) ? $mutual_friend['next_page_url'] : 0);
+            $result['data']=$mutual_friend['data'];
+            
+            if($result['total'] > 0)
+            {
+                return response()->json([
+                    'result' => $result,
+                    'message' => 'Request List.',
+                    'success' => true,
+                    'status' => 200,
+                ],200);
+            }
+            else
+            {
+                return response()->json([
+                    'result' => $result,
+                    'message' => 'Data Empty.',
+                    'success' => true,
+                    'status' => 400,
+                ],200);
+            }
+        }
+        else
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid Parameter.',
+                'status'  => 400
+            ], 200);
+        }
     }
 }

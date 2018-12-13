@@ -24,4 +24,8 @@ class Followers extends Model
     protected $table = 'followers';
 
     protected $fillable = ['user_id','follower_id','status'];
+    public function users()
+    {
+        return $this->hasOne('App\User', 'id', 'follower_id');
+    }
 }

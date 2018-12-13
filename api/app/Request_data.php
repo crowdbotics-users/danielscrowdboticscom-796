@@ -27,7 +27,7 @@ class Request_data extends Model
  
      protected $fillable = ['sender_id','receiver_id','status'];
 
-     protected $appends = ['user_details'];
+     protected $appends = ['user_details','crew_id'];
 
      public function getUserDetailsAttribute()
      {
@@ -50,4 +50,69 @@ class Request_data extends Model
       }
       return "";
      }
+
+   public function getCrewIdAttribute()
+     {
+      if(app('request')->header('authorization') != null)
+      {
+       
+        $user= JWTAuth::touser(app('request')->header('authorization'));
+        if(isset($this->attributes['sender_id']) && isset($this->attributes['receiver_id']))
+        {
+            if($user->id == $this->attributes['sender_id'])
+            {
+              return $this->attributes['receiver_id'];
+          
+            }
+            else
+            {
+              return $this->attributes['sender_id'];
+           
+            }
+        }
+      }
+      return 0;
+     }
+
+     /*public function scopecrew_data($id)
+     {
+       $crew_data=array();
+      if(isset($this->attributes['sender_id']) && isset($this->attributes['receiver_id']))
+      {
+          if($id == $this->attributes['sender_id'])
+          {
+            return $this->attributes['receiver_id'];
+            //array_push($crew_data,$this->attributes['receiver_id']);
+          }
+          else
+          {
+            return $this->attributes['sender_id'];
+            //array_push($crew_data,$this->attributes['sender_id']);
+          }
+          return $crew_data;
+      }
+      
+    }*/
+
+    public function scopecrew_data($id)
+     {
+       $crew_data=array();
+      if(isset($this->attributes['sender_id']) && isset($this->attributes['receiver_id']))
+      {
+    
+          if($id == $this->attributes['sender_id'])
+          {
+            // /return $this->attributes['receiver_id'];
+            array_push($crew_data,$this->attributes['receiver_id']);
+          }
+          else
+          {
+            //return $this->attributes['sender_id'];
+            array_push($crew_data,$this->attributes['sender_id']);
+          }
+          return json_encode($crew_data);
+      }
+      
+    }
+    
 }

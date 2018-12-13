@@ -7,16 +7,35 @@ use App\Http\Controllers\Controller;
 use App\Post;
 use App\User;
 use App\CommentsLikes;
+use App\Pictures;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Carbon\Carbon;
+use App\Request_data;
 
 class PostController extends Controller
 {
     //
     public function list(Request $request)
     {
-        $post=Post::with('users')->where('status',1)->paginate(10);
+        $user= JWTAuth::touser($request->header('authorization'));
+
+        $post=Post::with('users')->where('user_id','!=',$user->id)->where('post_status','all');
+        
+        $crew=Request_data::where(function ($query) use ($user){
+            $query->where('sender_id', '=', $user->id)
+            ->orWhere('receiver_id', '=', $user->id);
+            })->where('status',1)->get();
+        
+            if(count($crew) > 0)
+            {
+                $crew=crew_data($crew,$user->id);  
+                $post=$post->whereIn('user_id',$crew);
+
+            }
+
+            $post=$post->where('status',1)->orderby('created_at','DESC')->paginate(10);
+       
 
         $post=make_null($post);
         $result['total']=get_api_data(isset($post['total']) ? $post['total'] : 0);
@@ -50,7 +69,7 @@ class PostController extends Controller
     {
        
         $user= JWTAuth::touser($request->header('authorization'));
-        if(isset($request->description) || isset($request->post_image))
+        if((isset($request->description) || isset($request->post_image)) && isset($request->post_status))
         {
             $post=new Post();
             
@@ -66,10 +85,18 @@ class PostController extends Controller
                 uploadImage($image,'uploads/user/post_images/thumbnail',$imageName,'150','150');
                 $image_path = uploadImage($image,'uploads/user/post_images',$imageName,'400','400');
                 $post->post_image = $image_path;
+                
+                $pictures=new Pictures();
+                $pictures->user_id=$user->id;
+                $pictures->image_url=$image_path;
+                $pictures->status=1;
+                $pictures->save();
+
                  
             }
             $post->user_id=$user->id;
             $post->status = 1;
+            $post->post_status = $request->post_status;
             $post->save();
 
             $result=make_null($post);
@@ -315,6 +342,42 @@ class PostController extends Controller
                 'status'  => 400
             ], 200);
         }
+
+    }
+
+    public function my_post_list(Request $request)
+    {
+        $user=JWTAuth::touser($request->header('authorization'));
+        $user_id=isset($request->user_id)?$request->user_id:$user->id;
+
+        $post=Post::with('users')->where('user_id',$user_id)->where('status',1)->orderby('created_at','DESC')->paginate(10);
+
+        $post=make_null($post);
+        $result['total']=get_api_data(isset($post['total']) ? $post['total'] : 0);
+        $result['current_page']=get_api_data(isset($post['current_page']) ? $post['total'] : 0);
+        $result['prev_page_url']=get_api_data(isset($post['prev_page_url']) ? $post['prev_page_url'] : 0);
+        $result['next_page_url']=get_api_data(isset($post['next_page_url']) ? $post['next_page_url'] : 0);
+        $result['data']=$post['data'];
+
+        if($result['total'] > 0)
+        {
+            return response()->json([
+                'result' => $result,
+                'message' => 'Post Data.',
+                'success' => true,
+                'status' => 200,
+            ],200);
+        }
+        else
+        {
+            return response()->json([
+                'result' => $result,
+                'message' => 'Data Empty.',
+                'success' => true,
+                'status' => 400,
+            ],200);
+        }
+
 
     }
 }

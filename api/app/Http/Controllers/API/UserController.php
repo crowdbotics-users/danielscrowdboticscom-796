@@ -10,6 +10,7 @@ use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Carbon\Carbon;
 use App\Followers;
+use App\Post;
 
 class UserController extends Controller
 {
@@ -158,6 +159,118 @@ class UserController extends Controller
                 'status'  => 400
             ], 200);
 
+        }
+    }
+    public function follower_list(Request $request)
+    {
+        $user=JWTAuth::touser($request->header('authorization'));
+
+        $user_id=isset($request->user_id)?$request->user_id:$user->id;
+       
+        $follower_data=Followers::with('users')->where('user_id',$user_id)->where('status',1)->paginate(10);
+
+        $follower_data=make_null($follower_data);
+
+        $result['total']=get_api_data(isset($follower_data['total']) ? $follower_data['total'] : 0);
+        $result['current_page']=get_api_data(isset($follower_data['current_page']) ? $follower_data['total'] : 0);
+        $result['prev_page_url']=get_api_data(isset($follower_data['prev_page_url']) ? $follower_data['prev_page_url'] : 0);
+        $result['next_page_url']=get_api_data(isset($follower_data['next_page_url']) ? $follower_data['next_page_url'] : 0);
+        $result['data']=$follower_data['data'];
+
+        if($result['total'] > 0)
+        {
+            return response()->json([
+                'result' => $result,
+                'message' => 'Follower List.',
+                'success' => true,
+                'status' => 200,
+            ],200);
+        }
+        else
+        {
+            return response()->json([
+                'result' => $result,
+                'message' => 'Data Empty.',
+                'success' => true,
+                'status' => 400,
+            ],200);
+        }
+
+    }
+    public function search(Request $request)
+    {
+        if(isset($request->search_value) && isset($request->type))
+        {
+            if($request->type == "people")
+            {
+                $list_data=User::where('full_name','LIKE', "%$request->search_value%")->paginate(10);
+                $list_data=make_null($list_data);
+
+                $result['total']=get_api_data(isset($list_data['total']) ? $list_data['total'] : 0);
+                $result['current_page']=get_api_data(isset($list_data['current_page']) ? $list_data['total'] : 0);
+                $result['prev_page_url']=get_api_data(isset($list_data['prev_page_url']) ? $list_data['prev_page_url'] : 0);
+                $result['next_page_url']=get_api_data(isset($list_data['next_page_url']) ? $list_data['next_page_url'] : 0);
+                $result['data']=$list_data['data'];
+
+                if($result['total'] > 0)
+                {
+                    return response()->json([
+                        'result' => $result,
+                        'message' => 'Follower List.',
+                        'success' => true,
+                        'status' => 200,
+                    ],200);
+                }
+                else
+                {
+                    return response()->json([
+                        'result' => $result,
+                        'message' => 'Data Empty.',
+                        'success' => true,
+                        'status' => 400,
+                    ],200);
+                }
+            }
+            else if($request->type == "post")
+            {
+                $list_data=Post::leftjoin('users','users.id','post.user_id')->where('post.description','LIKE', "%$request->search_value%")
+                      ->orwhere('users.full_name','LIKE', "%$request->search_value%")->paginate(10);
+                
+                $list_data=make_null($list_data);
+
+                $result['total']=get_api_data(isset($list_data['total']) ? $list_data['total'] : 0);
+                $result['current_page']=get_api_data(isset($list_data['current_page']) ? $list_data['total'] : 0);
+                $result['prev_page_url']=get_api_data(isset($list_data['prev_page_url']) ? $list_data['prev_page_url'] : 0);
+                $result['next_page_url']=get_api_data(isset($list_data['next_page_url']) ? $list_data['next_page_url'] : 0);
+                $result['data']=$list_data['data'];
+
+                if($result['total'] > 0)
+                {
+                    return response()->json([
+                        'result' => $result,
+                        'message' => 'Follower List.',
+                        'success' => true,
+                        'status' => 200,
+                    ],200);
+                }
+                else
+                {
+                    return response()->json([
+                        'result' => $result,
+                        'message' => 'Data Empty.',
+                        'success' => true,
+                        'status' => 400,
+                    ],200);
+                }
+            }
+        }
+        else
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid Parameter.',
+                'status'  => 400
+            ], 200);
         }
     }
 }

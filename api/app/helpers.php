@@ -216,5 +216,23 @@
            
         }
     }
+    function crew_data($data,$id)
+    {
+        $crew_data=array();
+        foreach($data as $value)
+        {   
+            if($id == $value->sender_id)
+            {
+              // /return $this->attributes['receiver_id'];
+              array_push($crew_data,$value->receiver_id);
+            }
+            else
+            {
+              //return $this->attributes['sender_id'];
+              array_push($crew_data,$value->sender_id);
+            }
 
+        }
+        return $crew_data;
+    }
 ?>

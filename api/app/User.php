@@ -80,8 +80,11 @@ class User extends Authenticatable implements JWTSubject
 
     public function getCrewCountAttribute()
     {
-        $crew_count=Request_data::where('sender_id',$this->attributes['id'])
-                        ->orwhere('receiver_id',$this->attributes['id'])
+        $crew_count=Request_data::
+                    where(function ($query) {
+                        $query->where('sender_id', '=', $this->attributes['id'])
+                        ->orWhere('receiver_id', '=', $this->attributes['id']);
+                        })
                         ->where('status',1)
                         ->count();
         return $crew_count;
@@ -135,5 +138,6 @@ class User extends Authenticatable implements JWTSubject
       
     }
    
+  
     
 }
