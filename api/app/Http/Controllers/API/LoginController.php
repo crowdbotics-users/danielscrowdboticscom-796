@@ -55,7 +55,8 @@ class LoginController extends Controller
        
         $user->role_id=1;
         $user->status=1;
-
+        $user->save();
+        $user=User::find($user->id);
 
         $image=$request->profile_image;
         $imageName = str_replace(' ', '_', $request->full_name).'_'.uniqid(time()) . '.' . $image->getClientOriginalExtension();
@@ -123,6 +124,7 @@ class LoginController extends Controller
             if($request->has('device_type')){
                 $user->device_type = $request->device_type;
             }
+
             $user->save();
 
             if (Hash::check($request->password, $user->password))
@@ -130,6 +132,11 @@ class LoginController extends Controller
                 if ($user->status == 1 && $jwt_token = JWTAuth::attempt($input))
                 {
                     $user = JWTAuth::user();
+
+                    $user_update=User::find($user->id);
+                    $user_update->login_status = 1;
+                    $user_update->save();
+
                     $path = url("/")."/"."uploads/user/";
                     $user->thumb_image = ($user->image)?$path."thumbnail/".$user->image:'';
                     $user->image = ($user->image)?$path.$user->image:'';
@@ -182,11 +189,96 @@ class LoginController extends Controller
         }
     }
 
+    public function social_login(Request $request)
+    {
+            $user = User::where('app_id',$request->login_id)->where('app_type',$request->login_type)->first();
+
+            if($user){
+                $jwt_token=JWTAuth::fromUser($user);
+                $messages = 'Login Successfull';
+                $user['token']=$jwt_token;
+
+                return response()->json([
+                'result' =>$user,
+                'message' => 'Login Success.',
+                'success' => true,
+                'status' => 200]);
+            }
+            else{
+
+                $rules = array(
+                    'login_type' => 'required|in:google,facebook',
+                    'login_id' => 'required',
+                    'full_name' => 'required',
+                    'dob' => 'required|date_format:Y-m-d',
+                    'profile_image' => 'required',
+                    'device_type' => 'required',
+                    'fire_base_token' => 'required'
+                );
+
+                $validator = \Validator::make($request->all(), $rules, []);
+
+                if ($validator->fails()) {
+                    $validation = $validator;
+                    $status = false;
+                    $code = 400;
+                    $msgArr = $validator->messages()->toArray();
+                    $messages = reset($msgArr)[0];
+                    return response()->json([
+                                'result' => JWTAuth::user(),
+                                'message' =>$messages,
+                                'success' => false,
+                                'status' => $code,
+                               ]);
+                }
+                 else {
+                    $user = new User();
+                    $user->full_name = $request->full_name;
+                    $user->app_type = $request->login_type;
+                    $user->app_id = $request->login_id;
+                    $user->email = "";
+                    $user->password = "";
+                    $user->DOB=$request->dob;
+                    $user->device_type=$request->device_type;
+                    $user->fire_base_token=$request->fire_base_token; 
+                    $user->role_id=1;
+                    $user->status=1;
+                    $user->save();
+                
+                    $user=User::find($user->id);
+                  
+                        $image=$request->profile_image;
+                        $imageName = str_replace(' ', '_', $request->full_name).'_'.uniqid(time()) . '.' . $image->getClientOriginalExtension();
+                        uploadImage($image,'uploads/user/'.$user->id.'/thumbnail',$imageName,'150','150');
+                        $image_path = uploadImage($image,'uploads/user/'.$user->id.'/',$imageName,'400','400');
+                    $user->profile_image = $image_path;
+                    $user->save();
+
+                    $jwt_token=JWTAuth::fromUser($user);
+                    $messages = 'Login Successfull';
+                    $user_data=$user;
+                    $user_data['token']=$jwt_token;
+                    return response()
+                    ->json([
+                        'result' => $user_data,
+                        'message' => $messages,
+                        'success' => true,
+                        'status' => 200
+                    ]);
+
+                }
+            }
+    }
+
     public function logout(Request $request)
     {
         if($request->header('authorization') != null)
         {
             try {
+                $user_update=JWTAuth::touser($request->header('authorization'));
+                $user_update->login_status = 0;
+                $user_update->save();
+
                 JWTAuth::invalidate($request->header('authorization'));
 
                 return response()->json([

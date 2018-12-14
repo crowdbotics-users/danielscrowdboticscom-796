@@ -11,6 +11,7 @@ use App\Followers;
 use App\Request_data;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use App\Conversation;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -34,7 +35,7 @@ class User extends Authenticatable implements JWTSubject
         'password', 'remember_token',
     ];
 
-    protected $appends = ['follower_count','crew_count','post_count','friend_status'];
+    protected $appends = ['follower_count','crew_count','post_count','friend_status','conversation_count','follow_status'];
 
     public function getJWTIdentifier()
     {
@@ -136,6 +137,44 @@ class User extends Authenticatable implements JWTSubject
         return "";
            
       
+    }
+    public function getConversationCountAttribute()
+    {
+        if(app('request')->header('authorization') != null)
+        {
+
+            $user= JWTAuth::touser(app('request')->header('authorization'));
+        
+            $unread_count=Conversation::
+                     where('receiver_id',$user->id)
+                    ->where('conversation_status','delivered')
+                    ->count();
+                    
+            return $unread_count;
+           
+   
+        }
+    }
+    public function getFollowStatusAttribute()
+    {
+        if(app('request')->header('authorization') != null)
+        {
+
+            $user= JWTAuth::touser(app('request')->header('authorization'));
+        
+            $follow_status=Followers::where('user_id',$this->attributes['id'])
+                            ->where('follower_id',$user->id)
+                            ->where('status',1)->count();
+
+            if($follow_status > 0)
+            {
+                return true;
+            }
+                    
+            return false;;
+           
+   
+        }
     }
    
   

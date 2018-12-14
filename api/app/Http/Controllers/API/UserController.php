@@ -201,6 +201,15 @@ class UserController extends Controller
     {
         if(isset($request->search_value) && isset($request->type))
         {
+            if($request->type != "people" && $request->type != "post")
+            {
+                return response()->json([
+                  
+                    'message' => 'Enter a Valid type.',
+                    'success' => true,
+                    'status' => 400,
+                ],200);
+            }
             if($request->type == "people")
             {
                 $list_data=User::where('full_name','LIKE', "%$request->search_value%")->paginate(10);

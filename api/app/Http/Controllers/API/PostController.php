@@ -23,20 +23,18 @@ class PostController extends Controller
         $post=Post::with('users')->where('user_id','!=',$user->id)->where('post_status','all');
         
         $crew=Request_data::where(function ($query) use ($user){
-            $query->where('sender_id', '=', $user->id)
-            ->orWhere('receiver_id', '=', $user->id);
-            })->where('status',1)->get();
+                $query->where('sender_id', '=', $user->id)
+                ->orWhere('receiver_id', '=', $user->id);
+                })->where('status',1)->get();
         
             if(count($crew) > 0)
             {
                 $crew=crew_data($crew,$user->id);  
                 $post=$post->whereIn('user_id',$crew);
-
             }
 
-            $post=$post->where('status',1)->orderby('created_at','DESC')->paginate(10);
+        $post=$post->where('status',1)->orderby('created_at','DESC')->paginate(10);
        
-
         $post=make_null($post);
         $result['total']=get_api_data(isset($post['total']) ? $post['total'] : 0);
         $result['current_page']=get_api_data(isset($post['current_page']) ? $post['total'] : 0);

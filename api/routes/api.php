@@ -24,6 +24,7 @@ Route::group(['prefix' => 'users'], function () {
     Route::post('get_otp', 'API\LoginController@get_opt');
     Route::post('reset_password', 'API\LoginController@reset_password');
     Route::post('verify_email', 'API\LoginController@verify_email');
+    Route::post('social_login', 'API\LoginController@social_login');
     
 
     Route::group(['middleware' => 'jwt.verify'], function () {
@@ -60,5 +61,11 @@ Route::group(['prefix' => 'users'], function () {
             Route::post('mutual_list', 'API\RequestController@mutual_list');
         });   
 
+        Route::group(['prefix' => 'conversation'], function () {
+            Route::post('search', 'API\ConversationController@search');
+            Route::post('store', 'API\ConversationController@store');
+            Route::get('list', 'API\ConversationController@list');
+            Route::post('message_list', 'API\ConversationController@message_list');
+        });   
     });
 });
