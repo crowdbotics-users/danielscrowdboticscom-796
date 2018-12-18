@@ -3,13 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
-class Pictures extends Model
+class Conversation extends Model
 {
-
-    use SoftDeletes;
+    //
    
+    //
      /**
      * Indicates if the model should be timestamped.
      *
@@ -22,18 +23,21 @@ class Pictures extends Model
      *
      * @var string
      */
-    protected $table = 'pictures';
+    protected $table = 'conversation';
 
-    protected $fillable = ['user_id','image_url','status'];
-
+    protected $fillable = ['content','sender_id','receiver_id','image_url','conversation_status'];
+   
     public function getImageUrlAttribute()
     {
-        if($this->attributes['image_url'] && \File::exists(public_path()."/uploads/user/post_images/".$this->attributes['image_url'])){
-            $path = url("/")."/"."uploads/user/post_images/";
+        if($this->attributes['image_url'] && \File::exists(public_path()."/uploads/user/images/".$this->attributes['image_url']))
+        {
+            $path = url("/")."/"."uploads/user/images/";
             return ($this->attributes['image_url'])?$path.$this->attributes['image_url']:'';
-        }else{
+        }
+        else{
             return "";
         }	
         
     }
+   
 }

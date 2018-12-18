@@ -23,6 +23,9 @@ Route::group(['prefix' => 'users'], function () {
     Route::post('forgot_password', 'API\LoginController@forgot_password');
     Route::post('get_otp', 'API\LoginController@get_opt');
     Route::post('reset_password', 'API\LoginController@reset_password');
+    Route::post('verify_email', 'API\LoginController@verify_email');
+    Route::post('social_login', 'API\LoginController@social_login');
+    
 
     Route::group(['middleware' => 'jwt.verify'], function () {
         Route::get('logout', 'API\LoginController@logout');
@@ -30,9 +33,11 @@ Route::group(['prefix' => 'users'], function () {
         Route::post('updateprofile', 'API\LoginController@post_profile');
         Route::post('upload_cover_profile', 'API\UserController@cover_image');
         Route::post('add_follower', 'API\UserController@add_follower');
+        Route::post('follower_list', 'API\UserController@follower_list');
+        Route::post('search', 'API\UserController@search');
 
         Route::group(['prefix' => 'gallery'], function () {
-            Route::get('list', 'API\GalleryController@list_images');
+            Route::post('list', 'API\GalleryController@list_images');
             Route::post('upload-images', 'API\GalleryController@upload_images');
         });
 
@@ -44,6 +49,7 @@ Route::group(['prefix' => 'users'], function () {
             Route::post('add_comment__like', 'API\PostController@add_comment__like');
             Route::post('view_comment_all_message', 'API\PostController@view_comment_all_message');
             Route::post('view_reply_all_message', 'API\PostController@view_reply_all_message');
+            Route::post('my_post_list', 'API\PostController@my_post_list');
         });
 
         Route::group(['prefix' => 'requests'], function () {
@@ -51,8 +57,15 @@ Route::group(['prefix' => 'users'], function () {
             Route::post('request_action', 'API\RequestController@request_action');
             Route::get('send_request_list', 'API\RequestController@send_request_list');
             Route::get('received_request_list', 'API\RequestController@received_request_list');
-            Route::get('crew_list', 'API\RequestController@crew_list');
+            Route::post('crew_list', 'API\RequestController@crew_list');
+            Route::post('mutual_list', 'API\RequestController@mutual_list');
         });   
 
+        Route::group(['prefix' => 'conversation'], function () {
+            Route::post('search', 'API\ConversationController@search');
+            Route::post('store', 'API\ConversationController@store');
+            Route::get('list', 'API\ConversationController@list');
+            Route::post('message_list', 'API\ConversationController@message_list');
+        });   
     });
 });
