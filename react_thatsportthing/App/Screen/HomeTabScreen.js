@@ -38,9 +38,6 @@ import TryAgainComponent from "../Compoments/TryAgainComponent";
 import HomeBannerCompoment from "../Compoments/HomeBannerCompoment";
 import SearchListCompoment from "../Compoments/SearchListCompoment";
 import NestedScrollView from "react-native-nested-scroll-view";
-import MainTabScreen from "./Tabs/MainTabScreen";
-
-
 
 class HomeTabScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -122,10 +119,12 @@ class HomeTabScreen extends Component {
       filteredData: [],
       postData: [],
       originalPostData: [],
+      myPostData: [],
+      originalMyPostData: [],
     };
   }
 
-  getPostList() {
+  getPostList(showProgress) {
     NetInfo.isConnected.fetch().then(isConnected => {
       if (isConnected) {
         AsyncStorage.getItem("data")
@@ -141,9 +140,16 @@ class HomeTabScreen extends Component {
                   "Content-Type": "multipart/form-data"
                 }
               };
-
-              this.doGetUserInfoApi(postData);
-              this.getPostListApi(postData);
+              if(showProgress){
+                this.setState({isProgress:true,postData:[],myPostData:[]});
+                this.getPostListApi(postData,showProgress);  
+              }else{
+                this.setState({isProgress:false,postData:[],myPostData:[]});
+                this.getPostListApi(postData,showProgress);
+                this.doGetUserInfoApi(postData);
+              }
+              
+              
             } else {
             }
           })
@@ -195,7 +201,7 @@ class HomeTabScreen extends Component {
         console.log(error);
       });
   }
-  getPostListApi(bodyData) {
+  getPostListApi(bodyData,showProgress) {
     fetch(ApiUrl.getPosts, bodyData)
       .then(response => response.json())
       .then(responseJson => {
@@ -224,6 +230,76 @@ class HomeTabScreen extends Component {
             break;
           }
         }
+        if(showProgress){
+          this.setState({isProgress:false});
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+  getMyPostList(){
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if (isConnected) {
+        AsyncStorage.getItem("data")
+          .then(data => {
+            if (data != null) {
+              const myData = JSON.parse(data);
+
+              let postData = {
+                method: "POST",
+                headers: {
+                  Accept: "application/json",
+                  Authorization: "Bearer " + myData.token,
+                  "Content-Type": "multipart/form-data"
+                }
+              };
+
+              this.setState({isProgress:true});
+              this.getMyPostListApi(postData);
+            } else {
+            }
+          })
+          .done();
+      } else {
+        Alert.alert(
+          "Internet Connection",
+          "Kindly connect to internet then try again"
+        );
+      }
+    });
+  }
+  getMyPostListApi(bodyData) {
+    fetch(ApiUrl.getMyPostsList, bodyData)
+      .then(response => response.json())
+      .then(responseJson => {
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+
+        switch (status) {
+          case 200: {
+            const result = responseJson.result;
+
+            this.setState({
+              originalMyPostData: result.data,
+              myPostData: result.data,
+            });
+
+            break;
+          }
+          case 401: {
+            console.log(message);
+
+            break;
+          }
+          case 400: {
+            console.log(message);
+
+            break;
+          }
+        }
+        this.setState({isProgress:false});
       })
       .catch(error => {
         console.log(error);
@@ -241,7 +317,7 @@ class HomeTabScreen extends Component {
   }
   componentDidMount() {
     try {
-      this.getPostList();
+      this.getPostList(false);
     } catch (error) {
       console.log(error);
     }
@@ -321,6 +397,7 @@ class HomeTabScreen extends Component {
   }
   doChangeTab(tabName) {
     if (tabName == "stream") {
+      this.getPostList(true);
       this.setState({
         tabTitle: "Stream",
         columnCount: 1,
@@ -330,6 +407,7 @@ class HomeTabScreen extends Component {
       });
       this.refs.viewPager.setPage(0);
     } else if (tabName == "friendspost") {
+      this.getMyPostList();
       this.setState({
         tabTitle: "Friends's Post",
         columnCount: 1,
@@ -338,6 +416,7 @@ class HomeTabScreen extends Component {
         isSearchActive: false
       });
       this.refs.viewPager.setPage(1);
+     
     } else if (tabName == "search") {
       this.setState({
         tabTitle: "Search",
@@ -601,6 +680,7 @@ class HomeTabScreen extends Component {
               follower_count={this.state.follower_count}
               crew_count={this.state.crew_count}
             />
+            <ProgressCompoment isProgress={this.state.isProgress}/>
           </View>
           <View>
             <View
@@ -711,9 +791,7 @@ class HomeTabScreen extends Component {
                 </View>
               </TouchableOpacity>
             </View>
-           {/*  <View style={{flex:1}}>
-            <MainTabScreen/>
-            </View> */}
+          
 
          <View>
               <ViewPager
@@ -734,7 +812,7 @@ class HomeTabScreen extends Component {
                 <View>
                   <WritePostCompoment navigation={this.props.navigation} />
                   <PostListComponent
-                    posts={this.state.postData}
+                    posts={this.state.myPostData}
                     navigation={this.props.navigation}
                   />
                 </View>

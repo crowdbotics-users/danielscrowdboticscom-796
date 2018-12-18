@@ -1,4 +1,4 @@
-import { createStackNavigator,createAppContainer } from "react-navigation";
+import { createStackNavigator } from "react-navigation";
 import Colors from "./App/Resource/Colors";
 
 import LoginType from "./App/Screen/LoginTypeScreen";
@@ -153,4 +153,4 @@ const Main = createStackNavigator(
     }
   }
 );
-export default createAppContainer(Main);
+export default Main;
