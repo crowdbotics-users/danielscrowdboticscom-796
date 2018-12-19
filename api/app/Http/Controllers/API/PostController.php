@@ -19,48 +19,49 @@ class PostController extends Controller
     public function list(Request $request)
     {
         $user= JWTAuth::touser($request->header('authorization'));
-
+        
         $post=Post::with('users')->where('user_id','!=',$user->id)->where('post_status','all');
         
-        $crew=Request_data::where(function ($query) use ($user){
-                $query->where('sender_id', '=', $user->id)
-                ->orWhere('receiver_id', '=', $user->id);
-                })->where('status',1)->get();
+            $crew=Request_data::where(function ($query) use ($user){
+                    $query->where('sender_id', '=', $user->id)
+                    ->orWhere('receiver_id', '=', $user->id);
+                    })->where('status',1)->get();
+            
+                if(count($crew) > 0)
+                {
+                    $crew=crew_data($crew,$user->id);  
+                    $post=$post->whereIn('user_id',$crew);
+                }
+
+            $post=$post->where('status',1)->orderby('created_at','DESC')->paginate(10);
         
-            if(count($crew) > 0)
+            $post=make_null($post);
+
+            $result['total']=get_api_data(isset($post['total']) ? $post['total'] : 0);
+            $result['current_page']=get_api_data(isset($post['current_page']) ? $post['total'] : 0);
+            $result['prev_page_url']=get_api_data(isset($post['prev_page_url']) ? $post['prev_page_url'] : 0);
+            $result['next_page_url']=get_api_data(isset($post['next_page_url']) ? $post['next_page_url'] : 0);
+            $result['data']=$post['data'];
+
+            if($result['total'] > 0)
             {
-                $crew=crew_data($crew,$user->id);  
-                $post=$post->whereIn('user_id',$crew);
+                return response()->json([
+                    'result' => $result,
+                    'message' => 'Post Data.',
+                    'success' => true,
+                    'status' => 200,
+                ],200);
             }
-
-        $post=$post->where('status',1)->orderby('created_at','DESC')->paginate(10);
-       
-        $post=make_null($post);
-        $result['total']=get_api_data(isset($post['total']) ? $post['total'] : 0);
-        $result['current_page']=get_api_data(isset($post['current_page']) ? $post['total'] : 0);
-        $result['prev_page_url']=get_api_data(isset($post['prev_page_url']) ? $post['prev_page_url'] : 0);
-        $result['next_page_url']=get_api_data(isset($post['next_page_url']) ? $post['next_page_url'] : 0);
-        $result['data']=$post['data'];
-
-        if($result['total'] > 0)
-        {
-            return response()->json([
-                'result' => $result,
-                'message' => 'Post Data.',
-                'success' => true,
-                'status' => 200,
-            ],200);
-        }
-        else
-        {
-            return response()->json([
-                'result' => $result,
-                'message' => 'Data Empty.',
-                'success' => true,
-                'status' => 400,
-            ],200);
-        }
-       
+            else
+            {
+                return response()->json([
+                    'result' => $result,
+                    'message' => 'Data Empty.',
+                    'success' => true,
+                    'status' => 400,
+                ],200);
+            }
+        
     }
 
     public function store(Request $request)
@@ -203,6 +204,7 @@ class PostController extends Controller
     public function add_comment__like(Request $request)
     {
         $user= JWTAuth::touser($request->header('authorization'));
+        
         if(isset($request->post_id) && isset($request->comment_id))
         {
             $comment_likes_data=CommentsLikes::where('user_id',$user->id)->where('post_id',$request->post_id)
@@ -345,8 +347,17 @@ class PostController extends Controller
 
     public function my_post_list(Request $request)
     {
-        $user=JWTAuth::touser($request->header('authorization'));
-        $user_id=isset($request->user_id)?$request->user_id:$user->id;
+        $user = JWTAuth::touser($request->header('authorization'));
+        $user_id = isset($request->user_id)?$request->user_id:$user->id;
+        $user = User::find($user_id);
+        if($user == null)
+        {
+             return response()->json([
+                    'success' => false,
+                    'message' => 'User does not Exits.',
+                    'status'  => 400
+                ], 200);
+        } 
 
         $post=Post::with('users')->where('user_id',$user_id)->where('status',1)->orderby('created_at','DESC')->paginate(10);
 
