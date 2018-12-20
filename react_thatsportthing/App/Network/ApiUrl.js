@@ -2,6 +2,7 @@ let BASE_URL =
   "http://13.127.235.254/dev/laravel/thatsport/thatsportsthing-app/api/public/api/";
 const ApiUrl = {
   loginUrl: BASE_URL + "users/login",
+  socialLoginUrl: BASE_URL + "users/social_login",
   logoutUrl: BASE_URL + "users/logout",
   registerUrl: BASE_URL + "users/register",
   verifyEmailUrl: BASE_URL + "users/verify_email",
