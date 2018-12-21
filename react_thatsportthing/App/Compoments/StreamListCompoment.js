@@ -110,7 +110,7 @@ class StreamListComponent extends Component {
   }
   renderStream(data, index) {
     return (
-      <SafeAreaView>
+     
         <View
           style={[
             styles.column,
@@ -258,7 +258,7 @@ class StreamListComponent extends Component {
             </TouchableOpacity>
           </View>
         </View>
-      </SafeAreaView>
+     
     );
   }
 
@@ -280,20 +280,22 @@ class StreamListComponent extends Component {
   }
   render() {
     return (
-      <View>
+      <SafeAreaView>
+      <View >
         <FlatList
           extraData={this.state.updatedData}
-          showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={true}
           alwaysBounceVertical={false}
           bounces={false}
           numColumns={1}
-          style={{ marginTop: 5 }}
+          style={{ marginTop: 5,marginBottom:120}}
           data={this.props.streams}
           renderItem={({ item, index }) => this.renderStream(item, index)}
           keyExtractor={(item, index) => index.toString()}
           ListEmptyComponent={this.renderEmpty()}
         />
       </View>
+      </SafeAreaView>
     );
   }
 }

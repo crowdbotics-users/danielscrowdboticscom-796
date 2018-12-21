@@ -19,8 +19,15 @@ class RequestController extends Controller
 
         if(isset($request->receiver_id))
         {
-            $receiver=User::find($request->receiver_id);
-
+            $receiver = User::find($request->receiver_id);
+            if($receiver == null)
+            {
+                return response()->json([
+                        'success' => false,
+                        'message' => 'Receiver does not Exits.',
+                        'status'  => 400
+                    ], 200);
+            } 
             if($sender->id == $receiver->id)
             {
                 return response()->json([
@@ -96,6 +103,14 @@ class RequestController extends Controller
         if(isset($request->status) && isset($request->sender_id))
         {
             $sender = User::find($request->sender_id);
+            if($sender == null)
+            {
+                return response()->json([
+                        'success' => false,
+                        'message' => 'Sender does not Exits.',
+                        'status'  => 400
+                    ], 200);
+            } 
             $request_data=Request_data::where('sender_id',$receiver->id)->where('receiver_id',$sender->id)->first();
             $request_data->status=$request->status;
             $request_data->save();
@@ -226,7 +241,15 @@ class RequestController extends Controller
     {
         $user=JWTAuth::touser($request->header('authorization'));
         $user_id=isset($request->user_id)?$request->user_id:$user->id;
-     
+        $user = User::find($user_id);
+        if($user == null)
+        {
+             return response()->json([
+                    'success' => false,
+                    'message' => 'User does not Exits.',
+                    'status'  => 400
+                ], 200);
+        } 
 
         $crew=Request_data::where(function ($query) use ($user_id){
               $query->where('sender_id', '=', $user_id)
@@ -283,7 +306,7 @@ class RequestController extends Controller
         if(isset($request->user_id))
         {
             $profile_user=User::find($request->user_id);
-         
+            
             if($profile_user == null)
             {
                 return response()->json([

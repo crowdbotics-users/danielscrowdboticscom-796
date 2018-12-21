@@ -24,6 +24,7 @@ const MyCrewScreenNavigator = createStackNavigator({
 const HomePage = createDrawerNavigator(
   {
     HomeTabScreen: { screen: HomePageNavigator },
+  
     MyCrewScreen: {
       screen: MyCrewScreenNavigator,
       navigationOptions: {

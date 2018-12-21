@@ -510,7 +510,7 @@ class MyCrewScreen extends Component {
                     Confirm Request
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={()=>this.doRequestAction(2)} >
+                {/* <TouchableOpacity onPress={()=>this.doRequestAction(2)} >
                   <Text
                     style={{
                       color: Colors.black,
@@ -520,7 +520,7 @@ class MyCrewScreen extends Component {
                   >
                     Cancel Request
                   </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 </View>
                 <View
                   style={{

@@ -166,6 +166,15 @@ class UserController extends Controller
         $user=JWTAuth::touser($request->header('authorization'));
 
         $user_id=isset($request->user_id)?$request->user_id:$user->id;
+        $user = User::find($user_id);
+        if($user == null)
+        {
+             return response()->json([
+                    'success' => false,
+                    'message' => 'User does not Exits.',
+                    'status'  => 400
+                ], 200);
+        } 
        
         $follower_data=Followers::with('users')->where('user_id',$user_id)->where('status',1)->paginate(10);
 
@@ -203,8 +212,7 @@ class UserController extends Controller
         {
             if($request->type != "people" && $request->type != "post")
             {
-                return response()->json([
-                  
+                return response()->json([                  
                     'message' => 'Enter a Valid type.',
                     'success' => true,
                     'status' => 400,

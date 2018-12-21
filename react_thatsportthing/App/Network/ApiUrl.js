@@ -4,6 +4,7 @@ const ApiUrl = {
   loginUrl: BASE_URL + "users/login",
   logoutUrl: BASE_URL + "users/logout",
   registerUrl: BASE_URL + "users/register",
+  verifyEmailUrl: BASE_URL + "users/verify_email",
   forgotPasswordUrl: BASE_URL + "users/forgot_password",
   otpCheckUrl: BASE_URL + "users/get_otp",
   updatePasswordUrl: BASE_URL + "users/reset_password",
@@ -19,9 +20,10 @@ const ApiUrl = {
   sendRequest: BASE_URL + "users/requests/send_request",
   requestAction: BASE_URL + "users/requests/request_action",
   getPosts: BASE_URL + "users/posts/list",
+  getMyPostsList: BASE_URL + "users/posts/my_post_list",
   getCrewList: BASE_URL + "users/requests/crew_list",
   getSendRequestList: BASE_URL + "users/requests/send_request_list",
   getReceivedRequestList: BASE_URL + "users/requests/received_request_list",
+  getFollowerList: BASE_URL + "users/follower_list",
 };
-
 export default ApiUrl;

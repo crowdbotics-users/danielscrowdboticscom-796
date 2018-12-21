@@ -8,13 +8,21 @@ import {
   Image,
   TextInput,
   SafeAreaView,
-  FlatList
+  FlatList,
+  AsyncStorage,
+  NetInfo,
+  Alert
 } from "react-native";
 import Colors from "../Resource/Colors";
 import FollowerHeaderCompoment from "../Compoments/FollowerHeaderCompoment";
 import crewtabstyles from "../Resource/crewtabstyles";
 import Icons from "../Resource/Icons";
 import styles from "../Resource/Styles";
+import { showSnackBar } from "@prince8verma/react-native-snackbar";
+import ApiUrl from "../Network/ApiUrl";
+import ProgressCompoment from "../Compoments/ProgressCompoment";
+import Moment from "moment";
+
 class MyFollowersScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
@@ -25,151 +33,15 @@ class MyFollowersScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isProgress: false,
       isAllFriends: true,
       isMutualFriends: false,
       isFollowersActive: false,
-      dataSource1: [
-        {
-          name: "Mason SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Jacob SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 2,
-          followstatus: 1
-        },
-        {
-          name: "William SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Ethan SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "James SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1
-        },
-        {
-          name: "Alexander SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Michael SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Benjamin SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Elijah SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        },
-        {
-          name: "Daniel SCHUFFER",
-          username: "@schufferj",
-          location: "New york City,Newyork",
-          description:
-            "As Messi maintained his goalscoring form into the second half of the season, the year 2012 saw him break several longstanding records. On 7 March, two weeks after scoring four goals in a league fixture against Valencia, he scored five times in a Champions League last 16-round match against Bayer Leverkusen, an unprecedented achievement in the history of the competition.",
-          time: "1:32 PM ",
-          likes: "123",
-          commnets: "12",
-          image: Icons.messi,
-          playerImage: Icons.ic_player,
-          friendstatus: 1,
-          followstatus: 1
-        }
-      ]
+      data: []
     };
+  }
+  componentDidMount() {
+    this.doGetFriendList();
   }
   renderSeparator = () => {
     return (
@@ -177,8 +49,7 @@ class MyFollowersScreen extends Component {
         style={{
           height: 1,
           width: "100%",
-          backgroundColor: Colors.colorLine,
-          
+          backgroundColor: Colors.colorLine
         }}
       />
     );
@@ -213,7 +84,11 @@ class MyFollowersScreen extends Component {
                 }}
               >
                 <Image
-                  source={data.image}
+                  source={
+                    data.users.profile_image == ""
+                      ? Icons.messi
+                      : { uri: data.users.profile_image }
+                  }
                   style={{
                     width: 68,
                     height: 68,
@@ -225,29 +100,34 @@ class MyFollowersScreen extends Component {
                 />
               </View>
             </View>
-            <View style={{ flex: 3,marginTop:10 }}>
+            <View style={{ flex: 3, marginTop: 10 }}>
               <View style={styles.row}>
-              <Text
-                style={{
-                  flex:1,
-                  color: Colors.black,
-                  fontFamily: "OpenSans-SemiBold",
-                  fontSize: 13
-                }}
-              >
-                {data.name}
-              </Text>
-              <Image source={Icons.ic_follow_cancel} style={[styles.icon,{marginEnd:10,width:20,height:20}]}/>
+                <Text
+                  style={{
+                    flex: 1,
+                    color: Colors.black,
+                    fontFamily: "OpenSans-SemiBold",
+                    fontSize: 13
+                  }}
+                >
+                  {data.users.full_name}
+                </Text>
+                <Image
+                  source={Icons.ic_follow_cancel}
+                  style={[
+                    styles.icon,
+                    { marginEnd: 10, width: 20, height: 20 }
+                  ]}
+                />
               </View>
               <Text
                 style={{
-
                   color: "#6C6C6C",
                   fontFamily: "OpenSans-SemiBold",
                   fontSize: 12
                 }}
               >
-                {data.location}
+                {Moment(data.created_at).format("DD/MM/YYYY hh:mm A")}
               </Text>
               <Text
                 style={{
@@ -256,7 +136,7 @@ class MyFollowersScreen extends Component {
                   fontSize: 12
                 }}
               >
-                {data.username}
+                {data.users.user_name}
               </Text>
               <View
                 style={[
@@ -319,11 +199,7 @@ class MyFollowersScreen extends Component {
                       marginEnd: 8
                     }}
                   >
-                    {data.followstatus == 1
-                      ? "Follow"
-                      : data.followstatus == 2
-                      ? "UnFollow"
-                      : "Follow"}
+                    {data.users.follow_status ? "UnFollow" : "Follow"}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -336,28 +212,131 @@ class MyFollowersScreen extends Component {
   doFriendsChangeTab(tabName) {
     if (tabName == "allfriends") {
       this.setState({
+        data: [],
         isAllFriends: true,
         isMutualFriends: false,
         isFollowersActive: false
       });
     } else if (tabName == "mutualfriends") {
       this.setState({
+        data: [],
         isAllFriends: false,
         isMutualFriends: true,
         isFollowersActive: false
       });
     } else if (tabName == "followers") {
       this.setState({
+        data: [],
         isAllFriends: false,
         isMutualFriends: false,
         isFollowersActive: true
       });
     }
   }
+  doGetFriendList() {
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if (isConnected) {
+        AsyncStorage.getItem("data")
+          .then(data => {
+            if (data != null) {
+              const myData = JSON.parse(data);
+
+              const bodyData = JSON.stringify({
+                post_id: 1,
+                page: 1
+              });
+              this.setState({ data: [] });
+              this.openProgressbar();
+              this.doGetFriendListApi(bodyData, myData.token);
+            } else {
+            }
+          })
+          .done();
+      } else {
+        Alert.alert(
+          "Internet Connection",
+          "Kindly connect to internet then try again"
+        );
+      }
+    });
+  }
+  doGetFriendListApi(bodyData, token) {
+    const { page, seed } = this.state;
+    fetch(ApiUrl.getFollowerList, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json"
+      }
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        const message = responseJson.message;
+        const status = responseJson.status;
+        console.log(responseJson);
+
+        switch (status) {
+          case 200: {
+            const result = responseJson.result;
+
+            this.setState({
+              data:
+                page === 1 ? result.data : [...this.state.data, ...result.data],
+
+              loading: false,
+              refreshing: false,
+              total: result.total
+            });
+
+            break;
+          }
+          case 401: {
+            console.log(message);
+            this.doShowSnackBar(message);
+            this.setState({ loading: false, refreshing: false, data: [] });
+            break;
+          }
+          case 400: {
+            console.log(message);
+            this.doShowSnackBar(message);
+            this.setState({ loading: false, refreshing: false, data: [] });
+            break;
+          }
+          default: {
+            this.setState({ loading: false, refreshing: false, data: [] });
+            this.doShowSnackBar(message);
+            break;
+          }
+        }
+        this.hideProgressbar();
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+        alert(error);
+      });
+  }
+  openProgressbar = () => {
+    this.setState({ isProgress: true });
+  };
+  hideProgressbar = () => {
+    this.setState({ isProgress: false });
+  };
+  doShowSnackBar(message) {
+    showSnackBar({
+      message: message,
+      position: "top",
+      backgroundColor: Colors.bgHeader,
+      buttonColor: "#fff",
+      confirmText: "",
+      onConfirm: () => {},
+      duration: 1000
+    });
+  }
   render() {
     return (
       <View style={customstyles.container}>
-        
         <View style={{ backgroundColor: Colors.navBg }}>
           <View
             style={{
@@ -392,16 +371,17 @@ class MyFollowersScreen extends Component {
             />
           </View>
         </View>
+        <ProgressCompoment isProgress={this.state.isProgress} />
         <FlatList
           showsVerticalScrollIndicator={false}
           alwaysBounceVertical={false}
           bounces={false}
           numColumns={1}
           style={{ marginTop: 8 }}
-          data={this.state.dataSource1}
+          data={this.state.data}
           renderItem={({ item, index }) => this.renderFriends(item)}
           ItemSeparatorComponent={this.renderSeparator}
-          keyExtractor={item => item}
+          keyExtractor={(item, index) => index.toString()}
           nestedScrollEnabled={false}
         />
       </View>

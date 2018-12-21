@@ -230,7 +230,7 @@ class ReplyCommentListScreen extends PureComponent {
       .catch(error => {
         this.hideProgressbar();
         console.log(error);
-        alert(error);
+       
       });
   }
   renderFooter = () => {
