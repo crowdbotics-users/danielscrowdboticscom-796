@@ -52,7 +52,7 @@ class LoginController extends Controller
         $user->DOB=$request->dob;
         $user->device_type=$request->device_type;
         $user->fire_base_token=$request->fire_base_token;
-       
+        $user->profile_image ="data";
         $user->role_id=1;
         $user->status=1;
         $user->save();
