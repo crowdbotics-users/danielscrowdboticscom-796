@@ -191,6 +191,8 @@ class LoginController extends Controller
 
     public function social_login(Request $request)
     {
+        if(isset($request->login_id) && isset($request->login_type))
+        {
             $user = User::where('app_id',$request->login_id)->where('app_type',$request->login_type)->first();
 
             if($user){
@@ -243,14 +245,15 @@ class LoginController extends Controller
                     $user->fire_base_token=$request->fire_base_token; 
                     $user->role_id=1;
                     $user->status=1;
+                    $user->profile_image ="data";
                     $user->save();
-                
+              
                     $user=User::find($user->id);
                   
-                        $image=$request->profile_image;
-                        $imageName = str_replace(' ', '_', $request->full_name).'_'.uniqid(time()) . '.' . $image->getClientOriginalExtension();
-                        uploadImage($image,'uploads/user/'.$user->id.'/thumbnail',$imageName,'150','150');
-                        $image_path = uploadImage($image,'uploads/user/'.$user->id.'/',$imageName,'400','400');
+                    $image=$request->profile_image;
+                    $imageName = str_replace(' ', '_', $request->full_name).'_'.uniqid(time()) . '.' . $image->getClientOriginalExtension();
+                    uploadImage($image,'uploads/user/'.$user->id.'/thumbnail',$imageName,'150','150');
+                    $image_path = uploadImage($image,'uploads/user/'.$user->id.'/',$imageName,'400','400');
                     $user->profile_image = $image_path;
                     $user->save();
 
@@ -268,6 +271,15 @@ class LoginController extends Controller
 
                 }
             }
+        }
+        else
+      	{
+           return response()->json([
+               'success' => false,
+               'message' => 'Invalid Parameter.',
+               'status'  => 400
+           ], 200);
+        }
     }
 
     public function logout(Request $request)
