@@ -122,6 +122,15 @@ class PostController extends Controller
         $user= JWTAuth::touser($request->header('authorization'));
         if(isset($request->post_id))
         {
+            $post=Post::find($request->post_id);
+            if($post == null)
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Post Id not found.',
+                    'status'  => 400
+                ], 200);
+            }
             $likes_data=CommentsLikes::where('user_id',$user->id)->where('post_id',$request->post_id)->first();
             if($likes_data != null)
             {
@@ -170,7 +179,17 @@ class PostController extends Controller
         $user= JWTAuth::touser($request->header('authorization'));
         if(isset($request->post_id) && isset($request->comment_id) && isset($request->type) && isset($request->messages))
         {
-              
+            
+            $post=Post::find($request->post_id);
+            if($post == null)
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Post Id not found.',
+                    'status'  => 400
+                ], 200);
+            }
+
             $comment=new CommentsLikes();
             $comment->type=$request->type;
             $comment->user_id=$user->id;
@@ -207,6 +226,16 @@ class PostController extends Controller
         
         if(isset($request->post_id) && isset($request->comment_id))
         {
+            $post=Post::find($request->post_id);
+            if($post == null)
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Post Id not found.',
+                    'status'  => 400
+                ], 200);
+            }
+            
             $comment_likes_data=CommentsLikes::where('user_id',$user->id)->where('post_id',$request->post_id)
                         ->where('parent_id',$request->comment_id)->first();
 

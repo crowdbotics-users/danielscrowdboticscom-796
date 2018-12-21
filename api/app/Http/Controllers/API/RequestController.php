@@ -174,8 +174,10 @@ class RequestController extends Controller
     {
         $user=JWTAuth::touser($request->header('authorization'));
 
-        $request_data=User::leftjoin('request','users.id','request.sender_id')->where('request.receiver_id',$user->id)
-                       ->where('request.status',0)->paginate(10);
+        $request_data=User::leftjoin('request','users.id','request.receiver_id')->where('request.sender_id',$user->id)
+        ->select('users.*')
+        ->paginate(10);
+        
 
         $request_data=make_null($request_data);
         $result['total']=get_api_data(isset($request_data['total']) ? $request_data['total'] : 0);
@@ -208,8 +210,8 @@ class RequestController extends Controller
     {
         $user=JWTAuth::touser($request->header('authorization'));
 
-        $request_data=User::leftjoin('request','users.id','request.receiver_id')->where('request.sender_id',$user->id)
-                       ->paginate(10);
+        $request_data=User::leftjoin('request','users.id','request.sender_id')->where('request.receiver_id',$user->id)
+                        ->where('request.status',0)->select('users.*')->paginate(10);
 
         $request_data=make_null($request_data);
         $result['total']=get_api_data(isset($request_data['total']) ? $request_data['total'] : 0);
