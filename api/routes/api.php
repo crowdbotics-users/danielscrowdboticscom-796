@@ -36,6 +36,11 @@ Route::group(['prefix' => 'users'], function () {
         Route::post('follower_list', 'API\UserController@follower_list');
         Route::post('search', 'API\UserController@search');
 
+        Route::group(['prefix' => 'notification'], function () {
+            Route::post('get_list', 'API\NotificationController@get_list');
+            Route::post('update_notification', 'API\NotificationController@update_notification');
+        });
+
         Route::group(['prefix' => 'gallery'], function () {
             Route::post('list', 'API\GalleryController@list_images');
             Route::post('upload-images', 'API\GalleryController@upload_images');

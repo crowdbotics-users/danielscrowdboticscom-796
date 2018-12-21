@@ -26,6 +26,7 @@ class LoginController extends Controller
             'profile_image' => 'required',
             'device_type' => 'required',
             'fire_base_token' => 'required',
+            'gender'=> 'required|in:male,female' 
            
         );
        
@@ -52,12 +53,14 @@ class LoginController extends Controller
         $user->DOB=$request->dob;
         $user->device_type=$request->device_type;
         $user->fire_base_token=$request->fire_base_token;
+        $user->gender =$request->gender;
         $user->profile_image ="data";
         $user->role_id=1;
         $user->status=1;
         $user->save();
-        $user=User::find($user->id);
 
+        $user=User::find($user->id);
+        
         $image=$request->profile_image;
         $imageName = str_replace(' ', '_', $request->full_name).'_'.uniqid(time()) . '.' . $image->getClientOriginalExtension();
 
@@ -215,7 +218,8 @@ class LoginController extends Controller
                     'dob' => 'required|date_format:Y-m-d',
                     'profile_image' => 'required',
                     'device_type' => 'required',
-                    'fire_base_token' => 'required'
+                    'fire_base_token' => 'required',
+                    'gender'=> 'required|in:male,female' 
                 );
 
                 $validator = \Validator::make($request->all(), $rules, []);
@@ -241,6 +245,7 @@ class LoginController extends Controller
                     $user->email = "";
                     $user->password = "";
                     $user->DOB=$request->dob;
+                    $user->gender =$request->gender;
                     $user->device_type=$request->device_type;
                     $user->fire_base_token=$request->fire_base_token; 
                     $user->role_id=1;
@@ -479,7 +484,7 @@ class LoginController extends Controller
     }
     public function post_profile(Request $request)
     {
-        if(isset($request->name) && isset($request->post_status))
+        if(isset($request->name) && isset($request->post_status) && isset($request->gender))
         {
         
             $user= JWTAuth::touser($request->header('authorization'));
@@ -530,6 +535,7 @@ class LoginController extends Controller
                         $user_update->cover_image = $request->cover_image;
                    }
 
+                    $user_update->gender=$request->gender;
                     $user_update->post_status=$request->post_status;
                     $user_update->update_name_date=Carbon::now()->format('Y-m-d');
                     $user_update->save();

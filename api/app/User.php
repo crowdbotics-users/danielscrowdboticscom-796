@@ -12,6 +12,7 @@ use App\Request_data;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Conversation;
+use App\Notification;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -35,7 +36,8 @@ class User extends Authenticatable implements JWTSubject
         'password', 'remember_token',
     ];
 
-    protected $appends = ['follower_count','crew_count','post_count','friend_status','conversation_count','follow_status'];
+    protected $appends = ['follower_count','crew_count','post_count','friend_status','conversation_count',
+    'follow_status','notification_count'];
 
     public function getJWTIdentifier()
     {
@@ -95,6 +97,13 @@ class User extends Authenticatable implements JWTSubject
     {
         $follower_count=Followers::where('user_id',$this->attributes['id'])->count();
         return $follower_count;
+    }
+
+    public function getNotificationCountAttribute()
+    {
+        $notification_count=Notification::where('receiver_id',$this->attributes['id'])
+                        ->where('read_at',0)->count();
+        return $notification_count;
     }
 
     public function getFriendStatusAttribute()

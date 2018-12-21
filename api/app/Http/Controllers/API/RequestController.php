@@ -9,6 +9,7 @@ use App\Request_data;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Carbon\Carbon;
+use App\Notification;
 
 class RequestController extends Controller
 {
@@ -69,6 +70,13 @@ class RequestController extends Controller
             );
 
             $result=send_notification($receiver->fire_base_token,[],$receiver->device_type,$message);
+
+            $notification = new Notification();
+            $notification->sender_id = $sender->id;
+            $notification->receiver_id = $request->receiver_id;
+            $notification->message = 'Request send to '.$receiver->full_name;
+            $notification->type	 = "Send Request";
+            $notification->save(); 
             
             $data['title'] = 'Request send from '.$sender->full_name;
             $data['message'] = 'Request send to '.$receiver->full_name;
@@ -131,7 +139,14 @@ class RequestController extends Controller
                 $message['notification'] = array("body" => $msg,"title" => $title );
     
                 $result=send_notification($sender->fire_base_token,[],$sender->device_type,$message);
-                
+               
+                $notification = new Notification();
+                $notification->sender_id = $sender->id;
+                $notification->receiver_id = $receiver->id;
+                $notification->message = $msg;
+                $notification->type	 = "Request Accept";
+                $notification->save(); 
+
                 $data['title'] = $title;
                 $data['message'] =  $msg;
                 $data['sender'] = make_null($sender);

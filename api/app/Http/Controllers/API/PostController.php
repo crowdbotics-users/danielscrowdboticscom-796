@@ -12,6 +12,7 @@ use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Carbon\Carbon;
 use App\Request_data;
+use App\Notification;
 
 class PostController extends Controller
 {
