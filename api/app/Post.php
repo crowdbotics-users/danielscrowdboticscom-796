@@ -42,7 +42,11 @@ class Post extends Model
      }
      public function getCommentCountAttribute()
      {
-         $comment_count=CommentsLikes::where('type','reply')->orwhere('type','comment')->where('post_id',$this->attributes['id'])->count();
+         //return $this->attributes['id'];
+         $comment_count=CommentsLikes::where(function ($query) {
+            $query->where('type', '=', 'comment')
+            ->orWhere('type', '=', 'reply');
+        })->where('post_id',$this->attributes['id'])->count();
          return $comment_count;
      }
     
