@@ -28,6 +28,8 @@ class AddPostScreen extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      full_name:'',
+      profile_image:'',
       messages: "",
       isProgress: false,
       postImage: "",
@@ -67,6 +69,26 @@ class AddPostScreen extends PureComponent {
       })
       .catch(e => alert(e));
   }
+  doGetUserInfo() {
+    AsyncStorage.getItem("data")
+      .then(data => {
+        if (data != null) {
+          const myData = JSON.parse(data);
+          this.setState({
+            full_name: myData.full_name,
+            profile_image: myData.profile_image,
+            cover_image: myData.cover_image,
+            post_status: myData.post_status,
+            follower_count: myData.follower_count,
+            crew_count: myData.crew_count,
+            post_count: myData.post_count,
+            user_name: myData.user_name
+          });
+        } else {
+        }
+      })
+      .done();
+  }
   doAddPost() {
     if (this.state.messages == "") {
       this.refs.messages.focus();
@@ -89,6 +111,8 @@ class AddPostScreen extends PureComponent {
                 }
 
                 bodyData.append("description", this.state.messages);
+                bodyData.append("post_status", this.state.privacy);
+console.log(bodyData);
 
                 this.openProgressbar();
                 this.doAddPostApi(bodyData, myData.token);
@@ -158,6 +182,9 @@ class AddPostScreen extends PureComponent {
       duration: 1000
     });
   }
+  componentDidMount(){
+    this.doGetUserInfo();
+  }
   openProgressbar = () => {
     this.setState({ isProgress: true });
   };
@@ -198,7 +225,7 @@ class AddPostScreen extends PureComponent {
                   }}
                 >
                   <Image
-                    source={Icons.messi}
+                    source={this.state.profile_image==""?Icons.messi:{uri:this.state.profile_image}}
                     style={{
                       width: 44,
                       height: 44,
@@ -218,7 +245,7 @@ class AddPostScreen extends PureComponent {
                     fontFamily: "OpenSans-Bold"
                   }}
                 >
-                  JOHN SCHOFFER
+                  {this.state.full_name}
                 </Text>
                 <View
                   style={{

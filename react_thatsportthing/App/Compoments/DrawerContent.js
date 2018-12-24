@@ -10,7 +10,9 @@ import {
   TextInput,
   Platform,
   NetInfo,
-  Alert, SafeAreaView, ScrollView
+  Alert,
+  SafeAreaView,
+  ScrollView
 } from "react-native";
 import { NavigationActions, StackActions } from "react-navigation";
 
@@ -23,6 +25,13 @@ import Icons from "../Resource/Icons";
 import ApiUrl from "../Network/ApiUrl";
 import ProgressCompoment from "./ProgressCompoment";
 import { showSnackBar } from "@prince8verma/react-native-snackbar";
+import {
+  AccessToken,
+  LoginManager,
+  GraphRequest,
+  GraphRequestManager
+} from "react-native-fbsdk";
+import { GoogleSignin, GoogleSigninButton, statusCodes,User } from 'react-native-google-signin';
 
 class DrawerContent extends Component {
   constructor(props) {
@@ -47,7 +56,6 @@ class DrawerContent extends Component {
   componentDidMount() {
     if (this.props.activeDrawer == "home") {
       this.doHome();
-
     }
     this.doGetUserInfo();
   }
@@ -67,7 +75,6 @@ class DrawerContent extends Component {
             user_name: myData.user_name
           });
         } else {
-
         }
       })
       .done();
@@ -79,6 +86,15 @@ class DrawerContent extends Component {
     this.props.navigation.dispatch(navigate);
     this.closeDrawer();
   };
+  signOut = async () => {
+    try {
+      await GoogleSignin.revokeAccess();
+      await GoogleSignin.signOut();
+      this.setState({ user: null }); // Remember to remove the user from your app's state as well
+    } catch (error) {
+      console.error(error);
+    }
+  };
   doLogout(screen) {
     NetInfo.isConnected.fetch().then(isConnected => {
       if (isConnected) {
@@ -86,7 +102,13 @@ class DrawerContent extends Component {
           .then(data => {
             if (data != null) {
               const myData = JSON.parse(data);
-
+              if (myData.login_type == "facebook") {
+                console.log("facebook");
+                LoginManager.logOut();
+              } else if (myData.login_type == "google") {
+                console.log("google");
+                this.signOut();
+              }
               let postData = {
                 method: "GET",
                 headers: {
@@ -114,11 +136,11 @@ class DrawerContent extends Component {
   doShowSnackBar(message) {
     showSnackBar({
       message: message,
-      position: 'top',
+      position: "top",
       backgroundColor: Color.bgHeader,
       buttonColor: "#fff",
-      confirmText: '',
-      onConfirm: () => { },
+      confirmText: "",
+      onConfirm: () => {},
       duration: 1000
     });
   }
@@ -133,19 +155,17 @@ class DrawerContent extends Component {
     fetch(ApiUrl.logoutUrl, bodyData)
       .then(response => response.json())
       .then(responseJson => {
-
         const message = responseJson.message;
         const status = responseJson.status;
 
         switch (status) {
           case 200: {
-
             AsyncStorage.clear();
             AsyncStorage.setItem("logged", "false");
-            
+
             this.hideProgressbar();
             this.doFinish(screen);
-           
+
             break;
           }
           case 401: {
@@ -161,14 +181,12 @@ class DrawerContent extends Component {
             break;
           }
         }
-
       })
       .catch(error => {
-
         console.log(error);
       });
   }
-  doFinish(screen){
+  doFinish(screen) {
     const { navigate, dispatch } = this.props.navigation;
     const resetAction = StackActions.reset({
       index: 0,
@@ -206,7 +224,7 @@ class DrawerContent extends Component {
       isActiveAccountSettings: false,
       isActiveLogout: false
     });
-   
+
     this.closeDrawer();
   };
   doPosts = () => {
@@ -279,21 +297,18 @@ class DrawerContent extends Component {
     this.props.navigation.closeDrawer();
   };
   doRedirect(screen) {
-
     this.props.navigation.navigate(screen);
   }
   render() {
     return (
       <ScrollView>
-        <SafeAreaView >
+        <SafeAreaView>
           <View
             style={[
               styles.container,
               {
                 backgroundColor: Color.navBg,
-                justifyContent: "flex-start",
-
-                
+                justifyContent: "flex-start"
               }
             ]}
           >
@@ -341,7 +356,11 @@ class DrawerContent extends Component {
                   }}
                 >
                   <Image
-                    source={this.state.profile_image == "" ? Icons.messi : { uri: this.state.profile_image }}
+                    source={
+                      this.state.profile_image == ""
+                        ? Icons.messi
+                        : { uri: this.state.profile_image }
+                    }
                     style={{
                       width: 80,
                       height: 80,
@@ -370,7 +389,12 @@ class DrawerContent extends Component {
               >
                 <Image
                   source={Icons.ic_search}
-                  style={{ width: 24, height: 24, marginRight: 5, marginLeft: 10 }}
+                  style={{
+                    width: 24,
+                    height: 24,
+                    marginRight: 5,
+                    marginLeft: 10
+                  }}
                 />
                 <TextInput
                   returnKeyType="done"
@@ -389,7 +413,11 @@ class DrawerContent extends Component {
               </View>
             </View>
             <View
-              style={{ height: 2, width: "100%", backgroundColor: Color.bgHeader }}
+              style={{
+                height: 2,
+                width: "100%",
+                backgroundColor: Color.bgHeader
+              }}
             />
             <View>
               <View style={{ backgroundColor: Color.navBg }}>
@@ -425,7 +453,7 @@ class DrawerContent extends Component {
                       }}
                     >
                       Home
-                </Text>
+                    </Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -460,7 +488,7 @@ class DrawerContent extends Component {
                       }}
                     >
                       My Profile
-                </Text>
+                    </Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -495,7 +523,7 @@ class DrawerContent extends Component {
                       }}
                     >
                       My Posts
-                </Text>
+                    </Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -531,7 +559,7 @@ class DrawerContent extends Component {
                       }}
                     >
                       Photos
-                </Text>
+                    </Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -567,7 +595,7 @@ class DrawerContent extends Component {
                       }}
                     >
                       Videos
-                </Text>
+                    </Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -603,7 +631,7 @@ class DrawerContent extends Component {
                       }}
                     >
                       Crew
-                </Text>
+                    </Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -640,7 +668,7 @@ class DrawerContent extends Component {
                       }}
                     >
                       Account Setting
-                </Text>
+                    </Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -676,7 +704,7 @@ class DrawerContent extends Component {
                       }}
                     >
                       Logout
-                </Text>
+                    </Text>
                   </View>
                 </TouchableOpacity>
               </View>

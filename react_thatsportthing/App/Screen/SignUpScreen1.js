@@ -248,6 +248,7 @@ this.setState({isProgress:true});
                   placeholderTextColor={Colors.colorEdittext}
                   underlineColorAndroid={Colors.transparent}
                   onBlur={e => this.doVerifyEmail(e)}
+                  autoCapitalize = 'none'
                   returnKeyType="done"
                 />
                 <ActivityIndicator color={Colors.bgHeader} style={{display:this.state.isProgress?'flex':'none'}}/>

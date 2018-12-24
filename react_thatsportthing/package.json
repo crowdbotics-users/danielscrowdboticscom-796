@@ -18,6 +18,7 @@
     "react-native-fbsdk": "^0.8.0",
     "react-native-firebase": "^5.1.1",
     "react-native-gesture-handler": "^1.0.10",
+    "react-native-google-signin": "^1.0.2",
     "react-native-gridview": "^0.1.2",
     "react-native-image-crop-picker": "^0.21.2",
     "react-native-indicators": "^0.13.0",

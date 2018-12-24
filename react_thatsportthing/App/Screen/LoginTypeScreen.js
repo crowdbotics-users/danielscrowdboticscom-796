@@ -19,7 +19,7 @@ import firebase from "react-native-firebase";
 import { BallIndicator } from "react-native-indicators";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import { NavigationActions, StackActions } from "react-navigation";
-import type { Notification, NotificationOpen } from "react-native-firebase";
+import { Notification, NotificationOpen } from "react-native-firebase";
 import styles from "../Resource/Styles";
 import {
   AccessToken,
@@ -29,6 +29,12 @@ import {
 } from "react-native-fbsdk";
 import { showSnackBar } from "@prince8verma/react-native-snackbar";
 import ApiUrl from "../Network/ApiUrl";
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+  User
+} from "react-native-google-signin";
 
 class LoginTypeScreen extends Component {
   constructor(props) {
@@ -36,7 +42,9 @@ class LoginTypeScreen extends Component {
     this.getToken();
     this.state = {
       isProgress: false,
-      token: ""
+      token: "",
+      userInfo: null,
+      error: null
     };
   }
   static navigationOptions = {
@@ -135,10 +143,36 @@ class LoginTypeScreen extends Component {
         if (data != null) {
           if (data == "true") {
             this.doFinish("HomePage");
+          } else {
+            // LoginManager.logOut();
           }
+        } else {
+          // LoginManager.logOut();
         }
       })
       .done();
+    this._configureGoogleSignIn();
+    await this._getCurrentUser();
+  }
+  _configureGoogleSignIn() {
+    GoogleSignin.configure();
+  }
+  async _getCurrentUser() {
+    try {
+      const userInfo = await GoogleSignin.signInSilently();
+      console.log(userInfo);
+      
+      this.setState({ userInfo, error: null });
+    } catch (error) {
+      console.log(userInfo);
+      const errorMessage =
+        error.code === statusCodes.SIGN_IN_REQUIRED
+          ? "Please sign in :)"
+          : error.message;
+      this.setState({
+        error: new Error(errorMessage)
+      });
+    }
   }
   openProgressbar = () => {
     this.setState({ isProgress: true });
@@ -166,8 +200,7 @@ class LoginTypeScreen extends Component {
   doFbLogin() {
     NetInfo.isConnected.fetch().then(isConnected => {
       if (isConnected) {
-        alert('Facebook Login');
-        // this.doFacebookLogin();
+        this.doFacebookLogin();
       } else {
         Alert.alert(
           "Internet Connection",
@@ -199,31 +232,30 @@ class LoginTypeScreen extends Component {
     console.log("afterLoginComplete", result);
     this.doSocialLogin(result, "facebook", undefined);
   };
-  doSocialLogin(result, login_type) {
+  doSocialLogin(result, login_type,google_result) {
     console.log("doSocialLogin", result, login_type);
 
     NetInfo.isConnected.fetch().then(isConnected => {
       if (isConnected) {
         const bodyData = new FormData();
         bodyData.append("profile_image", {
-          uri: login_type == "facebook" ? result.picture.data.url : "",
+          uri: login_type == "facebook" ? result.picture.data.url : google_result.photo,
           type: "image/jpeg",
           name: "image2.jpeg"
         });
 
-        bodyData.append("login_id", login_type == "facebook" ? result.id : 0);
+        bodyData.append("login_id", login_type == "facebook" ? result.id : google_result.id);
         bodyData.append("login_type", login_type);
         bodyData.append(
-          "full_name",
-          login_type == "facebook"
-            ? result.first_name + "" + result.last_name
-            : "Bhavin Parghi"
+          "full_name",login_type == "facebook"? result.first_name + " " + result.last_name: google_result.name
         );
         bodyData.append("dob", "1993-01-21");
         bodyData.append("device_type", Platform.OS);
         bodyData.append("fire_base_token", this.state.token);
+        bodyData.append("gender", 'male');
 
-        this.doSocialLoginApi(bodyData);
+
+        this.doSocialLoginApi(bodyData,login_type);
       } else {
         Alert.alert(
           "Internet Connection",
@@ -232,9 +264,9 @@ class LoginTypeScreen extends Component {
       }
     });
   }
-  doSocialLoginApi(bodyData) {
-    console.log('doSocialLoginApi',bodyData);
-    
+  doSocialLoginApi(bodyData,login_type) {
+    console.log("doSocialLoginApi", bodyData);
+
     const { navigate } = this.props.navigation;
     fetch(ApiUrl.socialLoginUrl, {
       method: "POST",
@@ -246,8 +278,8 @@ class LoginTypeScreen extends Component {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log('responseJson',responseJson);
-        
+        console.log("responseJson", responseJson);
+
         const message = responseJson.message;
         const status = responseJson.status;
 
@@ -264,7 +296,8 @@ class LoginTypeScreen extends Component {
               follower_count: result.follower_count,
               crew_count: result.crew_count,
               user_name: result.user_name,
-              token: result.token
+              token: result.token,
+              login_type:login_type
             };
             const stringifiedArray = JSON.stringify(userData);
             AsyncStorage.setItem("data", stringifiedArray);
@@ -303,8 +336,36 @@ class LoginTypeScreen extends Component {
     });
   }
   doGoogleLogin() {
-    alert("google");
+    this.openProgressbar();
+    this._signIn();
   }
+  _signIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log(userInfo.user);
+      
+      this.setState({ userInfo, error: null });
+      this.doSocialLogin(undefined, "google", userInfo.user);
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // sign in was cancelled
+        Alert.alert("cancelled");
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation in progress already
+        console.log(error);
+        
+        Alert.alert("in progress");
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        Alert.alert("play services not available or outdated");
+      } else {
+        Alert.alert("Something went wrong", error.toString());
+        this.setState({
+          error
+        });
+      }
+    }
+  };
   render() {
     const width = Dimensions.get("screen").width;
     const height = Dimensions.get("screen").height;
@@ -356,7 +417,7 @@ class LoginTypeScreen extends Component {
           </Text>
           <View style={{ backgroundColor: Colors.white }}>
             <View style={[styles.row, { marginTop: 15, marginBottom: 15 }]}>
-              <TouchableOpacity onPress={() => this.doFbLogin()}>
+              <TouchableOpacity onPress={() => this.doFacebookLogin()}>
                 <View
                   style={[customStyles.buttonLogin, { borderColor: "#5c9be5" }]}
                 >
