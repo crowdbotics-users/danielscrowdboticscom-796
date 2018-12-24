@@ -160,8 +160,6 @@ class User extends Authenticatable implements JWTSubject
                     ->count();
                     
             return $unread_count;
-           
-   
         }
     }
     public function getFollowStatusAttribute()
@@ -179,10 +177,7 @@ class User extends Authenticatable implements JWTSubject
             {
                 return true;
             }
-                    
             return false;;
-           
-   
         }
     }
    

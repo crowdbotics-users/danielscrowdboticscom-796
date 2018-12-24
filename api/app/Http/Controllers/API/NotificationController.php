@@ -17,8 +17,7 @@ class NotificationController extends Controller
     public function get_list(Request $request)
     {
         $user= JWTAuth::touser($request->header('authorization'));
-      
-
+        
         $notification=Notification::with('sender')->where('receiver_id',$user->id)->where('read_at',0)->paginate(10);
         
         $notification=make_null($notification);
@@ -80,6 +79,5 @@ class NotificationController extends Controller
             ], 200);
         } 
     }
-
 
 }
