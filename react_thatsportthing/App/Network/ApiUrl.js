@@ -26,5 +26,9 @@ const ApiUrl = {
   getSendRequestList: BASE_URL + "users/requests/send_request_list",
   getReceivedRequestList: BASE_URL + "users/requests/received_request_list",
   getFollowerList: BASE_URL + "users/follower_list",
+  sendMessage: BASE_URL + "users/conversation/store",
+  searchPeople: BASE_URL + "users/search",
+  userMessageList: BASE_URL + "users/conversation/list",
+  
 };
 export default ApiUrl;

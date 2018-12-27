@@ -570,6 +570,7 @@ class ProfileScreen extends Component {
               user_name={this.state.user_name}
               receiver_id={this.state.receiver_id}
               friend_status={this.state.friend_status}
+              navigation={this.props.navigation}
             />
           </View>
           <View>
