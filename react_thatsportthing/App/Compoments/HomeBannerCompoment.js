@@ -98,7 +98,7 @@ class HomeBannerCompoment extends Component {
                             fontFamily: "OpenSans-SemiBold"
                           }}
                         >
-                          {"@" + this.props.user_name}
+                          {this.props.user_name}
                         </Text>
                       </View>
                       <View style={{ flex: 1, padding: 5 }}>

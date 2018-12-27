@@ -118,7 +118,8 @@ class LoginScreen extends Component {
               follower_count: result.follower_count,
               crew_count: result.crew_count,
               user_name: result.user_name,
-              token: result.token
+              token: result.token,
+              login_type:'simple'
             };
             const stringifiedArray = JSON.stringify(userData);
             AsyncStorage.setItem("data", stringifiedArray);
@@ -199,6 +200,7 @@ class LoginScreen extends Component {
               placeholder={"Email Address"}
               placeholderTextColor={Colors.colorEdittext}
               underlineColorAndroid={Colors.transparent}
+              autoCapitalize = 'none'
               returnKeyType="next"
             />
             <Text

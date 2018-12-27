@@ -279,7 +279,7 @@ class ProfileBannerCompoment extends Component {
                       marginBottom: 10
                     }}
                   />
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={()=>this.doRedirect('SendMessageScreen')}>
                     <Text
                       style={{
                         textAlign: "center",

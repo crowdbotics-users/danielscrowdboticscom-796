@@ -2,6 +2,7 @@ let BASE_URL =
   "http://13.127.235.254/dev/laravel/thatsport/thatsportsthing-app/api/public/api/";
 const ApiUrl = {
   loginUrl: BASE_URL + "users/login",
+  socialLoginUrl: BASE_URL + "users/social_login",
   logoutUrl: BASE_URL + "users/logout",
   registerUrl: BASE_URL + "users/register",
   verifyEmailUrl: BASE_URL + "users/verify_email",
@@ -25,5 +26,9 @@ const ApiUrl = {
   getSendRequestList: BASE_URL + "users/requests/send_request_list",
   getReceivedRequestList: BASE_URL + "users/requests/received_request_list",
   getFollowerList: BASE_URL + "users/follower_list",
+  sendMessage: BASE_URL + "users/conversation/store",
+  searchPeople: BASE_URL + "users/search",
+  userMessageList: BASE_URL + "users/conversation/list",
+  
 };
 export default ApiUrl;
