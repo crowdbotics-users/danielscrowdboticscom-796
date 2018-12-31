@@ -200,7 +200,7 @@ class StreamListComponent extends Component {
               height: data.post_image != "" ?Dimensions.get("window").height / 2:0,
               width: data.post_image != "" ?Dimensions.get("window").width:0
             }}
-            source={data.post_image != "" ? { uri: data.post_image } : ""}
+            source={data.post_image != "" ? { uri: data.post_image } : undefined}
           />
           <View
             style={[

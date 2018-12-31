@@ -52,5 +52,9 @@ const Icons ={
     ic_write_post:require('./Icon/ic_write_post.png'),
     ic_world:require('./Icon/world.png'),
     ic_down_arrow_picker:require('./Icon/ic_down_arrow_picker.png'),
+    ic_notification:require('./Icon/ic_bell_notification.png'),
+    ic_privacy:require('./Icon/ic_privacy.png'),
+    ic_security:require('./Icon/ic_security.png'),
+    ic_right_arrow:require('./Icon/ic_right_arrow.png'),
 }
 export default Icons;

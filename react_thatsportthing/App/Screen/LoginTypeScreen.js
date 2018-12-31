@@ -19,7 +19,7 @@ import firebase from "react-native-firebase";
 import { BallIndicator } from "react-native-indicators";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import { NavigationActions, StackActions } from "react-navigation";
-import { Notification, NotificationOpen } from "react-native-firebase";
+import { RemoteMessage, NotificationOpen } from "react-native-firebase";
 import styles from "../Resource/Styles";
 import {
   AccessToken,
@@ -35,6 +35,7 @@ import {
   statusCodes,
   User
 } from "react-native-google-signin";
+import NotificationConfiguration from "../Notificaiton/NotificationConfiguration";
 
 class LoginTypeScreen extends Component {
   constructor(props) {
@@ -46,6 +47,7 @@ class LoginTypeScreen extends Component {
       userInfo: null,
       error: null
     };
+    new NotificationConfiguration();
   }
   static navigationOptions = {
     header: null
@@ -63,80 +65,17 @@ class LoginTypeScreen extends Component {
     }
   }
   async componentDidMount() {
-    const notificationOpen: NotificationOpen = await firebase
-      .notifications()
-      .getInitialNotification();
-    if (notificationOpen) {
-      const action = notificationOpen.action;
-      const notification: Notification = notificationOpen.notification;
-      var seen = [];
-      alert(
-        JSON.stringify(notification.data, function(key, val) {
-          if (val != null && typeof val == "object") {
-            if (seen.indexOf(val) >= 0) {
-              return;
-            }
-            seen.push(val);
-          }
-          return val;
-        })
-      );
-    }
-    const channel = new firebase.notifications.Android.Channel(
-      "test-channel",
-      "Test Channel",
-      firebase.notifications.Android.Importance.Max
-    ).setDescription("My apps test channel");
-    // Create the channel
-    firebase.notifications().android.createChannel(channel);
-    this.notificationDisplayedListener = firebase
-      .notifications()
-      .onNotificationDisplayed((notification: Notification) => {
-        // Process your notification as required
-        // ANDROID: Remote notifications do not contain the channel ID. You will have to specify this manually if you'd like to re-display the notification.
-      });
-    this.notificationListener = firebase
-      .notifications()
-      .onNotification((notification: Notification) => {
-        // Process your notification as required
-        notification.android
-          .setChannelId("test-channel")
-          .android.setSmallIcon("ic_launcher");
-        firebase.notifications().displayNotification(notification);
-      });
-    this.notificationOpenedListener = firebase
-      .notifications()
-      .onNotificationOpened((notificationOpen: NotificationOpen) => {
-        // Get the action triggered by the notification being opened
-        const action = notificationOpen.action;
-        // Get information about the notification that was opened
-        const notification: Notification = notificationOpen.notification;
-        var seen = [];
-        alert(
-          JSON.stringify(notification.data, function(key, val) {
-            if (val != null && typeof val == "object") {
-              if (seen.indexOf(val) >= 0) {
-                return;
-              }
-              seen.push(val);
-            }
-            return val;
-          })
-        );
-        firebase
-          .notifications()
-          .removeDeliveredNotification(notification.notificationId);
-      });
-    const fcmToken = await firebase.messaging().getToken();
-
-    if (fcmToken) {
-      console.log("fcmToken", fcmToken);
-      this.setState({ token: fcmToken });
-      AsyncStorage.setItem("token", fcmToken);
+    await firebase.messaging().requestPermission();
+    const enabled = await firebase.messaging().hasPermission();
+    if (enabled) {
+      // user has permissions
+      console.log("permission allowed");
     } else {
-      console.log("fcmToken", fcmToken);
-      // user doesn't have a device token yet
+      console.log("permission denied");
+      // user doesn't have permission
     }
+
+    
 
     AsyncStorage.getItem("logged")
       .then(data => {
@@ -152,27 +91,35 @@ class LoginTypeScreen extends Component {
       })
       .done();
     this._configureGoogleSignIn();
-    await this._getCurrentUser();
+    this.messageListener = firebase
+      .messaging()
+      .onMessage((message: RemoteMessage) => {
+        // Process your message as required
+        // console.log(message._data);
+        const data = message._data;
+        const notification = new firebase.notifications.Notification()
+          .setNotificationId("notificationId")
+          .setTitle(data.title)
+          .setBody(data.body)
+          
+
+        notification.android
+          .setChannelId("com.thatsportthing")
+          .android.setSmallIcon("ic_launcher");
+        notification.android.setAutoCancel(true)
+        .setSound('default')
+        .setTitle(data.title)
+        .setBody(data.body)
+         firebase.notifications().displayNotification(notification);
+      });
+    
   }
+  
   _configureGoogleSignIn() {
     GoogleSignin.configure();
   }
-  async _getCurrentUser() {
-    try {
-      const userInfo = await GoogleSignin.signInSilently();
-      console.log(userInfo);
-      
-      this.setState({ userInfo, error: null });
-    } catch (error) {
-      console.log(userInfo);
-      const errorMessage =
-        error.code === statusCodes.SIGN_IN_REQUIRED
-          ? "Please sign in :)"
-          : error.message;
-      this.setState({
-        error: new Error(errorMessage)
-      });
-    }
+  componentWillUnmount() {
+    this.messageListener();
   }
   openProgressbar = () => {
     this.setState({ isProgress: true });
@@ -188,11 +135,7 @@ class LoginTypeScreen extends Component {
     });
     this.props.navigation.dispatch(resetAction);
   }
-  componentWillUnmount() {
-    this.notificationDisplayedListener();
-    this.notificationListener();
-    this.notificationOpenedListener();
-  }
+
   doRedirect(screen) {
     const { navigate } = this.props.navigation;
     navigate(screen);
@@ -232,30 +175,38 @@ class LoginTypeScreen extends Component {
     console.log("afterLoginComplete", result);
     this.doSocialLogin(result, "facebook", undefined);
   };
-  doSocialLogin(result, login_type,google_result) {
+  doSocialLogin(result, login_type, google_result) {
     console.log("doSocialLogin", result, login_type);
 
     NetInfo.isConnected.fetch().then(isConnected => {
       if (isConnected) {
         const bodyData = new FormData();
         bodyData.append("profile_image", {
-          uri: login_type == "facebook" ? result.picture.data.url : google_result.photo,
+          uri:
+            login_type == "facebook"
+              ? result.picture.data.url
+              : google_result.photo,
           type: "image/jpeg",
           name: "image2.jpeg"
         });
 
-        bodyData.append("login_id", login_type == "facebook" ? result.id : google_result.id);
+        bodyData.append(
+          "login_id",
+          login_type == "facebook" ? result.id : google_result.id
+        );
         bodyData.append("login_type", login_type);
         bodyData.append(
-          "full_name",login_type == "facebook"? result.first_name + " " + result.last_name: google_result.name
+          "full_name",
+          login_type == "facebook"
+            ? result.first_name + " " + result.last_name
+            : google_result.name
         );
         bodyData.append("dob", "1993-01-21");
         bodyData.append("device_type", Platform.OS);
         bodyData.append("fire_base_token", this.state.token);
-        bodyData.append("gender", 'male');
+        bodyData.append("gender", "male");
 
-
-        this.doSocialLoginApi(bodyData,login_type);
+        this.doSocialLoginApi(bodyData, login_type);
       } else {
         Alert.alert(
           "Internet Connection",
@@ -264,7 +215,7 @@ class LoginTypeScreen extends Component {
       }
     });
   }
-  doSocialLoginApi(bodyData,login_type) {
+  doSocialLoginApi(bodyData, login_type) {
     console.log("doSocialLoginApi", bodyData);
 
     const { navigate } = this.props.navigation;
@@ -297,7 +248,7 @@ class LoginTypeScreen extends Component {
               crew_count: result.crew_count,
               user_name: result.user_name,
               token: result.token,
-              login_type:login_type
+              login_type: login_type
             };
             const stringifiedArray = JSON.stringify(userData);
             AsyncStorage.setItem("data", stringifiedArray);
@@ -344,7 +295,7 @@ class LoginTypeScreen extends Component {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       console.log(userInfo.user);
-      
+
       this.setState({ userInfo, error: null });
       this.doSocialLogin(undefined, "google", userInfo.user);
     } catch (error) {
@@ -354,7 +305,7 @@ class LoginTypeScreen extends Component {
       } else if (error.code === statusCodes.IN_PROGRESS) {
         // operation in progress already
         console.log(error);
-        
+
         Alert.alert("in progress");
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
         Alert.alert("play services not available or outdated");
@@ -376,6 +327,7 @@ class LoginTypeScreen extends Component {
           flex: 1
         }}
       >
+      
         <View style={{ flex: 1, position: "relative", alignItems: "center" }}>
           <View style={{ marginTop: "20%" }}>
             <Image

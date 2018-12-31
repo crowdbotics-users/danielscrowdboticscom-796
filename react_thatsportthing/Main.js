@@ -21,6 +21,15 @@ import ProfileScreen from "./App/Screen/ProfileScreen";
 import ReplyCommentListScreen from "./App/Screen/ReplyCommentListScreen";
 import AddReplyScreen from "./App/Screen/AddReplyScreen";
 import TestScreen from "./App/Screen/TestScreen";
+import MessageListScreen from "./App/Screen/Messages/MessageListScreen";
+import SendMessageScreen from "./App/Screen/Messages/SendMessageScreen";
+import NotificationSettingScreen from "./App/Screen/AccountSetting/NotificationSettingScreen";
+import PrivacySettingScreen from "./App/Screen/AccountSetting/PrivacySettingScreen";
+import SecuritySettingScreen from "./App/Screen/AccountSetting/SecuritySettingScreen";
+import ChangePasswordScreen from "./App/Screen/Secutiry/ChangePasswordScreen";
+import SaveLoginInfoScreen from "./App/Screen/Secutiry/SaveLoginInfoScreen";
+import ActivityStatusScreen from "./App/Screen/Privacy/ActivityStatusScreen";
+import PhotoVideosPrivacyScreen from "./App/Screen/Privacy/PhotoVideosPrivacyScreen";
 
 const EditProfileScreenNavigator = createStackNavigator({
   EditProfileScreen: {
@@ -67,6 +76,52 @@ const ProfileScreenNavigator = createStackNavigator({
     screen: ProfileScreen
   }
 });
+const MessageListScreenNavigator = createStackNavigator({
+  MessageListScreen: {
+    screen: MessageListScreen
+  }
+});
+const SendMessageScreenNavigator = createStackNavigator({
+  SendMessageScreen: {
+    screen: SendMessageScreen
+  }
+});
+const NotificationSettingScreenNavigator = createStackNavigator({
+  NotificationSettingScreen: {
+    screen: NotificationSettingScreen
+  }
+});
+const PrivacySettingScreenNavigator = createStackNavigator({
+  PrivacySettingScreen: {
+    screen: PrivacySettingScreen
+  }
+});
+const SecuritySettingScreenNavigator = createStackNavigator({
+  SecuritySettingScreen: {
+    screen: SecuritySettingScreen
+  }
+});
+const ChangePasswordScreenNavigator = createStackNavigator({
+  ChangePasswordScreen: {
+    screen: ChangePasswordScreen
+  }
+});
+const SaveLoginInfoScreenNavigator = createStackNavigator({
+  SaveLoginInfoScreen: {
+    screen: SaveLoginInfoScreen
+  }
+});
+const ActivityStatusScreenNavigator = createStackNavigator({
+  ActivityStatusScreen: {
+    screen: ActivityStatusScreen
+  }
+});
+const PhotoVideosPrivacyScreenNavigator = createStackNavigator({
+  PhotoVideosPrivacyScreen: {
+    screen: PhotoVideosPrivacyScreen
+  }
+});
+
 const Main = createStackNavigator(
   {
     TestScreen: { screen: TestScreen },
@@ -128,6 +183,60 @@ const Main = createStackNavigator(
     },
     ReplyCommentListScreen: {
       screen: ReplyCommentListScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    MessageListScreen: {
+      screen: MessageListScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    SendMessageScreen: {
+      screen: SendMessageScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    NotificationSettingScreen: {
+      screen: NotificationSettingScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    PrivacySettingScreen: {
+      screen: PrivacySettingScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    SecuritySettingScreen: {
+      screen: SecuritySettingScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    ChangePasswordScreen: {
+      screen: ChangePasswordScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    SaveLoginInfoScreen: {
+      screen: SaveLoginInfoScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    ActivityStatusScreen: {
+      screen: ActivityStatusScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    PhotoVideosPrivacyScreen: {
+      screen: PhotoVideosPrivacyScreenNavigator,
       navigationOptions: {
         header: null
       }

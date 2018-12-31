@@ -25,13 +25,13 @@ import Icons from "../Resource/Icons";
 import ApiUrl from "../Network/ApiUrl";
 import ProgressCompoment from "./ProgressCompoment";
 import { showSnackBar } from "@prince8verma/react-native-snackbar";
+import { LoginManager } from "react-native-fbsdk";
 import {
-  AccessToken,
-  LoginManager,
-  GraphRequest,
-  GraphRequestManager
-} from "react-native-fbsdk";
-import { GoogleSignin, GoogleSigninButton, statusCodes,User } from 'react-native-google-signin';
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+  User
+} from "react-native-google-signin";
 
 class DrawerContent extends Component {
   constructor(props) {
@@ -291,12 +291,15 @@ class DrawerContent extends Component {
       isActiveAccountSettings: true,
       isActiveLogout: false
     });
+    this.doRedirect("AccountSettingScreen");
     this.closeDrawer();
   };
   closeDrawer = () => {
     this.props.navigation.closeDrawer();
   };
   doRedirect(screen) {
+    console.log(screen);
+
     this.props.navigation.navigate(screen);
   }
   render() {

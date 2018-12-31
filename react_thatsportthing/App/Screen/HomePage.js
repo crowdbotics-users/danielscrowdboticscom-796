@@ -9,6 +9,7 @@ import HomeTabScreen from "./HomeTabScreen";
 import MyCrewScreen from "./MyCrewScreen";
 
 import Colors from "../Resource/Colors";
+import AccountSettingScreen from "./AccountSetting/AccountSettingScreen";
 
 const HomePageNavigator = createStackNavigator({
   HomeTabScreen: {
@@ -21,6 +22,11 @@ const MyCrewScreenNavigator = createStackNavigator({
     screen: MyCrewScreen
   }
 });
+const AccountSettingScreenNavigator = createStackNavigator({
+  AccountSettingScreen: {
+    screen: AccountSettingScreen
+  }
+});
 const HomePage = createDrawerNavigator(
   {
     HomeTabScreen: { screen: HomePageNavigator },
@@ -30,7 +36,13 @@ const HomePage = createDrawerNavigator(
       navigationOptions: {
         header: null
       }
-    }
+    },
+    AccountSettingScreen: {
+      screen: AccountSettingScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
   },
   {
     initialRouteName: "HomeTabScreen",

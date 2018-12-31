@@ -6,19 +6,13 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
-  Dimensions,
-  ImageBackground,
   ListView,
-  Platform,
   SafeAreaView,
-  ActivityIndicator,
   NetInfo,
   Alert
 } from "react-native";
 import Colors from "../Resource/Colors";
 import Icons from "../Resource/Icons";
-import styles from "../Resource/Styles";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
 import { NavigationActions, StackActions } from "react-navigation";
 import ApiUrl from "../Network/ApiUrl";

@@ -1,29 +1,19 @@
 import React, { Component } from "react";
-import {
-  View,
-  TouchableOpacity,
-  Image,
-  Text,
-  StyleSheet,
-  Dimensions,
-  Modal,
-  ActivityIndicator
-} from "react-native";
+import { View, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 import Colors from "../Resource/Colors";
 import { BallIndicator } from "react-native-indicators";
-import Spinner from 'react-native-loading-spinner-overlay';
+import Spinner from "react-native-loading-spinner-overlay";
 
 class ProgressCompoment extends Component {
   render() {
     return (
       <View>
         <Spinner
-      
           visible={this.props.isProgress}
-          textContent={'Loading ...'}
+          textContent={"Loading ..."}
           animation="fade"
-          customIndicator={ <BallIndicator color={Colors.white}  /> }
+          customIndicator={<BallIndicator color={Colors.white} />}
           size="large"
           textStyle={styles.spinnerTextStyle}
         />
@@ -66,9 +56,8 @@ class ProgressCompoment extends Component {
 }
 const styles = StyleSheet.create({
   spinnerTextStyle: {
-   
-    color: '#FFF',
-    fontFamily: "OpenSans-SemiBold",
+    color: "#FFF",
+    fontFamily: "OpenSans-SemiBold"
   }
 });
 
