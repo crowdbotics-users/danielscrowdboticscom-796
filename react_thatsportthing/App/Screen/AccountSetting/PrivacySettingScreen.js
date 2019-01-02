@@ -16,102 +16,134 @@ class PrivacySettingScreen extends PureComponent {
 
     return {
       header: props => (
-        <HeaderComponent
-          {...props}
-          props={navigation}
-          title="PRIVACY"
-        />
+        <HeaderComponent {...props} props={navigation} title="PRIVACY" />
       )
     };
   };
-  doRedirect(screen){
+  doRedirect(screen) {
     this.props.navigation.navigate(screen);
   }
   render() {
     return (
-      <SafeAreaView style={{flex:1}}>
-        <View style={{ flex: 1,backgroundColor:Colors.white }}>
-          <TouchableOpacity style={{marginStart:10,marginTop:10,marginEnd:10}}
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: Colors.white }}>
+          <TouchableOpacity
+            style={{ marginStart: 10, marginTop: 10, marginEnd: 10 }}
+            onPress={() => this.doRedirect("AccountPrivateScreen")}
           >
-            <View style={{ flexDirection: "row",margin:5,alignItems:'center' }}>
+            <View
+              style={{ flexDirection: "row", margin: 5, alignItems: "center" }}
+            >
               <Text
                 style={{
                   color: Colors.colorEdittext,
                   fontSize: 14,
                   fontFamily: "OpenSans-SemiBold",
                   flex: 1,
-                  marginStart:5
+                  marginStart: 5
                 }}
               >
                 Account Privacy
               </Text>
-              <Image source={Icons.ic_right_arrow} style={[styles.icon,{width:15,height:15,marginEnd:10}]} />
+              <Image
+                source={Icons.ic_right_arrow}
+                style={[styles.icon, { width: 15, height: 15, marginEnd: 10 }]}
+              />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={{marginStart:10,marginTop:5,marginEnd:10}}>
-            <View style={{ flexDirection: "row",margin:5,alignItems:'center' }}>
+          <TouchableOpacity
+            style={{ marginStart: 10, marginTop: 5, marginEnd: 10 }}
+            onPress={() => this.doRedirect("BlockedAccountScreen")}
+          >
+            <View
+              style={{ flexDirection: "row", margin: 5, alignItems: "center" }}
+            >
               <Text
                 style={{
                   color: Colors.colorEdittext,
                   fontSize: 14,
                   fontFamily: "OpenSans-SemiBold",
                   flex: 1,
-                  marginStart:5
+                  marginStart: 5
                 }}
               >
-               Blocked Accounts
+                Blocked Accounts
               </Text>
-              <Image source={Icons.ic_right_arrow} style={[styles.icon,{width:15,height:15,marginEnd:10}]} />
+              <Image
+                source={Icons.ic_right_arrow}
+                style={[styles.icon, { width: 15, height: 15, marginEnd: 10 }]}
+              />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={{marginStart:10,marginTop:5,marginEnd:10}}
-          onPress={()=>this.doRedirect('PhotoVideosPrivacyScreen')}>
-            <View style={{ flexDirection: "row",margin:5,alignItems:'center' }}>
+          <TouchableOpacity
+            style={{ marginStart: 10, marginTop: 5, marginEnd: 10 }}
+            onPress={() => this.doRedirect("PhotoVideosPrivacyScreen")}
+          >
+            <View
+              style={{ flexDirection: "row", margin: 5, alignItems: "center" }}
+            >
               <Text
                 style={{
                   color: Colors.colorEdittext,
                   fontSize: 14,
                   fontFamily: "OpenSans-SemiBold",
                   flex: 1,
-                  marginStart:5
+                  marginStart: 5
                 }}
               >
-               Photos and Videos of You
+                Photos and Videos of You
               </Text>
-              <Image source={Icons.ic_right_arrow} style={[styles.icon,{width:15,height:15,marginEnd:10}]} />
+              <Image
+                source={Icons.ic_right_arrow}
+                style={[styles.icon, { width: 15, height: 15, marginEnd: 10 }]}
+              />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={{marginStart:10,marginTop:5,marginEnd:10}}>
-            <View style={{ flexDirection: "row",margin:5,alignItems:'center' }}>
+          <TouchableOpacity
+            style={{ marginStart: 10, marginTop: 5, marginEnd: 10 }}
+          >
+            <View
+              style={{ flexDirection: "row", margin: 5, alignItems: "center" }}
+            >
               <Text
                 style={{
                   color: Colors.colorEdittext,
                   fontSize: 14,
                   fontFamily: "OpenSans-SemiBold",
                   flex: 1,
-                  marginStart:5
+                  marginStart: 5
                 }}
               >
-               Comment Controls
+                Comment Controls
               </Text>
-              <Image source={Icons.ic_right_arrow} style={[styles.icon,{width:15,height:15,marginEnd:10}]} />
+              <Image
+                source={Icons.ic_right_arrow}
+                style={[styles.icon, { width: 15, height: 15, marginEnd: 10 }]}
+              />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={{marginStart:10,marginTop:5,marginEnd:10}}
-          onPress={()=>this.doRedirect('ActivityStatusScreen')}>
-            <View style={{ flexDirection: "row",margin:5,alignItems:'center' }}>
+          <TouchableOpacity
+            style={{ marginStart: 10, marginTop: 5, marginEnd: 10 }}
+            onPress={() => this.doRedirect("ActivityStatusScreen")}
+          >
+            <View
+              style={{ flexDirection: "row", margin: 5, alignItems: "center" }}
+            >
               <Text
                 style={{
                   color: Colors.colorEdittext,
                   fontSize: 14,
                   fontFamily: "OpenSans-SemiBold",
                   flex: 1,
-                  marginStart:5
+                  marginStart: 5
                 }}
               >
-               Activity Status
+                Activity Status
               </Text>
-              <Image source={Icons.ic_right_arrow} style={[styles.icon,{width:15,height:15,marginEnd:10}]} />
+              <Image
+                source={Icons.ic_right_arrow}
+                style={[styles.icon, { width: 15, height: 15, marginEnd: 10 }]}
+              />
             </View>
           </TouchableOpacity>
         </View>

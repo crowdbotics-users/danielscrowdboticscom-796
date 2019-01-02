@@ -29,6 +29,8 @@ const ApiUrl = {
   sendMessage: BASE_URL + "users/conversation/store",
   searchPeople: BASE_URL + "users/search",
   userMessageList: BASE_URL + "users/conversation/list",
+  requestDownload: BASE_URL + "",
+  getBlockedAccount: BASE_URL + "",
   
 };
 export default ApiUrl;

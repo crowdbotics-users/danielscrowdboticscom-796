@@ -162,16 +162,7 @@ class ChangePasswordScreen extends Component {
         console.log(error);
       });
   }
-  doValidEmail(email) {
-    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (reg.test(email) === false) {
-      console.log("Email is Not Correct");
-      return false;
-    } else {
-      console.log("Email is Correct");
-      return true;
-    }
-  }
+ 
   openProgressbar = () => {
     this.setState({ isProgress: true });
   };
@@ -198,7 +189,7 @@ class ChangePasswordScreen extends Component {
           <View style={{ marginTop: 20 ,display:'none'}}>
             <TextInput
               ref={"email"}
-              onChangeText={email => this.setState({ email: password })}
+              onChangeText={email => this.setState({ email: email })}
               style={[
                 customstyles.editText,
                 {

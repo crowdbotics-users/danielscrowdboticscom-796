@@ -56,5 +56,6 @@ const Icons ={
     ic_privacy:require('./Icon/ic_privacy.png'),
     ic_security:require('./Icon/ic_security.png'),
     ic_right_arrow:require('./Icon/ic_right_arrow.png'),
+    ic_download_data:require('./Icon/ic_download_data.png'),
 }
 export default Icons;

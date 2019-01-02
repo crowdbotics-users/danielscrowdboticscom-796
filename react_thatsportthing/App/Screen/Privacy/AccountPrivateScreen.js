@@ -17,7 +17,7 @@ import ApiUrl from "../../Network/ApiUrl";
 import Colors from "../../Resource/Colors";
 import ProgressCompoment from "../../Compoments/ProgressCompoment";
 
-class PhotoVideosPrivacyScreen extends Component {
+class AccountPrivateScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
 
@@ -26,7 +26,7 @@ class PhotoVideosPrivacyScreen extends Component {
         <HeaderComponent
           {...props}
           props={navigation}
-          title="PHOTOS AND VIDEO OF YOU"
+          title="ACCOUNT PRIVACY"
         />
       )
     };
@@ -35,6 +35,7 @@ class PhotoVideosPrivacyScreen extends Component {
     super(props);
     this.state = {
       email: "",
+      body: "When your account is private, only people you approve can see your photos, videos and posts.",
       current_password: "",
       password: "",
       cpassword: "",
@@ -209,9 +210,10 @@ class PhotoVideosPrivacyScreen extends Component {
                 { fontFamily: "OpenSans-Bold", flex: 1 }
               ]}
             >
-              Add Automatically
+              Private Account
             </Text>
             <Switch
+          
                onValueChange={ (value) => this.setState({ toggled: value })} 
                value={ this.state.toggled } 
             />
@@ -222,7 +224,7 @@ class PhotoVideosPrivacyScreen extends Component {
             { fontFamily: "OpenSans-SemiBold", flex: 1 }
           ]}
         >
-          Choose how you want photos and videos of you added to your profile. If you turn off this option, you will need to approve your tagged photo or video first.
+          {this.state.body}
         </Text>
         </View>
        
@@ -237,4 +239,4 @@ const customstyles = StyleSheet.create({
   },
   labelName: { color: Colors.colorEdittext, fontSize: 14, marginTop: 5 }
 });
-export default PhotoVideosPrivacyScreen;
+export default AccountPrivateScreen;

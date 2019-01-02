@@ -19,7 +19,7 @@ import ProgressCompoment from "../Compoments/ProgressCompoment";
 import { NavigationActions, StackActions } from "react-navigation";
 import ApiUrl from "../Network/ApiUrl";
 import firebase from "react-native-firebase";
-import Snackbar, { showSnackBar } from "@prince8verma/react-native-snackbar";
+import  { showSnackBar } from "@prince8verma/react-native-snackbar";
 
 class LoginScreen extends Component {
   constructor(props) {
@@ -52,11 +52,23 @@ class LoginScreen extends Component {
     this.setState({ isProgress: false });
   };
   //redirect home page
-
+  doValidEmail(email) {
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (reg.test(email) === false) {
+      console.log("Email is Not Correct");
+      return false;
+    } else {
+      console.log("Email is Correct");
+      return true;
+    }
+  }
   doLogin(screen) {
     const { navigate } = this.props.navigation;
     if (this.state.userName == "") {
-      alert("Enter User Name");
+      alert("Enter Email");
+      this.refs.username.focus();
+    }else if (!this.doValidEmail(this.state.userName)) {
+      alert("Enter Valid Email");
       this.refs.username.focus();
     } else if (this.state.password == "") {
       alert("Enter Password");

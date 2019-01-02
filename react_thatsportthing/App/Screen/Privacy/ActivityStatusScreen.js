@@ -35,6 +35,7 @@ class ActivityStatusScreen extends Component {
     super(props);
     this.state = {
       email: "",
+      body: "Allow accounts you follow and anyone you message to see when you were last active on app. When this is turned off, you won't be able to see the activity status of other accounts.",
       current_password: "",
       password: "",
       cpassword: "",
@@ -222,7 +223,7 @@ class ActivityStatusScreen extends Component {
             { fontFamily: "OpenSans-SemiBold", flex: 1 }
           ]}
         >
-          Allow accounts you follow and anyone you message to see when you were last active on app. When this is turned off, you won't be able to see the activity status of other accounts.
+          {this.state.body}
         </Text>
         </View>
        

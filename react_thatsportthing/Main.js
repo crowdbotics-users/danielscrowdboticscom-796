@@ -30,6 +30,10 @@ import ChangePasswordScreen from "./App/Screen/Secutiry/ChangePasswordScreen";
 import SaveLoginInfoScreen from "./App/Screen/Secutiry/SaveLoginInfoScreen";
 import ActivityStatusScreen from "./App/Screen/Privacy/ActivityStatusScreen";
 import PhotoVideosPrivacyScreen from "./App/Screen/Privacy/PhotoVideosPrivacyScreen";
+import DownloadYourDataScreen from "./App/Screen/Secutiry/DownloadYourDataScreen";
+import SearchHistoryScreen from "./App/Screen/Secutiry/SearchHistoryScreen";
+import AccountPrivateScreen from "./App/Screen/Privacy/AccountPrivateScreen";
+import BlockedAccountScreen from "./App/Screen/Privacy/BlockedAccountScreen";
 
 const EditProfileScreenNavigator = createStackNavigator({
   EditProfileScreen: {
@@ -119,6 +123,26 @@ const ActivityStatusScreenNavigator = createStackNavigator({
 const PhotoVideosPrivacyScreenNavigator = createStackNavigator({
   PhotoVideosPrivacyScreen: {
     screen: PhotoVideosPrivacyScreen
+  }
+});
+const DownloadYourDataScreenNavigator = createStackNavigator({
+  DownloadYourDataScreen: {
+    screen: DownloadYourDataScreen
+  }
+});
+const SearchHistoryScreenNavigator = createStackNavigator({
+  SearchHistoryScreen: {
+    screen: SearchHistoryScreen
+  }
+});
+const AccountPrivateScreenNavigator = createStackNavigator({
+  AccountPrivateScreen: {
+    screen: AccountPrivateScreen
+  }
+});
+const BlockedAccountScreenNavigator = createStackNavigator({
+  BlockedAccountScreen: {
+    screen: BlockedAccountScreen
   }
 });
 
@@ -237,6 +261,30 @@ const Main = createStackNavigator(
     },
     PhotoVideosPrivacyScreen: {
       screen: PhotoVideosPrivacyScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    DownloadYourDataScreen: {
+      screen: DownloadYourDataScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    SearchHistoryScreen: {
+      screen: SearchHistoryScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    AccountPrivateScreen: {
+      screen: AccountPrivateScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    BlockedAccountScreen: {
+      screen: BlockedAccountScreenNavigator,
       navigationOptions: {
         header: null
       }
