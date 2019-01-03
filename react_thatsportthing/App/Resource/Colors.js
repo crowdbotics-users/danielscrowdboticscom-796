@@ -9,6 +9,7 @@ const Colors ={
     bgHeader:"#FA6509",
     colorSearch:"#949494",
     colorLine:'#d3d3d3',
-    colorEdittext:'#4a4a4a'
+    colorEdittext:'#4a4a4a',
+    colorImageBg:'#313131'
 }
 export default Colors;

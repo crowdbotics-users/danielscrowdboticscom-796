@@ -67,7 +67,7 @@ class SecuritySettingScreen extends PureComponent {
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={{marginStart:10,marginTop:5,marginEnd:10}}
-          onPress={()=>this.doRedirect('DownloadYourDataScreen')}>
+          onPress={()=>this.doRedirect('DownloadYourDataScreen0')}>
             <View style={{ flexDirection: "row",margin:5,alignItems:'center' }}>
               <Text
                 style={{
@@ -84,7 +84,7 @@ class SecuritySettingScreen extends PureComponent {
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={{marginStart:10,marginTop:5,marginEnd:10}}
-          onPress={()=>this.doRedirect('SearchHistoryScreen')}>
+          onPress={()=>this.doRedirect('SearchHistoryScreen0')}>
             <View style={{ flexDirection: "row",margin:5,alignItems:'center' }}>
               <Text
                 style={{

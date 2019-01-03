@@ -57,5 +57,8 @@ const Icons ={
     ic_security:require('./Icon/ic_security.png'),
     ic_right_arrow:require('./Icon/ic_right_arrow.png'),
     ic_download_data:require('./Icon/ic_download_data.png'),
+    ic_message:require('./Icon/ic_message.png'),
+    ic_notification_home:require('./Icon/ic_notification_home.png'),
+    ic_pencil_edit:require('./Icon/ic_pencil_edit.png'),
 }
 export default Icons;

@@ -50,7 +50,7 @@ class AccountSettingScreen extends PureComponent {
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={{marginStart:10,marginTop:5,marginEnd:10}}
-          onPress={()=>this.doRedirect('PrivacySettingScreen')}>
+          onPress={()=>this.doRedirect('PrivacySettingScreen0')}>
             <View style={{ flexDirection: "row",margin:5,alignItems:'center' }}>
               <Image source={Icons.ic_privacy} style={styles.icon} />
               <Text
@@ -68,7 +68,7 @@ class AccountSettingScreen extends PureComponent {
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={{marginStart:10,marginTop:5,marginEnd:10}}
-          onPress={()=>this.doRedirect('SecuritySettingScreen')}>
+          onPress={()=>this.doRedirect('SecuritySettingScreen0')}>
             <View style={{ flexDirection: "row",margin:5,alignItems:'center' }}>
               <Image source={Icons.ic_security} style={styles.icon} />
               <Text

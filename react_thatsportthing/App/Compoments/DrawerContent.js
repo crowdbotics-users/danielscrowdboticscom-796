@@ -213,7 +213,8 @@ class DrawerContent extends Component {
     this.doRedirect("HomeTabScreen");
     this.closeDrawer();
   };
-  doProfile = () => {
+  doProfile() {
+    console.log("MyProfileScreen");
     this.setState({
       isActiveHome: false,
       isActiveProfile: true,
@@ -224,9 +225,12 @@ class DrawerContent extends Component {
       isActiveAccountSettings: false,
       isActiveLogout: false
     });
+    
 
+    
     this.closeDrawer();
-  };
+   this.doRedirect("MyProfileScreen");
+  }
   doPosts = () => {
     this.setState({
       isActiveHome: false,
@@ -461,7 +465,7 @@ class DrawerContent extends Component {
                 </TouchableOpacity>
               </View>
               <View>
-                <TouchableOpacity onPress={this.doProfile.bind(this)}>
+                <TouchableOpacity onPress={() => this.doProfile()}>
                   <View
                     style={{
                       backgroundColor: this.state.isActiveProfile

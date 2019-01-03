@@ -238,7 +238,7 @@ class CommentListScreen extends PureComponent {
     );
   };
   doRedirectReply(item) {
-    this.props.navigation.navigate("ReplyCommentListScreen", {
+    this.props.navigation.navigate("ReplyCommentListScreen0", {
       replycommentdata: item
     });
   }

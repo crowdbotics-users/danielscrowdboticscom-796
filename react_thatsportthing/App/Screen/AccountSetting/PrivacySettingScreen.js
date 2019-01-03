@@ -29,7 +29,7 @@ class PrivacySettingScreen extends PureComponent {
         <View style={{ flex: 1, backgroundColor: Colors.white }}>
           <TouchableOpacity
             style={{ marginStart: 10, marginTop: 10, marginEnd: 10 }}
-            onPress={() => this.doRedirect("AccountPrivateScreen")}
+            onPress={() => this.doRedirect("AccountPrivateScreen0")}
           >
             <View
               style={{ flexDirection: "row", margin: 5, alignItems: "center" }}
@@ -53,7 +53,7 @@ class PrivacySettingScreen extends PureComponent {
           </TouchableOpacity>
           <TouchableOpacity
             style={{ marginStart: 10, marginTop: 5, marginEnd: 10 }}
-            onPress={() => this.doRedirect("BlockedAccountScreen")}
+            onPress={() => this.doRedirect("BlockedAccountScreen0")}
           >
             <View
               style={{ flexDirection: "row", margin: 5, alignItems: "center" }}
@@ -77,7 +77,7 @@ class PrivacySettingScreen extends PureComponent {
           </TouchableOpacity>
           <TouchableOpacity
             style={{ marginStart: 10, marginTop: 5, marginEnd: 10 }}
-            onPress={() => this.doRedirect("PhotoVideosPrivacyScreen")}
+            onPress={() => this.doRedirect("PhotoVideosPrivacyScreen0")}
           >
             <View
               style={{ flexDirection: "row", margin: 5, alignItems: "center" }}

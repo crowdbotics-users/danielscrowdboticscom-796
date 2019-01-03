@@ -1,19 +1,14 @@
-import React, { Component } from "react";
 import { createDrawerNavigator, createStackNavigator } from "react-navigation";
-import { View, Text, TouchableOpacity } from "react-native";
-import styles from "../Resource/Styles";
-
 import DrawerContent from "../Compoments/DrawerContent";
-import HomeTabScreen from "./HomeTabScreen";
-
 import MyCrewScreen from "./MyCrewScreen";
-
 import Colors from "../Resource/Colors";
 import AccountSettingScreen from "./AccountSetting/AccountSettingScreen";
+import HomScreen from "./Home/HomScreen";
+import MyProfileScreen from "./MyProfile/MyProfileScreen";
 
 const HomePageNavigator = createStackNavigator({
   HomeTabScreen: {
-    screen: HomeTabScreen
+    screen: HomScreen
   }
 });
 
@@ -27,12 +22,24 @@ const AccountSettingScreenNavigator = createStackNavigator({
     screen: AccountSettingScreen
   }
 });
+const MyProfileScreenNavigator = createStackNavigator({
+  MyProfileScreen: {
+    screen: MyProfileScreen
+  }
+});
+
 const HomePage = createDrawerNavigator(
   {
     HomeTabScreen: { screen: HomePageNavigator },
   
     MyCrewScreen: {
       screen: MyCrewScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    MyProfileScreen: {
+      screen: MyProfileScreenNavigator,
       navigationOptions: {
         header: null
       }

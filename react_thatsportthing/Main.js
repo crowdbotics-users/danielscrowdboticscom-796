@@ -34,6 +34,8 @@ import DownloadYourDataScreen from "./App/Screen/Secutiry/DownloadYourDataScreen
 import SearchHistoryScreen from "./App/Screen/Secutiry/SearchHistoryScreen";
 import AccountPrivateScreen from "./App/Screen/Privacy/AccountPrivateScreen";
 import BlockedAccountScreen from "./App/Screen/Privacy/BlockedAccountScreen";
+import HomScreen from "./App/Screen/Home/HomScreen";
+import MyProfileScreen from "./App/Screen/MyProfile/MyProfileScreen";
 
 const EditProfileScreenNavigator = createStackNavigator({
   EditProfileScreen: {
@@ -145,7 +147,16 @@ const BlockedAccountScreenNavigator = createStackNavigator({
     screen: BlockedAccountScreen
   }
 });
-
+const HomScreenNavigator = createStackNavigator({
+  HomScreen: {
+    screen: HomScreen
+  }
+});
+const MyProfileScreenNavigator = createStackNavigator({
+  MyProfileScreen: {
+    screen: MyProfileScreen
+  }
+});
 const Main = createStackNavigator(
   {
     TestScreen: { screen: TestScreen },
@@ -285,6 +296,18 @@ const Main = createStackNavigator(
     },
     BlockedAccountScreen: {
       screen: BlockedAccountScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    HomScreen: {
+      screen: HomScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    MyProfileScreen: {
+      screen: MyProfileScreenNavigator,
       navigationOptions: {
         header: null
       }
