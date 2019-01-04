@@ -22,6 +22,8 @@ import ProgressCompoment from "../Compoments/ProgressCompoment";
 import ApiUrl from "../Network/ApiUrl";
 import Moment from "moment";
 import { showSnackBar } from "@prince8verma/react-native-snackbar";
+import Swipeable from "react-native-swipeable";
+import ProfilePictureComponent from "../Compoments/ButtonCompoment/ProfilePictureComponent";
 
 class MyCrewScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -34,13 +36,22 @@ class MyCrewScreen extends Component {
     super(props);
     this.state = {
       isProgress: true,
+      currentlyOpenSwipeable: null,
+      rightActionActivated: false,
+      toggle: false,
       isAllFriends: true,
       isMutualFriends: false,
       isFollowersActive: false,
-      data: [],
-     
+      data: []
     };
   }
+  handleScroll = () => {
+    const { currentlyOpenSwipeable } = this.state;
+
+    if (currentlyOpenSwipeable) {
+      currentlyOpenSwipeable.recenter();
+    }
+  };
   doRequestAction(status) {
     NetInfo.isConnected.fetch().then(isConnected => {
       if (isConnected) {
@@ -49,20 +60,19 @@ class MyCrewScreen extends Component {
             console.log("AsyncStorage");
             if (data != null) {
               const myData = JSON.parse(data);
-                const bodyData = JSON.stringify({
-                  status:status,
-                  sender_id: myData.id
-                });
-                console.log('cancel',bodyData);
-                
-                this.openProgressbar();
-                 try {
-                  this.doRequestActionApi(bodyData, myData.token);
-                 } catch (error) {
-                   console.log(error);
-                   this.hideProgressbar();
-                   
-                 }
+              const bodyData = JSON.stringify({
+                status: status,
+                sender_id: myData.id
+              });
+              console.log("cancel", bodyData);
+
+              this.openProgressbar();
+              try {
+                this.doRequestActionApi(bodyData, myData.token);
+              } catch (error) {
+                console.log(error);
+                this.hideProgressbar();
+              }
             } else {
               console.log(data);
             }
@@ -119,7 +129,7 @@ class MyCrewScreen extends Component {
         console.log(error);
       });
   }
- 
+
   renderSeparator = () => {
     return (
       <View
@@ -131,296 +141,212 @@ class MyCrewScreen extends Component {
       />
     );
   };
-  renderFriends(data,index) {
-    if(data.hasOwnProperty('user_details')){
-      const user_details=data.user_details;
-    return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <View
-          style={[
-            styles.column,
-            styles.card,
-            { alignItems: "center", marginBottom: 1, borderRadius: 0 }
-          ]}
-        >
-          <View
-            style={[
-              styles.row,
-              { justifyContent: "center", alignItems: "center", flex: 1 }
-            ]}
-          >
-            <View style={{ flex: 1 }}>
-              <View
-                style={{
-                  width: 72,
-                  height: 72,
-                  borderRadius: 36,
-                  backgroundColor: "#F8F6F7",
-                  alignSelf: "center",
-                  justifyContent: "center",
-                  alignContent: "center",
-                  marginLeft: 8
-                }}
-              >
-                <Image
-                  source={user_details.profile_image==""?Icons.messi:{uri:user_details.profile_image}}
-                  style={{
-                    width: 68,
-                    height: 68,
-                    borderRadius: 34,
-                    borderWidth: 1.5,
-                    borderColor: "#D1D0D0",
-                    alignSelf: "center"
-                  }}
-                />
-              </View>
-            </View>
-            <View style={{ flex: 3 }}>
-              <Text
-                style={{
-                  color: Colors.black,
-                  fontFamily: "OpenSans-SemiBold",
-                  fontSize: 13
-                }}
-              >
-                {user_details.full_name}
-              </Text>
-              <Text
-                style={{
-                  color: "#6C6C6C",
-                  fontFamily: "OpenSans-SemiBold",
-                  fontSize: 12
-                }}
-              >
-                {Moment(data.created_at).format("DD/MM/YYYY hh:mm A")}
-              </Text>
-              <Text
-                style={{
-                  color: Colors.black,
-                  fontFamily: "OpenSans-SemiBold",
-                  fontSize: 12
-                }}
-              >
-                {user_details.user_name}
-              </Text>
-              <View
-                style={[
-                  styles.row,
-                  {
-                    alignItems: "center"
-                  }
-                ]}
-              >
-                <TouchableOpacity style={{ flex: 1 }} onPress={()=>this.doRequestAction(3)}>
-                  <Text
-                    style={{
-                      color: Colors.black,
-                      fontFamily: "OpenSans-SemiBold",
-                      fontSize: 11
-                    }}
-                  >
-                    Unfriend
-                  </Text>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    borderEndWidth: 1,
-                    borderEndColor: Colors.black,
-                    height: 10
-                  }}
-                />
 
-                <TouchableOpacity style={{ flex: 1 }}>
-                  <Text
-                    style={{
-                      color: Colors.black,
-                      fontFamily: "OpenSans-SemiBold",
-                      fontSize: 11,
-                      marginStart: 8,
-                      marginEnd: 8
-                    }}
-                  >
-                    Send Message
-                  </Text>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    borderEndWidth: 1,
-                    borderEndColor: Colors.black,
-                    height: 10
-                  }}
-                />
-                <TouchableOpacity style={{ flex: 1 }} onPress={()=>this.doFollowFriend(data,index)}>
-                  <Text
-                    style={{
-                      color: Colors.black,
-                      fontFamily: "OpenSans-SemiBold",
-                      fontSize: 11,
-                      marginStart: 8,
-                      marginEnd: 8
-                    }}
-                  >
-                    {data.followstatus == 1
-                      ? "Follow"
-                      : data.followstatus == 2
-                      ? "UnFollow"
-                      : "Follow"}
-                  </Text>
-                </TouchableOpacity>
-              </View>
+  renderFriends(data, index) {
+    console.log(data);
+    
+    if (!data.hasOwnProperty("user_details")) {
+      const user_details = data.user_details;
+      return (
+        <Swipeable
+          rightActionActivationDistance={100}
+          onRightButtonsOpenRelease={() => this.onOpenSend(this)}
+          onRightButtonsCloseRelease={() => this.onCloseSend(this)}
+          onRightActionActivate={() =>
+            this.setState({ rightActionActivated: true })
+          }
+          onRightActionDeactivate={() =>
+            this.setState({ rightActionActivated: false })
+          }
+          onRightActionComplete={() =>
+            this.setState({ toggle: !this.state.toggle })
+          }
+          rightContent={
+            <View
+              style={{
+                flexDirection: "row",
+                backgroundColor: "#DC3B4C",
+                alignItems: "center",
+                flex: 1
+              }}
+            >
+              <Image
+                source={Icons.ic_remove_friend_swipe}
+                style={{ width: 15, height: 15, marginStart: 10 }}
+              />
+              <Text
+                style={{
+                  color: Colors.white,
+                  fontFamily: "OpenSans-Bold",
+                  fontSize: 14,
+                  marginStart: 5
+                }}
+              >
+                REMOVE
+              </Text>
             </View>
-          </View>
-        </View>
-      </SafeAreaView>
-    );
-      
-    }else{
-      console.log('nathi');
+          }
+        >
+          <SafeAreaView style={{ flex: 1 }}>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", padding: 5 }}
+            >
+              <View style={{margin:5}}>
+              <ProfilePictureComponent
+                circleWidth={72}
+                circleHeight={72}
+                circleRadius={36}
+                imageWidth={68}
+                imageHeight={68}
+                imageRadius={34}
+                profile_image={data.profile_image}
+              />
+              </View>
+              <Text
+                style={{
+                  color: Colors.colorEdittext,
+                  fontFamily: "OpenSans-Bold",
+                  fontSize: 14,
+                  flex: 1,
+                  marginStart: 10
+                }}
+              >
+                {data.full_name}
+              </Text>
+              <Image
+                source={Icons.ic_remove_friend}
+                style={{ width: 15, height: 15 }}
+              />
+              <Text
+                style={{
+                  color: Colors.colorEdittext,
+                  fontFamily: "OpenSans-Bold",
+                  fontSize: 12,
+                  marginStart: 5
+                }}
+              >
+                REMOVE
+              </Text>
+            </View>
+          </SafeAreaView>
+        </Swipeable>
+      );
+    } else {
+      console.log("nathi");
     }
-   
   }
-  renderSendFriends(data,index) {
-    return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <View
-          style={[
-            styles.column,
-            styles.card,
-            { alignItems: "center", marginBottom: 1, borderRadius: 0 }
-          ]}
-        >
-          <View
-            style={[
-              styles.row,
-              { justifyContent: "center", alignItems: "center", flex: 1 }
-            ]}
-          >
-            <View style={{ flex: 1 }}>
-              <View
-                style={{
-                  width: 72,
-                  height: 72,
-                  borderRadius: 36,
-                  backgroundColor: "#F8F6F7",
-                  alignSelf: "center",
-                  justifyContent: "center",
-                  alignContent: "center",
-                  marginLeft: 8
-                }}
-              >
-                <Image
-                  source={data.profile_image==""?Icons.messi:{uri:data.profile_image}}
-                  style={{
-                    width: 68,
-                    height: 68,
-                    borderRadius: 34,
-                    borderWidth: 1.5,
-                    borderColor: "#D1D0D0",
-                    alignSelf: "center"
-                  }}
-                />
-              </View>
-            </View>
-            <View style={{ flex: 3 }}>
-              <Text
-                style={{
-                  color: Colors.black,
-                  fontFamily: "OpenSans-SemiBold",
-                  fontSize: 13
-                }}
-              >
-                {data.full_name}
-              </Text>
-              <Text
-                style={{
-                  color: "#6C6C6C",
-                  fontFamily: "OpenSans-SemiBold",
-                  fontSize: 12
-                }}
-              >
-                {Moment(data.created_at).format("DD/MM/YYYY hh:mm A")}
-              </Text>
-              <Text
-                style={{
-                  color: Colors.black,
-                  fontFamily: "OpenSans-SemiBold",
-                  fontSize: 12
-                }}
-              >
-                {data.user_name}
-              </Text>
-              <View
-                style={[
-                  styles.row,
-                  {
-                    alignItems: "center"
-                  }
-                ]}
-              >
-                <TouchableOpacity style={{ flex: 1 }}>
-                  <Text
-                    style={{
-                      color: Colors.black,
-                      fontFamily: "OpenSans-SemiBold",
-                      fontSize: 11
-                    }}
-                  >
-                    Cancel Request
-                  </Text>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    borderEndWidth: 1,
-                    borderEndColor: Colors.black,
-                    height: 10
-                  }}
-                />
+  onOpenFriend(event, gestureState, swipeable) {
+    const { currentlyOpenSwipeable } = this.state;
+    if (currentlyOpenSwipeable && currentlyOpenSwipeable !== swipeable) {
+      currentlyOpenSwipeable.recenter();
+    }
 
-                <TouchableOpacity style={{ flex: 1 }}>
-                  <Text
-                    style={{
-                      color: Colors.black,
-                      fontFamily: "OpenSans-SemiBold",
-                      fontSize: 11,
-                      marginStart: 8,
-                      marginEnd: 8
-                    }}
-                  >
-                    Send Message
-                  </Text>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    borderEndWidth: 1,
-                    borderEndColor: Colors.black,
-                    height: 10
-                  }}
-                />
-                <TouchableOpacity style={{ flex: 1 }} onPress={()=>this.doFollowFriend(data,index)}>
-                  <Text
-                    style={{
-                      color: Colors.black,
-                      fontFamily: "OpenSans-SemiBold",
-                      fontSize: 11,
-                      marginStart: 8,
-                      marginEnd: 8
-                    }}
-                  >
-                    {data.followstatus == 1
-                      ? "Follow"
-                      : data.followstatus == 2
-                      ? "UnFollow"
-                      : "Follow"}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+    this.setState({ currentlyOpenSwipeable: swipeable });
+  }
+  onCloseFriend() {
+    this.setState({ currentlyOpenSwipeable: null });
+  }
+  onOpenSend(event, gestureState, swipeable) {
+    console.log("onOpenSend");
+
+    const { currentlyOpenSwipeable } = this.state;
+    if (currentlyOpenSwipeable && currentlyOpenSwipeable !== swipeable) {
+      currentlyOpenSwipeable.recenter();
+    }
+
+    this.setState({ currentlyOpenSwipeable: swipeable });
+  }
+  onCloseSend() {
+    console.log("onCloseSend");
+    this.setState({ currentlyOpenSwipeable: null });
+  }
+  renderSendFriends(data, index) {
+    return (
+      <Swipeable
+        rightActionActivationDistance={100}
+        onRightButtonsOpenRelease={() => this.onOpenSend(this)}
+        onRightButtonsCloseRelease={() => this.onCloseSend(this)}
+        onRightActionActivate={() =>
+          this.setState({ rightActionActivated: true })
+        }
+        onRightActionDeactivate={() =>
+          this.setState({ rightActionActivated: false })
+        }
+        onRightActionComplete={() =>
+          this.setState({ toggle: !this.state.toggle })
+        }
+        rightContent={
+          <View
+            style={{
+              flexDirection: "row",
+              backgroundColor: "#DC3B4C",
+              alignItems: "center",
+              flex: 1
+            }}
+          >
+            <Image
+              source={Icons.ic_remove_friend_swipe}
+              style={{ width: 15, height: 15, marginStart: 10 }}
+            />
+            <Text
+              style={{
+                color: Colors.white,
+                fontFamily: "OpenSans-Bold",
+                fontSize: 14,
+                marginStart: 5
+              }}
+            >
+              CANCEL
+            </Text>
           </View>
-        </View>
-      </SafeAreaView>
+        }
+      >
+        <SafeAreaView style={{ flex: 1 }}>
+          <View
+            style={{ flexDirection: "row", alignItems: "center", padding: 5 }}
+          >
+            <View style={{margin:5}}>
+              <ProfilePictureComponent
+                circleWidth={72}
+                circleHeight={72}
+                circleRadius={36}
+                imageWidth={68}
+                imageHeight={68}
+                imageRadius={34}
+                profile_image={data.profile_image}
+              />
+              </View>
+            <Text
+              style={{
+                color: Colors.colorEdittext,
+                fontFamily: "OpenSans-Bold",
+                fontSize: 14,
+                flex: 1,
+                marginStart: 10
+              }}
+            >
+              {data.full_name}
+            </Text>
+            <Image
+              source={Icons.ic_remove_friend}
+              style={{ width: 15, height: 15 }}
+            />
+            <Text
+              style={{
+                color: Colors.colorEdittext,
+                fontFamily: "OpenSans-Bold",
+                fontSize: 12,
+                marginStart: 5
+              }}
+            >
+              CANCEL
+            </Text>
+          </View>
+        </SafeAreaView>
+      </Swipeable>
     );
   }
-  renderReceivedFriends(data,index) {
+  renderReceivedFriends(data, index) {
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <View
@@ -439,27 +365,18 @@ class MyCrewScreen extends Component {
             <View style={{ flex: 1 }}>
               <View
                 style={{
-                  width: 72,
-                  height: 72,
-                  borderRadius: 36,
-                  backgroundColor: "#F8F6F7",
-                  alignSelf: "center",
-                  justifyContent: "center",
-                  alignContent: "center",
-                  marginLeft: 8
+                  margin: 5
                 }}
               >
-                <Image
-                  source={data.profile_image==""?Icons.messi:{uri:data.profile_image}}
-                  style={{
-                    width: 68,
-                    height: 68,
-                    borderRadius: 34,
-                    borderWidth: 1.5,
-                    borderColor: "#D1D0D0",
-                    alignSelf: "center"
-                  }}
-                />
+                 <ProfilePictureComponent
+                circleWidth={72}
+                circleHeight={72}
+                circleRadius={36}
+                imageWidth={68}
+                imageHeight={68}
+                imageRadius={34}
+                profile_image={data.profile_image}
+              />
               </View>
             </View>
             <View style={{ flex: 3 }}>
@@ -498,19 +415,21 @@ class MyCrewScreen extends Component {
                   }
                 ]}
               >
-                <View  style={{ flex: 1 }}>
-                <TouchableOpacity onPress={()=>this.doRequestAction(1)}>
-                  <Text
-                    style={{
-                      color: Colors.black,
-                      fontFamily: "OpenSans-SemiBold",
-                      fontSize: 11
-                    }}
-                  >
-                    Confirm Request
-                  </Text>
-                </TouchableOpacity>
-                {/* <TouchableOpacity onPress={()=>this.doRequestAction(2)} >
+                <View style={{ flex: 0 }}>
+                  <TouchableOpacity onPress={() => this.doRequestAction(1)}>
+                    <Text
+                      style={{
+                        color: Colors.green,
+                        fontFamily: "OpenSans-SemiBold",
+                        fontSize: 11,
+                        
+                      marginEnd: 8
+                      }}
+                    >
+                      ACCEPT
+                    </Text>
+                  </TouchableOpacity>
+                  {/* <TouchableOpacity onPress={()=>this.doRequestAction(2)} >
                   <Text
                     style={{
                       color: Colors.black,
@@ -533,14 +452,14 @@ class MyCrewScreen extends Component {
                 <TouchableOpacity style={{ flex: 1 }}>
                   <Text
                     style={{
-                      color: Colors.black,
+                      color: Colors.red,
                       fontFamily: "OpenSans-SemiBold",
                       fontSize: 11,
                       marginStart: 8,
                       marginEnd: 8
                     }}
                   >
-                    Send Message
+                    DECLINE
                   </Text>
                 </TouchableOpacity>
                 <View
@@ -550,23 +469,7 @@ class MyCrewScreen extends Component {
                     height: 10
                   }}
                 />
-                <TouchableOpacity style={{ flex: 1 }} onPress={()=>this.doFollowFriend(data,index)}>
-                  <Text
-                    style={{
-                      color: Colors.black,
-                      fontFamily: "OpenSans-SemiBold",
-                      fontSize: 11,
-                      marginStart: 8,
-                      marginEnd: 8
-                    }}
-                  >
-                    {data.followstatus == 1
-                      ? "Follow"
-                      : data.followstatus == 2
-                      ? "UnFollow"
-                      : "Follow"}
-                  </Text>
-                </TouchableOpacity>
+                
               </View>
             </View>
           </View>
@@ -613,7 +516,7 @@ class MyCrewScreen extends Component {
                 post_id: 1,
                 page: 1
               });
-              this.setState({data:[] });
+              this.setState({ data: [] });
               this.openProgressbar();
               this.doGetFriendListApi(bodyData, myData.token);
             } else {
@@ -631,7 +534,7 @@ class MyCrewScreen extends Component {
   doGetFriendListApi(bodyData, token) {
     const { page, seed } = this.state;
     fetch(ApiUrl.getCrewList, {
-      method: "GET",
+      method: "POST",
       headers: {
         Accept: "application/json",
         Authorization: "Bearer " + token,
@@ -662,17 +565,17 @@ class MyCrewScreen extends Component {
           case 401: {
             console.log(message);
             this.doShowSnackBar(message);
-            this.setState({ loading: false, refreshing: false,data:[] });
+            this.setState({ loading: false, refreshing: false, data: [] });
             break;
           }
           case 400: {
             console.log(message);
             this.doShowSnackBar(message);
-            this.setState({ loading: false, refreshing: false,data:[] });
+            this.setState({ loading: false, refreshing: false, data: [] });
             break;
           }
           default: {
-            this.setState({ loading: false, refreshing: false,data:[] });
+            this.setState({ loading: false, refreshing: false, data: [] });
             this.doShowSnackBar(message);
             break;
           }
@@ -681,7 +584,6 @@ class MyCrewScreen extends Component {
       .catch(error => {
         this.hideProgressbar();
         console.log(error);
-        alert(error);
       });
   }
   doGetSendRequestList() {
@@ -696,7 +598,7 @@ class MyCrewScreen extends Component {
                 post_id: 1,
                 page: 1
               });
-              this.setState({data:[] });
+              this.setState({ data: [] });
               this.openProgressbar();
               this.doGetSendRequestListApi(bodyData, myData.token);
             } else {
@@ -711,7 +613,7 @@ class MyCrewScreen extends Component {
       }
     });
   }
-   
+
   doGetSendRequestListApi(bodyData, token) {
     const { page, seed } = this.state;
     fetch(ApiUrl.getSendRequestList, {
@@ -745,19 +647,19 @@ class MyCrewScreen extends Component {
           }
           case 401: {
             console.log(message);
-           
-            this.setState({ loading: false, refreshing: false,data:[] });
+
+            this.setState({ loading: false, refreshing: false, data: [] });
             break;
           }
           case 400: {
             console.log(message);
-           
-            this.setState({ loading: false, refreshing: false,data:[] });
+
+            this.setState({ loading: false, refreshing: false, data: [] });
             break;
           }
           default: {
             console.log(message);
-            this.setState({ loading: false, refreshing: false,data:[] });
+            this.setState({ loading: false, refreshing: false, data: [] });
             break;
           }
         }
@@ -765,7 +667,6 @@ class MyCrewScreen extends Component {
       .catch(error => {
         this.hideProgressbar();
         console.log(error);
-        alert(error);
       });
   }
   doGetReceivedRequestList() {
@@ -780,7 +681,7 @@ class MyCrewScreen extends Component {
                 post_id: 1,
                 page: 1
               });
-              this.setState({data:[] });
+              this.setState({ data: [] });
               this.openProgressbar();
               this.doGetReceivedRequestListApi(bodyData, myData.token);
             } else {
@@ -829,17 +730,17 @@ class MyCrewScreen extends Component {
           case 401: {
             console.log(message);
             this.doShowSnackBar(message);
-            this.setState({ loading: false, refreshing: false,data:[] });
+            this.setState({ loading: false, refreshing: false, data: [] });
             break;
           }
           case 400: {
             console.log(message);
             this.doShowSnackBar(message);
-            this.setState({ loading: false, refreshing: false,data:[] });
+            this.setState({ loading: false, refreshing: false, data: [] });
             break;
           }
           default: {
-            this.setState({ loading: false, refreshing: false,data:[] });
+            this.setState({ loading: false, refreshing: false, data: [] });
             this.doShowSnackBar(message);
             break;
           }
@@ -848,10 +749,9 @@ class MyCrewScreen extends Component {
       .catch(error => {
         this.hideProgressbar();
         console.log(error);
-        alert(error);
       });
   }
-  doFollowFriend(item,index){
+  doFollowFriend(item, index) {
     NetInfo.isConnected.fetch().then(isConnected => {
       if (isConnected) {
         AsyncStorage.getItem("data")
@@ -863,7 +763,7 @@ class MyCrewScreen extends Component {
                 user_id: item.id,
                 page: 1
               });
-              
+
               this.openProgressbar();
               this.doFollowFriendApi(bodyData, myData.token);
             } else {
@@ -878,7 +778,7 @@ class MyCrewScreen extends Component {
       }
     });
   }
-  doFollowFriendApi(bodyData,token){
+  doFollowFriendApi(bodyData, token) {
     fetch(ApiUrl.followUser, {
       method: "POST",
       headers: {
@@ -886,7 +786,7 @@ class MyCrewScreen extends Component {
         Authorization: "Bearer " + token,
         "Content-Type": "application/json"
       },
-      body:bodyData
+      body: bodyData
     })
       .then(response => response.json())
       .then(responseJson => {
@@ -905,13 +805,13 @@ class MyCrewScreen extends Component {
           case 401: {
             console.log(message);
             this.doShowSnackBar(message);
-            
+
             break;
           }
           case 400: {
             console.log(message);
             this.doShowSnackBar(message);
-           
+
             break;
           }
           default: {
@@ -923,7 +823,6 @@ class MyCrewScreen extends Component {
       .catch(error => {
         this.hideProgressbar();
         console.log(error);
-        alert(error);
       });
   }
   openProgressbar = () => {
@@ -960,6 +859,17 @@ class MyCrewScreen extends Component {
     );
   }
   render() {
+    const { currentlyOpenSwipeable } = this.state;
+    const itemProps = {
+      onOpen: (event, gestureState, swipeable) => {
+        if (currentlyOpenSwipeable && currentlyOpenSwipeable !== swipeable) {
+          currentlyOpenSwipeable.recenter();
+        }
+
+        this.setState({ currentlyOpenSwipeable: swipeable });
+      },
+      onClose: () => this.setState({ currentlyOpenSwipeable: null })
+    };
     return (
       <View style={customstyles.container}>
         <View
@@ -989,7 +899,7 @@ class MyCrewScreen extends Component {
                     : crewtabstyles.FriendsInactiveTabText
                 }
               >
-                My Crew
+                Crew Mates
               </Text>
             </View>
           </TouchableOpacity>
@@ -1077,12 +987,19 @@ class MyCrewScreen extends Component {
           numColumns={1}
           style={{ marginTop: 8 }}
           data={this.state.data}
-          renderItem={({ item, index }) => this.state.isFollowersActive ? this.renderSendFriends(item,index): this.state.isMutualFriends ? this.renderReceivedFriends(item,index): this.renderFriends(item,index)}
+          renderItem={({ item, index }) =>
+            this.state.isFollowersActive
+              ? this.renderSendFriends(item, index)
+              : this.state.isMutualFriends
+              ? this.renderReceivedFriends(item, index)
+              : this.renderFriends(item, index)
+          }
           ItemSeparatorComponent={this.renderSeparator}
           keyExtractor={(item, index) => index.toString()}
           nestedScrollEnabled={false}
           ListEmptyComponent={this.renderEmpty()}
         />
+
         <ProgressCompoment isProgress={this.state.isProgress} />
       </View>
     );

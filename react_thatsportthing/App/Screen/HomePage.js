@@ -58,7 +58,7 @@ const HomePage = createDrawerNavigator(
     drawerOpenRoute: "DrawerOpen",
     drawerCloseRoute: "DrawerClose",
     drawerToggleRoute: "DrawerToggle",
-    drawerBackgroundColor: Colors.navBg,
+    drawerBackgroundColor: Colors.drawerBg,
     contentOptions: {
       activeTintColor: Colors.white,
       labelStyle: {

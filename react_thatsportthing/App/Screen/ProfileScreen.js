@@ -381,12 +381,16 @@ class ProfileScreen extends Component {
               const myData = JSON.parse(data);
 
               let postData = {
-                method: "GET",
+                method: "POST",
                 headers: {
                   Accept: "application/json",
                   Authorization: "Bearer " + myData.token,
                   "Content-Type": "multipart/form-data"
-                }
+                },
+                body: JSON.stringify({
+                  page: this.state.page,
+                  user_id:this.state.receiver_id
+                })
               };
 
               this.getPostListApi(postData);
@@ -403,7 +407,7 @@ class ProfileScreen extends Component {
     });
   }
   getPostListApi(bodyData) {
-    fetch(ApiUrl.getPosts, bodyData)
+    fetch(ApiUrl.getMyPostsList, bodyData)
       .then(response => response.json())
       .then(responseJson => {
         const message = responseJson.message;

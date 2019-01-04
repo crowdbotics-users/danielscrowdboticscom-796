@@ -6,11 +6,16 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
-  FlatList
+  FlatList,
+  NetInfo,
+  AsyncStorage,
+  Alert
 } from "react-native";
 import HeaderComponent from "../../Compoments/HeaderCompoments/HeaderCompoment";
 import Colors from "../../Resource/Colors";
 import Icons from "../../Resource/Icons";
+import ApiUrl from "../../Network/ApiUrl";
+import ProgressCompoment from "../../Compoments/ProgressCompoment";
 
 class MessageListScreen extends PureComponent {
   static navigationOptions = ({ navigation }) => {
@@ -25,81 +30,94 @@ class MessageListScreen extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      isProgress: false,
+      empty_list: "No Messages yet.",
+      conversation_count: 0,
+      msg_request_count: 0,
       isConversation: true,
       isMessageRequest: false,
-      dataSource:[
-        {
-          messageId:1,
-          name:'Mike PortNoy',
-          messageText:'This is sample message',
-          readStatus:0,
-          profilePicture:''
-        },
-        {
-          messageId:2,
-          name:'Mike PortNoy',
-          messageText:'This is sample message',
-          readStatus:0,
-          profilePicture:''
-        },
-        {
-          messageId:3,
-          name:'Mike PortNoy',
-          messageText:'This is sample message',
-          readStatus:1,
-          profilePicture:''
-        },
-        {
-          messageId:4,
-          name:'Mike PortNoy',
-          messageText:'This is sample message',
-          readStatus:1,
-          profilePicture:''
-        },
-        {
-          messageId:5,
-          name:'Mike PortNoy',
-          messageText:'This is sample message',
-          readStatus:1,
-          profilePicture:''
-        },
-        {
-          messageId:6,
-          name:'Mike PortNoy',
-          messageText:'This is sample message',
-          readStatus:1,
-          profilePicture:''
-        },
-        {
-          messageId:7,
-          name:'Mike PortNoy',
-          messageText:'This is sample message',
-          readStatus:1,
-          profilePicture:''
-        },
-        {
-          messageId:8,
-          name:'Mike PortNoy',
-          messageText:'This is sample message',
-          readStatus:1,
-          profilePicture:''
-        },
-        {
-          messageId:9,
-          name:'Mike PortNoy',
-          messageText:'This is sample message',
-          readStatus:1,
-          profilePicture:''
-        },
-        {
-          messageId:10,
-          name:'Mike PortNoy',
-          messageText:'This is sample message',
-          readStatus:1,
-          profilePicture:''
-        }
-      ]
+      dataSource: []
     };
+  }
+  componentDidMount() {
+    this.doGetMessageList();
+  }
+  openProgressbar = () => {
+    this.setState({ isProgress: true });
+  };
+  hideProgressbar = () => {
+    this.setState({ isProgress: false });
+  };
+  doGetMessageList() {
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if (isConnected) {
+        AsyncStorage.getItem("data")
+          .then(data => {
+            if (data != null) {
+              const myData = JSON.parse(data);
+
+              let postData = {
+                method: "GET",
+                headers: {
+                  Accept: "application/json",
+                  Authorization: "Bearer " + myData.token,
+                  "Content-Type": "application/json"
+                }
+              };
+
+              this.openProgressbar();
+              this.doGetMessageListApi(postData);
+            } else {
+              console.log(data);
+            }
+          })
+          .done();
+      } else {
+        Alert.alert(
+          "Internet Connection",
+          "Kindly connect to internet then try again"
+        );
+      }
+    });
+  }
+  doGetMessageListApi(bodyData) {
+    fetch(ApiUrl.getMessageList, bodyData)
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+            const result = responseJson.result;
+
+            this.setState({
+              dataSource: result.data,
+              conversation_count: result.data.length
+            });
+
+            break;
+          }
+          case 401: {
+            
+console.log(message);
+
+            break;
+          }
+          case 400: {
+            console.log(message);
+
+            break;
+          }
+        }
+        this.hideProgressbar();
+      })
+      .catch(error => {
+        this.hideProgressbar();
+        console.log(error);
+      });
   }
   doSendMessage() {
     const { navigate } = this.props.navigation;
@@ -123,47 +141,92 @@ class MessageListScreen extends PureComponent {
       });
     }
   }
-  renderRow(item,index){
-    
-      return (
-        <View style={{flexDirection:'row',alignItems:'center'}}>
-          <View>
-          <View
+  renderEmpty(){
+    return(
+      <View style={{alignItems:'center',justifyContent:'center',alignContent:'center',height:'100%'}}>
+        <Image source={Icons.empty_conversation} style={{width:100,height:100,alignSelf:'center'}}/>
+        <Text
               style={{
-                width: 60,
-                height: 60,
-                borderRadius: 30,
-                backgroundColor: "#F8F6F7",
-                alignSelf: "center",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-                margin:5
+                fontFamily: "OpenSans-Light",
+                textAlign:'center',
+                marginTop:20,
+                fontSize: 14
               }}
             >
-              <Image
-                source={
-                  item.profilePicture == ""
-                    ? Icons.messi
-                    : { uri: item.profilePicture }
-                }
-                style={{
-                  width: 54,
-                  height: 54,
-                  borderRadius: 27,
-                  borderWidth: 1.5,
-                  borderColor: "#D1D0D0",
-                  alignSelf: "center"
-                }}
-              />
-            </View>
-          </View>
-          <View style={{flex:1}}>
-            <Text>{item.name}</Text>
-            <Text>{item.messageText}</Text>
+              {this.state.empty_list}
+            </Text>
+      </View>
+    );
+  }
+
+  renderRow(item, index) {
+    return (
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View>
+          <View
+            style={{
+              width: 60,
+              height: 60,
+              borderRadius: 30,
+              backgroundColor: "#F8F6F7",
+              alignSelf: "center",
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
+              margin: 5
+            }}
+          >
+            <Image
+              source={
+                item.profile_image == ""
+                  ? Icons.messi
+                  : { uri: item.profile_image }
+              }
+              style={{
+                width: 54,
+                height: 54,
+                borderRadius: 27,
+                borderWidth: 1.5,
+                borderColor: "#D1D0D0",
+                alignSelf: "center"
+              }}
+            />
           </View>
         </View>
-    
+        <View style={{ flex: 1 }}>
+          <View style={{ flexDirection: "row" }}>
+            <Text
+              style={{
+                fontFamily: "OpenSans-Bold",
+                color: Colors.colorEdittext,
+                fontSize: 16
+              }}
+            >
+              {item.full_name}
+            </Text>
+            <View
+              style={{
+                width: 10,
+                height: 10,
+                borderRadius: 5,
+                backgroundColor:
+                  item.login_status == 1
+                    ? Colors.colorOnline
+                    : Colors.colorOffline
+              }}
+            />
+          </View>
+          <Text
+            style={{
+              fontFamily: "OpenSans-SemiBold",
+              color: Colors.colorEdittext,
+              fontSize: 16
+            }}
+          >
+            {item.content}
+          </Text>
+        </View>
+      </View>
     );
   }
   render() {
@@ -217,7 +280,9 @@ class MessageListScreen extends PureComponent {
                     marginEnd: 5
                   }}
                 >
-                  <Text style={{ color: Colors.white }}>Conversations (2)</Text>
+                  <Text style={{ color: Colors.white }}>
+                    Conversations ({this.state.conversation_count})
+                  </Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
@@ -237,7 +302,7 @@ class MessageListScreen extends PureComponent {
                   }}
                 >
                   <Text style={{ color: Colors.white }}>
-                    Message Requests (4)
+                    Message Requests ({this.state.msg_request_count})
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -269,10 +334,13 @@ class MessageListScreen extends PureComponent {
               style={{ color: Colors.colorEdittext, flex: 1, padding: 0 }}
             />
           </View>
-            <FlatList
-              data={this.state.dataSource}
-              renderItem={({item,index})=>this.renderRow(item,index)}
-            />
+          <FlatList
+         
+            data={this.state.dataSource}
+            renderItem={({ item, index }) => this.renderRow(item, index)}
+            ListEmptyComponent={()=>this.renderEmpty()}
+          />
+          <ProgressCompoment isProgress={this.state.isProgress} />
         </View>
       </SafeAreaView>
     );

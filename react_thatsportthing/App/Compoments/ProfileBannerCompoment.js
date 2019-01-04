@@ -260,15 +260,41 @@ class ProfileBannerCompoment extends Component {
                         color: Colors.white,
                         fontSize: 14,
                         fontFamily: "OpenSans-SemiBold",
-                        width: Dimensions.get("screen").width / 2,
+                        width: Dimensions.get("screen").width / 3,
                         padding: 10
                       }}
                     >
                       {this.props.friend_status === ""
-                        ? "+Send Request"
+                        ? "+ Crew"
                         : this.props.friend_status === "pending"
                         ? "Cancel Request"
-                        : "+Send Request"}
+                        : "+ Crew"}
+                    </Text>
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      borderEndWidth: 1,
+                      borderEndColor: Colors.white,
+                      marginTop: 10,
+                      marginBottom: 10
+                    }}
+                  />
+                  <TouchableOpacity>
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontFamily: "OpenSans-SemiBold",
+                        width: Dimensions.get("screen").width / 3,
+                        padding: 10
+                      }}
+                    >
+                      {this.props.follow_status === ""
+                        ? "+ Follow"
+                        : this.props.follow_status === "1"
+                        ? "Cancel Request"
+                        : "+ Follow"}
                     </Text>
                   </TouchableOpacity>
                   <View
@@ -286,7 +312,7 @@ class ProfileBannerCompoment extends Component {
                         color: Colors.white,
                         fontSize: 14,
                         fontFamily: "OpenSans-SemiBold",
-                        width: Dimensions.get("screen").width / 2,
+                        width: Dimensions.get("screen").width / 3,
                         padding: 10
                       }}
                     >

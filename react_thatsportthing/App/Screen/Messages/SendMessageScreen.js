@@ -36,8 +36,12 @@ class SendMessageScreen extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      postImage: "",
       messages: "",
       search: "",
+      selectedUser: "",
+      selectedUserId: 0,
+      selectedUserBox: false,
       isProgress: false,
       isHideList: false,
       isHideProgress: false,
@@ -77,7 +81,7 @@ class SendMessageScreen extends PureComponent {
       .catch(e => alert(e));
   }
   doSendMessage() {
-    if (this.state.search == "") {
+    if (this.state.selectedUserId == 0) {
       this.refs.search.focus();
       alert("Please Select Person");
     } else if (this.state.messages == "") {
@@ -93,15 +97,16 @@ class SendMessageScreen extends PureComponent {
                 const myData = JSON.parse(data);
                 const bodyData = new FormData();
                 if (this.state.postImage != "") {
-                  bodyData.append("post_image", {
+                  bodyData.append("conversation_image", {
                     uri: this.state.postImage,
                     type: "image/jpeg",
-                    name: "image1"
+                    name: "image1.jpeg"
                   });
                 }
 
-                bodyData.append("description", this.state.messages);
-                bodyData.append("post_status", this.state.privacy);
+                bodyData.append("content", this.state.messages);
+                bodyData.append("receiver_id", this.state.selectedUserId);
+                
 
                 this.openProgressbar();
                 this.doAddPostApi(bodyData, myData.token);
@@ -137,6 +142,8 @@ class SendMessageScreen extends PureComponent {
 
         switch (status) {
           case 200: {
+            this.setState({search:'',messages:''});
+            this.doRemoveSelected();
             this.doShowSnackBar(message);
             break;
           }
@@ -178,18 +185,27 @@ class SendMessageScreen extends PureComponent {
 
         switch (status) {
           case 200: {
-            this.setState({isHideProgress:false});
-           // this.doShowSnackBar(message);
+            const data = responseJson.result.data;
+            this.setState({ isHideProgress: false });
+
+            if (data.length > 0) {
+              this.setState({ isHideList: true });
+              this.setState({ searchPeople: data });
+            } else {
+              this.setState({ isHideList: false });
+            }
+
+            // this.doShowSnackBar(message);
             break;
           }
           case 401: {
-            this.setState({isHideProgress:false});
+            this.setState({ isHideProgress: false });
             this.doShowSnackBar(message);
             console.log(message);
             break;
           }
           case 400: {
-            this.setState({isHideProgress:false});
+            this.setState({ isHideProgress: false });
             this.doShowSnackBar(message);
             console.log(message);
             break;
@@ -197,9 +213,9 @@ class SendMessageScreen extends PureComponent {
         }
       })
       .catch(error => {
+        this.setState({ isHideProgress: false });
         this.hideProgressbar();
         console.log(error);
-        alert(error);
       });
   }
   openProgressbar = () => {
@@ -220,7 +236,20 @@ class SendMessageScreen extends PureComponent {
     });
   }
   onSearchPeopleClick(item) {
-    alert(item.user);
+    this.setState({
+      selectedUser: item.full_name,
+      selectedUserId: item.id,
+      selectedUserBox: true
+    });
+    this.setState({ isHideList: false });
+  }
+  doRemoveSelected(){
+    this.setState({
+      selectedUser: '',
+      selectedUserId: 0,
+      selectedUserBox: false
+    });
+    this.setState({ isHideList: false }); 
   }
   renderSearchPeople(item, index) {
     return (
@@ -234,13 +263,13 @@ class SendMessageScreen extends PureComponent {
               fontSize: 14
             }}
           >
-            {item.user}
+            {item.full_name}
           </Text>
         </TouchableOpacity>
       </View>
     );
   }
-  doSearchPeople(){
+  doSearchPeople() {
     if (this.state.search == "") {
       this.refs.search.focus();
       alert("Please Select Person");
@@ -252,11 +281,11 @@ class SendMessageScreen extends PureComponent {
               console.log("AsyncStorage");
               if (data != null) {
                 const myData = JSON.parse(data);
-                const bodyData=JSON.stringify({
-                  search:this.state.search
+                const bodyData = JSON.stringify({
+                  search_data: this.state.search
                 });
 
-                this.setState({isHideProgress:true});
+                this.setState({ isHideProgress: true });
                 this.doSearchPeopleApi(bodyData, myData.token);
               } else {
                 console.log(data);
@@ -311,27 +340,59 @@ class SendMessageScreen extends PureComponent {
               >
                 To:
               </Text>
-              <TextInput
-                ref={"search"}
+              <View
                 style={{
-                  fontFamily: "OpenSans-SemiBold",
-                  color: Colors.colorEdittext,
-                  paddingLeft: 5,
-                  paddingTop: 5,
-                  paddingBottom: 5,
                   flex: 1,
-                  fontSize: 14
+                  flexDirection: "row",
+                  alignItems: "center"
                 }}
-                placeholder="Search People"
-                placeholderTextColor={Colors.colorSearch}
-                underlineColorAndroid={Colors.transparent}
-                value={this.state.search}
-                onBlur={()=>this.doSearchPeople()}
-                // onChangeText={text => this.filterSearch(text)}
-                onChangeText={text => {
-                  this.setState({ search: text });
-                }}
-              />
+              >
+                <TextInput
+                  ref={"search"}
+                  style={{
+                    fontFamily: "OpenSans-SemiBold",
+                    color: this.state.selectedUserBox
+                      ? Colors.white
+                      : Colors.colorEdittext,
+                    padding:0,
+                    flex:0.3,
+                    fontSize: 14,
+                    textAlign:this.state.selectedUserBox ?'center':'left',
+                    borderRadius: this.state.selectedUserBox ? 15 : 0,
+                    backgroundColor: this.state.selectedUserBox
+                      ? Colors.drawerBg
+                      : Colors.transparent
+                  }}
+                  editable={this.state.selectedUserBox ? false : true}
+                  placeholder="Search People"
+                  placeholderTextColor={Colors.colorSearch}
+                  underlineColorAndroid={Colors.transparent}
+                  value={
+                    this.state.selectedUserBox
+                      ? this.state.selectedUser
+                      : this.state.search
+                  }
+                  onBlur={() => this.doSearchPeople()}
+                  // onChangeText={text => this.filterSearch(text)}
+                  onChangeText={text => {
+                    this.setState({ search: text });
+                  }}
+                />
+              </View>
+              <TouchableOpacity onPress={()=>this.doRemoveSelected()}>
+                <Text
+                  style={{
+                    color: Colors.red,
+                    fontFamily: "OpenSans-Bold",
+                    display: this.state.selectedUserBox ? "flex" : "none",
+                    fontSize: 16,
+                    marginTop:10,
+                    marginEnd:10
+                  }}
+                >
+                  X
+                </Text>
+              </TouchableOpacity>
               <ActivityIndicator
                 color={Colors.bgHeader}
                 style={{

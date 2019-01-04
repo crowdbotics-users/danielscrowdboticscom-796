@@ -60,5 +60,8 @@ const Icons ={
     ic_message:require('./Icon/ic_message.png'),
     ic_notification_home:require('./Icon/ic_notification_home.png'),
     ic_pencil_edit:require('./Icon/ic_pencil_edit.png'),
+    empty_conversation:require('./Icon/empty_conversation.png'),
+    ic_remove_friend:require('./Icon/ic_remove_friend.png'),
+    ic_remove_friend_swipe:require('./Icon/ic_remove_friend_swipe.png'),
 }
 export default Icons;

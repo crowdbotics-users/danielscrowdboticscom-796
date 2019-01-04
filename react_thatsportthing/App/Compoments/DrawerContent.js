@@ -38,6 +38,7 @@ class DrawerContent extends Component {
     super(props);
     this.state = {
       isProgress: false,
+      full_name: "",
       username: "",
       useremail: "",
       userimage: "",
@@ -184,6 +185,7 @@ class DrawerContent extends Component {
       })
       .catch(error => {
         console.log(error);
+        this.hideProgressbar();
       });
   }
   doFinish(screen) {
@@ -231,19 +233,7 @@ class DrawerContent extends Component {
     this.closeDrawer();
    this.doRedirect("MyProfileScreen");
   }
-  doPosts = () => {
-    this.setState({
-      isActiveHome: false,
-      isActiveProfile: false,
-      isActivePosts: true,
-      isActivePhotos: false,
-      isActiveVideos: false,
-      isActiveFriends: false,
-      isActiveAccountSettings: false,
-      isActiveLogout: false
-    });
-    this.closeDrawer();
-  };
+  
   doPhotos = () => {
     this.setState({
       isActiveHome: false,
@@ -257,19 +247,7 @@ class DrawerContent extends Component {
     });
     this.closeDrawer();
   };
-  doVideos = () => {
-    this.setState({
-      isActiveHome: false,
-      isActiveProfile: false,
-      isActivePosts: false,
-      isActivePhotos: false,
-      isActiveVideos: true,
-      isActiveFriends: false,
-      isActiveAccountSettings: false,
-      isActiveLogout: false
-    });
-    this.closeDrawer();
-  };
+  
   doFriends = () => {
     this.setState({
       isActiveHome: false,
@@ -314,7 +292,7 @@ class DrawerContent extends Component {
             style={[
               styles.container,
               {
-                backgroundColor: Color.navBg,
+                backgroundColor: Color.drawerBg,
                 justifyContent: "flex-start"
               }
             ]}
@@ -380,44 +358,19 @@ class DrawerContent extends Component {
                 </View>
               </View>
             </View>
-            <View>
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignContent: "center",
-                  alignItems: "center",
-                  backgroundColor: "#313131",
-                  flexDirection: "row",
-                  padding: Platform.OS == "android" ? 0 : 10,
-                  borderColor: Color.colorSearch,
-                  margin: 10,
-                  borderRadius: 5
-                }}
-              >
-                <Image
-                  source={Icons.ic_search}
-                  style={{
-                    width: 24,
-                    height: 24,
-                    marginRight: 5,
-                    marginLeft: 10
-                  }}
-                />
-                <TextInput
-                  returnKeyType="done"
-                  placeholder="Search.."
-                  style={{
-                    padding: Platform.OS == "android" ? 5 : 0,
-                    color: Color.colorSearch,
-                    flex: 1,
-                    marginLeft: 5,
-                    fontSize: 14,
-                    fontFamily: "OpenSans-SemiBold"
-                  }}
-                  underlineColorAndroid={Color.transparent}
-                  placeholderTextColor={Color.colorSearch}
-                />
-              </View>
+            <View style={{backgroundColor:Color.navBg}}>
+            <Text
+                      style={{
+                        textAlign:'right',
+                        color: Color.white,
+                        flex: 1,
+                        margin: 10,
+                        fontSize: 14,
+                        fontFamily: "OpenSans-SemiBold"
+                      }}
+                    >
+                      {this.state.full_name}
+                    </Text>
             </View>
             <View
               style={{
@@ -427,17 +380,17 @@ class DrawerContent extends Component {
               }}
             />
             <View>
-              <View style={{ backgroundColor: Color.navBg }}>
+              <View style={{ backgroundColor: Color.drawerBg }}>
                 <TouchableOpacity onPress={this.doHome.bind(this)}>
                   <View
                     style={{
                       backgroundColor: this.state.isActiveHome
-                        ? "#313131"
+                        ? "#1f1f1f"
                         : Color.transparent,
                       flexDirection: "row",
                       padding: 10,
                       borderColor: Color.colorSearch,
-                      marginTop: 10
+                      
                     }}
                   >
                     <Image
@@ -469,8 +422,8 @@ class DrawerContent extends Component {
                   <View
                     style={{
                       backgroundColor: this.state.isActiveProfile
-                        ? "#313131"
-                        : Color.navBg,
+                        ? "#1f1f1f"
+                        : Color.drawerBg,
                       flexDirection: "row",
                       padding: 10,
                       borderColor: Color.colorSearch
@@ -499,48 +452,14 @@ class DrawerContent extends Component {
                   </View>
                 </TouchableOpacity>
               </View>
-              <View>
-                <TouchableOpacity onPress={this.doPosts.bind(this)}>
-                  <View
-                    style={{
-                      backgroundColor: this.state.isActivePosts
-                        ? "#313131"
-                        : Color.navBg,
-                      flexDirection: "row",
-                      padding: 10,
-                      borderColor: Color.colorSearch
-                    }}
-                  >
-                    <Image
-                      source={Icons.ic_posts}
-                      style={{
-                        width: 24,
-                        height: 24,
-                        marginLeft: 10,
-                        marginRight: 5
-                      }}
-                    />
-                    <Text
-                      style={{
-                        color: Color.colorSearch,
-                        flex: 1,
-                        marginLeft: 5,
-                        fontSize: 16,
-                        fontFamily: "OpenSans-SemiBold"
-                      }}
-                    >
-                      My Posts
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
+              
               <View>
                 <TouchableOpacity onPress={this.doPhotos.bind(this)}>
                   <View
                     style={{
                       backgroundColor: this.state.isActivePhotos
-                        ? "#313131"
-                        : Color.navBg,
+                        ? "#1f1f1f"
+                        : Color.drawerBg,
                       flexDirection: "row",
                       padding: 10,
                       borderColor: Color.colorSearch
@@ -565,54 +484,19 @@ class DrawerContent extends Component {
                         fontFamily: "OpenSans-SemiBold"
                       }}
                     >
-                      Photos
+                      Media Gallery
                     </Text>
                   </View>
                 </TouchableOpacity>
               </View>
-              <View>
-                <TouchableOpacity onPress={this.doVideos.bind(this)}>
-                  <View
-                    style={{
-                      backgroundColor: this.state.isActiveVideos
-                        ? "#313131"
-                        : Color.navBg,
-                      flexDirection: "row",
-                      padding: 10,
-                      borderColor: Color.colorSearch
-                    }}
-                  >
-                    <Image
-                      resizeMode="contain"
-                      source={Icons.ic_videos}
-                      style={{
-                        width: 24,
-                        height: 24,
-                        marginLeft: 10,
-                        marginRight: 5
-                      }}
-                    />
-                    <Text
-                      style={{
-                        color: Color.colorSearch,
-                        flex: 1,
-                        marginLeft: 5,
-                        fontSize: 16,
-                        fontFamily: "OpenSans-SemiBold"
-                      }}
-                    >
-                      Videos
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
+              
               <View>
                 <TouchableOpacity onPress={this.doFriends.bind(this)}>
                   <View
                     style={{
                       backgroundColor: this.state.isActiveFriends
-                        ? "#313131"
-                        : Color.navBg,
+                        ? "#1f1f1f"
+                        : Color.drawerBg,
                       flexDirection: "row",
                       padding: 10,
                       borderColor: Color.colorSearch
@@ -637,7 +521,7 @@ class DrawerContent extends Component {
                         fontFamily: "OpenSans-SemiBold"
                       }}
                     >
-                      Crew
+                      My Crew
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -647,8 +531,8 @@ class DrawerContent extends Component {
                   <View
                     style={{
                       backgroundColor: this.state.isActiveAccountSettings
-                        ? "#313131"
-                        : Color.navBg,
+                        ? "#1f1f1f"
+                        : Color.drawerBg,
                       flexDirection: "row",
                       padding: 10,
                       borderColor: Color.colorSearch,
@@ -684,8 +568,8 @@ class DrawerContent extends Component {
                   <View
                     style={{
                       backgroundColor: this.state.isActiveLogout
-                        ? "#313131"
-                        : Color.navBg,
+                        ? "#1f1f1f"
+                        : Color.drawerBg,
                       flexDirection: "row",
                       padding: 10,
                       borderColor: Color.colorSearch

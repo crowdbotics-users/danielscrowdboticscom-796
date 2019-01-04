@@ -41,7 +41,9 @@ class HomScreen extends PureComponent {
     super(props);
 
     this.state = {
-        page:1,
+      page: 1,
+      conversation_count: 0,
+      notification_count: 0,
       isProgress: false,
       loading: false,
       refreshing: false,
@@ -55,9 +57,32 @@ class HomScreen extends PureComponent {
   componentDidMount() {
     try {
       this.getPostList(false);
+      this.doGetUserInfo();
     } catch (error) {
       console.log(error);
     }
+  }
+  doGetUserInfo() {
+    AsyncStorage.getItem("data")
+      .then(data => {
+        if (data != null) {
+          const myData = JSON.parse(data);
+          this.setState({
+            full_name: myData.full_name,
+            profile_image: myData.profile_image,
+            cover_image: myData.cover_image,
+            post_status: myData.post_status,
+            follower_count: myData.follower_count,
+            crew_count: myData.crew_count,
+            conversation_count:myData.conversation_count,
+            notification_count:myData.notification_count,
+            post_count: myData.post_count,
+            user_name: myData.user_name
+          });
+        } else {
+        }
+      })
+      .done();
   }
   getPostList(showProgress) {
     NetInfo.isConnected.fetch().then(isConnected => {
@@ -75,7 +100,7 @@ class HomScreen extends PureComponent {
                   "Content-Type": "multipart/form-data"
                 }
               };
-              
+
               if (showProgress) {
                 this.setState({
                   isProgress: true,
@@ -90,7 +115,6 @@ class HomScreen extends PureComponent {
                   myPostData: []
                 });
                 this.getPostListApi(postData, showProgress);
-                
               }
             } else {
             }
@@ -105,7 +129,7 @@ class HomScreen extends PureComponent {
     });
   }
   getPostListApi(bodyData, showProgress) {
-    fetch(ApiUrl.getPosts+`?page=`+this.state.page, bodyData)
+    fetch(ApiUrl.getPosts + `?page=` + this.state.page, bodyData)
       .then(response => response.json())
       .then(responseJson => {
         const message = responseJson.message;
@@ -141,7 +165,9 @@ class HomScreen extends PureComponent {
         console.log(error);
       });
   }
-  
+  doRedirect(screen) {
+    this.props.navigation.navigate(screen);
+  }
   render() {
     return (
       <SafeAreaView style={{ flex: 1 }}>
@@ -187,46 +213,118 @@ class HomScreen extends PureComponent {
                     placeholderTextColor={Colors.colorSearch}
                   />
                 </View>
-                <TouchableOpacity>
-                  <View
-                    style={{
-                      backgroundColor: Colors.colorImageBg,
-                      padding: 6,
-                      borderRadius: 5
-                    }}
-                  >
-                    <Image
-                      source={Icons.ic_message}
+                <TouchableOpacity
+                  onPress={() => this.doRedirect("MessageListScreen")}
+                >
+                  <View style={{ position: "relative" }}>
+                    <View style={{ position: "relative" }}>
+                      <View
+                        style={{
+                          backgroundColor: Colors.colorImageBg,
+                          padding: 6,
+                          borderRadius: 5
+                        }}
+                      >
+                        <Image
+                          source={Icons.ic_message}
+                          style={{
+                            width: 24,
+                            height: 24,
+                            marginStart: 5,
+                            marginEnd: 5,
+                            tintColor: "#949494"
+                          }}
+                        />
+                      </View>
+                    </View>
+                    <View
                       style={{
-                        width: 24,
-                        height: 24,
-                        marginStart: 5,
-                        marginEnd: 5,
-                        tintColor: "#949494"
+                        position: "absolute",
+                        top: 0,
+                        alignItems: "center",
+                        end: 0
                       }}
-                    />
+                    >
+                      <View
+                        style={{
+                          backgroundColor: Colors.bgHeader,
+                          height: 15,
+                          width: 15,
+                          borderRadius: 7.5,
+                          alignItems: "center",
+                          borderColor: Colors.white,
+                          borderWidth: 1
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontFamily: "OpenSans-SemiBold"
+                          }}
+                        >
+                          {this.state.conversation_count}
+                        </Text>
+                      </View>
+                    </View>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                  <View
-                    style={{
-                      backgroundColor: Colors.colorImageBg,
-                      padding: 6,
-                      borderRadius: 5,
-                      marginStart: 5,
-                      marginEnd: 5
-                    }}
-                  >
-                    <Image
-                      source={Icons.ic_notification_home}
+                <TouchableOpacity
+                  onPress={() => this.doRedirect("MessageListScreen")}
+                >
+                  <View style={{ position: "relative" }}>
+                    <View style={{ position: "relative" }}>
+                      <View
+                        style={{
+                          backgroundColor: Colors.colorImageBg,
+                          padding: 6,
+                          borderRadius: 5,
+                          marginStart: 5,
+                          marginEnd: 5
+                        }}
+                      >
+                        <Image
+                          source={Icons.ic_notification_home}
+                          style={{
+                            width: 24,
+                            height: 24,
+                            marginStart: 5,
+                            marginEnd: 5,
+                            tintColor: "#949494"
+                          }}
+                        />
+                      </View>
+                    </View>
+                    <View
                       style={{
-                        width: 24,
-                        height: 24,
-                        marginStart: 5,
-                        marginEnd: 5,
-                        tintColor: "#949494"
+                        position: "absolute",
+                        top: 0,
+                        alignItems: "center",
+                        end: 10
                       }}
-                    />
+                    >
+                      <View
+                        style={{
+                          backgroundColor: Colors.bgHeader,
+                          height: 15,
+                          width: 15,
+                          borderRadius: 7.5,
+                          alignItems: "center",
+                          borderColor: Colors.white,
+                          borderWidth: 1
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontFamily: "OpenSans-SemiBold"
+                          }}
+                        >
+                          {this.state.notification_count}
+                        </Text>
+                      </View>
+                    </View>
                   </View>
                 </TouchableOpacity>
               </View>
