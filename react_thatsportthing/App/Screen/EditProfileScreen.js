@@ -99,6 +99,10 @@ class EditProfileScreen extends PureComponent {
   hideProgressbar = () => {
     this.setState({ isProgress: false });
   };
+  doRedirect(screen){
+    const {navigate} =this.props.navigation;
+    navigate(screen);
+  }
   doGetUserInfoApi(bodyData) {
     fetch(ApiUrl.getUserProfile, bodyData)
       .then(response => response.json())
@@ -889,7 +893,7 @@ class EditProfileScreen extends PureComponent {
               renderItem={({ item, index }) => this.renderItem(item)}
               keyExtractor={(item, index) => index.toString()}
             />
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>this.doRedirect('FavoriteSportScreen')}>
               <View
                 style={{
                   justifyContent: "center",

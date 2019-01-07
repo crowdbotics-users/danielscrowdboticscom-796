@@ -211,6 +211,7 @@ class HomScreen extends PureComponent {
                     }}
                     underlineColorAndroid={Colors.transparent}
                     placeholderTextColor={Colors.colorSearch}
+                    onFocus={()=>this.doRedirect('SearchResultScreen')}
                   />
                 </View>
                 <TouchableOpacity

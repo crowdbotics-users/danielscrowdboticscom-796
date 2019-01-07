@@ -36,6 +36,11 @@ import AccountPrivateScreen from "./App/Screen/Privacy/AccountPrivateScreen";
 import BlockedAccountScreen from "./App/Screen/Privacy/BlockedAccountScreen";
 import HomScreen from "./App/Screen/Home/HomScreen";
 import MyProfileScreen from "./App/Screen/MyProfile/MyProfileScreen";
+import SignUpScreen1 from "./App/Screen/Register/SignUpScreen1";
+import SignUpScreen2 from "./App/Screen/Register/SignUpScreen2";
+import WelcomeSocialScreen from "./App/Screen/Login/WelcomeSocialScreen";
+import FavoriteSportScreen from "./App/Screen/FavoriteSports/FavoriteSportScreen";
+import SearchResultScreen from "./App/Screen/Home/SearchResultScreen";
 
 const EditProfileScreenNavigator = createStackNavigator({
   EditProfileScreen: {
@@ -157,11 +162,24 @@ const MyProfileScreenNavigator = createStackNavigator({
     screen: MyProfileScreen
   }
 });
+const FavoriteSportScreenNavigator = createStackNavigator({
+  FavoriteSportScreen: {
+    screen: FavoriteSportScreen
+  }
+});
+const SearchResultScreenNavigator = createStackNavigator({
+  SearchResultScreen: {
+    screen: SearchResultScreen
+  }
+});
 const Main = createStackNavigator(
   {
     TestScreen: { screen: TestScreen },
     LoginType: { screen: LoginType },
     Login: { screen: Login },
+    SignUpScreen1: { screen: SignUpScreen1 },
+    SignUpScreen2: { screen: SignUpScreen2 },
+    WelcomeSocialScreen: { screen: WelcomeSocialScreen },
     SignUp1: { screen: SignUp1 },
     SignUp2: { screen: SignUp2 },
     SignUp3: { screen: SignUp3 },
@@ -308,6 +326,18 @@ const Main = createStackNavigator(
     },
     MyProfileScreen: {
       screen: MyProfileScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    FavoriteSportScreen: {
+      screen: FavoriteSportScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    SearchResultScreen: {
+      screen: SearchResultScreenNavigator,
       navigationOptions: {
         header: null
       }
