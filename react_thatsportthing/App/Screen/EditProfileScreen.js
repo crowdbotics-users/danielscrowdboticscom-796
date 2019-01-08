@@ -1,8 +1,6 @@
 import React, { PureComponent } from "react";
 import {
   View,
-  StyleSheet,
-  Dimensions,
   Platform,
   Text,
   TextInput,
@@ -22,7 +20,7 @@ import Icons from "../Resource/Icons";
 import ImagePicker from "react-native-image-crop-picker";
 import ApiUrl from "../Network/ApiUrl";
 import ProgressCompoment from "../Compoments/ProgressCompoment";
-import Snackbar, { showSnackBar } from '@prince8verma/react-native-snackbar'
+import { showSnackBar } from "@prince8verma/react-native-snackbar";
 
 class EditProfileScreen extends PureComponent {
   static navigationOptions = ({ navigation }) => {
@@ -36,6 +34,10 @@ class EditProfileScreen extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      isMaleActive: false,
+      isFemaleActive: false,
+      isOtherActive: false,
+      gender: "",
       isProgress: false,
       isActiveEveryone: true,
       isActiveYourCrew: false,
@@ -121,8 +123,16 @@ class EditProfileScreen extends PureComponent {
               full_name: result.full_name,
               profilePicture: result.profile_image,
               coverPicture: result.cover_image,
-              post_status: result.post_status
+              post_status: result.post_status,
+              gender: result.gender,
             });
+            if(result.gender=="male"){
+              this.doChangeGender("male");
+            }else if(result.gender=="female"){
+              this.doChangeGender("female");
+            }else if(result.gender=="other"){
+              this.doChangeGender("other");
+            }
             if (result.post_status == "all") {
               this.doChangeSeePost("everyone");
             } else {
@@ -186,6 +196,37 @@ class EditProfileScreen extends PureComponent {
   }
   doSportClick(data) {
     //  alert(JSON.stringify(data));
+  }
+  doChangeGender(gender) {
+    if (gender == "male") {
+      this.setState({
+        gender: "male",
+        isMaleActive: true,
+        isFemaleActive: false,
+        isOtherActive: false
+      });
+    } else if (gender == "female") {
+      this.setState({
+        gender: "female",
+        isMaleActive: false,
+        isFemaleActive: true,
+        isOtherActive: false
+      });
+    } else if (gender == "other") {
+      this.setState({
+        gender: "other",
+        isMaleActive: false,
+        isFemaleActive: false,
+        isOtherActive: true
+      });
+    } else {
+      this.setState({
+        gender: "male",
+        isMaleActive: true,
+        isFemaleActive: false,
+        isOtherActive: false
+      });
+    }
   }
   pickSingleProfile(cropit, circular = true) {
     ImagePicker.openPicker({
@@ -304,14 +345,14 @@ class EditProfileScreen extends PureComponent {
       });
     } else if (screen == "yourcrew") {
       this.setState({
-        post_status: "all",
+        post_status: "onlycrew",
         isActiveEveryone: false,
         isActiveYourCrew: true,
         isActiveYourCrewFollower: false
       });
     } else if (screen == "yourcrewfollower") {
       this.setState({
-        post_status: "all",
+        post_status: "crewfollower",
         isActiveEveryone: false,
         isActiveYourCrew: false,
         isActiveYourCrewFollower: true
@@ -346,6 +387,7 @@ class EditProfileScreen extends PureComponent {
 
               bodyData.append("name", this.state.full_name);
               bodyData.append("post_status", this.state.post_status);
+              bodyData.append("gender", this.state.gender);
 
               this.openProgressbar();
               console.log("doUpdateProfile", bodyData);
@@ -924,6 +966,99 @@ class EditProfileScreen extends PureComponent {
                 borderBottomWidth: 1
               }}
             />
+            <View style={{ flexDirection: "row", marginTop: 15, marginStart: 10,
+                    marginEnd: 10 }}>
+                <TouchableOpacity
+                  style={{ flex: 1 }}
+                  onPress={() => this.doChangeGender("male")}
+                >
+                  <View
+                    style={{
+                      alignItems: "center",
+                      backgroundColor: this.state.isMaleActive
+                        ? Colors.bgHeader
+                        : Colors.white,
+                      padding: 5,
+                      borderRadius: 4,
+                      borderColor: this.state.isMaleActive?Colors.bgHeader:Colors.colorEdittext,
+                      borderWidth: 1
+                    }}
+                  >
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontSize: 13,
+                        fontFamily: "OpenSans-SemiBold",
+                        color: this.state.isMaleActive
+                          ? Colors.white
+                          : Colors.colorEdittext
+                      }}
+                    >
+                      Male
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ flex: 1, marginStart: 8, marginEnd: 8 }}
+                  onPress={() => this.doChangeGender("female")}
+                >
+                  <View
+                    style={{
+                      alignItems: "center",
+                      backgroundColor: this.state.isFemaleActive
+                        ? Colors.bgHeader
+                        : Colors.white,
+                      padding: 5,
+                      borderRadius: 4,
+                      borderColor: this.state.isFemaleActive?Colors.bgHeader:Colors.colorEdittext,
+                      borderWidth: 1
+                    }}
+                  >
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontSize: 13,
+                        fontFamily: "OpenSans-SemiBold",
+                        color: this.state.isFemaleActive
+                          ? Colors.white
+                          : Colors.colorEdittext
+                      }}
+                    >
+                      Female
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ flex: 1 }}
+                  onPress={() => this.doChangeGender("other")}
+                >
+                  <View
+                    style={{
+                      alignItems: "center",
+                      backgroundColor: this.state.isOtherActive
+                        ? Colors.bgHeader
+                        : Colors.white,
+                      padding: 5,
+                      borderRadius: 4,
+                      borderColor: this.state.isOtherActive?Colors.bgHeader:Colors.colorEdittext,
+                      borderWidth: 1
+                    }}
+                  >
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontSize: 13,
+                        fontFamily: "OpenSans-SemiBold",
+                        color: this.state.isOtherActive
+                          ? Colors.white
+                          : Colors.colorEdittext
+                      }}
+                    >
+                      Other
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
             <Text
               style={{
                 color: Colors.black,

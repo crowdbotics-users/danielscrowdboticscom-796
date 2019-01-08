@@ -15,6 +15,7 @@ const Colors ={
     colorImageBg:'#313131',
     colorOnline:'#4de313',
     colorOffline:'#f5a623',
+    colorSender:'#f2f2f2'
 
 }
 export default Colors;

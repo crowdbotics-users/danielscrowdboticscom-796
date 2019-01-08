@@ -62,6 +62,15 @@ class HomScreen extends PureComponent {
       console.log(error);
     }
   }
+  componentWillMount(){
+    try {
+      this.getPostList(false);
+      this.doGetUserInfo();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
   doGetUserInfo() {
     AsyncStorage.getItem("data")
       .then(data => {
@@ -100,6 +109,7 @@ class HomScreen extends PureComponent {
                   "Content-Type": "multipart/form-data"
                 }
               };
+console.log(postData);
 
               if (showProgress) {
                 this.setState({

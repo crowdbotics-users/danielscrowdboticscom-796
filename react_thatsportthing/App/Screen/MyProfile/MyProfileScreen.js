@@ -42,6 +42,12 @@ class MyProfileScreen extends PureComponent {
       originalPostData: [],
       myPostData: [],
       originalMyPostData: [],
+      profile_image: '',
+              cover_image: '',
+              full_name: '',
+              user_name: '',
+              follower_count: 0,
+              crew_count: 0,
       dataSource: [
         {
           companyname: "ADIDAS",
@@ -88,7 +94,7 @@ class MyProfileScreen extends PureComponent {
       console.log(error);
     }
   }
-  
+
   getPostList(showProgress) {
     NetInfo.isConnected.fetch().then(isConnected => {
       if (isConnected) {
@@ -108,7 +114,15 @@ class MyProfileScreen extends PureComponent {
                   page: this.state.page
                 })
               };
-
+              let getUserData = {
+                method: "GET",
+                headers: {
+                  Accept: "application/json",
+                  Authorization: "Bearer " + myData.token,
+                  "Content-Type": "multipart/form-data"
+                }
+              };
+              this.getUserInfoApi(getUserData);
               if (showProgress) {
                 this.setState({
                   isProgress: true,
@@ -135,6 +149,45 @@ class MyProfileScreen extends PureComponent {
         );
       }
     });
+  }
+  getUserInfoApi(bodyData) {
+    fetch(ApiUrl.getUserProfile, bodyData)
+      .then(response => response.json())
+      .then(responseJson => {
+        const message = responseJson.message;
+        const status = responseJson.status;
+
+        switch (status) {
+          case 200: {
+            const result = responseJson.result;
+
+            this.setState({
+              profile_image: result.profile_image,
+              cover_image: result.cover_image,
+              full_name: result.full_name,
+              user_name: result.user_name,
+              follower_count: result.follower_count,
+              crew_count: result.crew_count
+            });
+
+            break;
+          }
+          case 401: {
+            console.log(message);
+
+            break;
+          }
+          case 400: {
+            console.log(message);
+
+            break;
+          }
+        }
+        
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
   getPostListApi(bodyData, showProgress) {
     fetch(ApiUrl.getMyPostsList, bodyData)
@@ -189,10 +242,10 @@ class MyProfileScreen extends PureComponent {
         <NestedScrollView style={{ flex: 1 }}>
           <View style={{ flex: 1 }}>
             <MyProfileBannerComponent
-              full_name="John Schuffer"
-              user_name="schuffer"
-              crew_count={292}
-              follower_count={292}
+              full_name={this.state.full_name}
+              user_name={this.state.user_name}
+              crew_count={this.state.crew_count}
+              follower_count={this.state.follower_count}
               navigation={this.props.navigation}
             />
             <View
@@ -241,13 +294,12 @@ class MyProfileScreen extends PureComponent {
               >
                 <WritePostCompoment navigation={this.props.navigation} />
               </View>
-              
             </View>
             <MyPostListComponent
-                streams={this.state.postData}
-                updateStreams={this.state.originalPostData}
-                navigation={this.props.navigation}
-              />
+              streams={this.state.postData}
+              updateStreams={this.state.originalPostData}
+              navigation={this.props.navigation}
+            />
           </View>
         </NestedScrollView>
       </SafeAreaView>

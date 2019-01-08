@@ -41,6 +41,8 @@ import SignUpScreen2 from "./App/Screen/Register/SignUpScreen2";
 import WelcomeSocialScreen from "./App/Screen/Login/WelcomeSocialScreen";
 import FavoriteSportScreen from "./App/Screen/FavoriteSports/FavoriteSportScreen";
 import SearchResultScreen from "./App/Screen/Home/SearchResultScreen";
+import MessageRequestScreen from "./App/Screen/Messages/MessageRequestScreen";
+import MessageConversationScreen from "./App/Screen/Messages/MessageConversationScreen";
 
 const EditProfileScreenNavigator = createStackNavigator({
   EditProfileScreen: {
@@ -170,6 +172,16 @@ const FavoriteSportScreenNavigator = createStackNavigator({
 const SearchResultScreenNavigator = createStackNavigator({
   SearchResultScreen: {
     screen: SearchResultScreen
+  }
+});
+const MessageRequestScreenNavigator = createStackNavigator({
+  SearchResultScreen: {
+    screen: MessageRequestScreen
+  }
+});
+const MessageConversationScreenNavigator = createStackNavigator({
+  MessageConversationScreen: {
+    screen: MessageConversationScreen
   }
 });
 const Main = createStackNavigator(
@@ -338,6 +350,18 @@ const Main = createStackNavigator(
     },
     SearchResultScreen: {
       screen: SearchResultScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    MessageRequestScreen: {
+      screen: MessageRequestScreenNavigator,
+      navigationOptions: {
+        header: null
+      }
+    },
+    MessageConversationScreen: {
+      screen: MessageConversationScreenNavigator,
       navigationOptions: {
         header: null
       }
