@@ -76,6 +76,8 @@ class HomScreen extends PureComponent {
       .then(data => {
         if (data != null) {
           const myData = JSON.parse(data);
+          console.log(myData);
+          
           this.setState({
             full_name: myData.full_name,
             profile_image: myData.profile_image,
@@ -83,7 +85,7 @@ class HomScreen extends PureComponent {
             post_status: myData.post_status,
             follower_count: myData.follower_count,
             crew_count: myData.crew_count,
-            conversation_count:myData.conversation_count,
+            conversation_count:myData.conversation_count==""?0:myData.conversation_count,
             notification_count:myData.notification_count,
             post_count: myData.post_count,
             user_name: myData.user_name

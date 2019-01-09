@@ -366,7 +366,7 @@ class SignUpScreen1 extends PureComponent {
               cover_image: result.cover_image,
               follower_count: result.follower_count,
               crew_count: result.crew_count,
-              conversation_count: result.conversation_count,
+              conversation_count: result.conversation_count==""?0:result.conversation_count,
               notification_count: result.notification_count,
               user_name: result.user_name,
               token: result.token,

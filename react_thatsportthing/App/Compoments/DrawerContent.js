@@ -170,22 +170,30 @@ class DrawerContent extends Component {
             break;
           }
           case 401: {
+            AsyncStorage.clear();
+            AsyncStorage.setItem("logged", "false");
+
             this.hideProgressbar();
-            this.doShowSnackBar(message);
-            console.log(message);
+            this.doFinish(screen);
             break;
           }
           case 400: {
+            AsyncStorage.clear();
+            AsyncStorage.setItem("logged", "false");
+
             this.hideProgressbar();
-            this.doShowSnackBar(message);
-            console.log(message);
+            this.doFinish(screen);
             break;
           }
         }
       })
       .catch(error => {
         console.log(error);
+        AsyncStorage.clear();
+        AsyncStorage.setItem("logged", "false");
+
         this.hideProgressbar();
+        this.doFinish(screen);
       });
   }
   doFinish(screen) {

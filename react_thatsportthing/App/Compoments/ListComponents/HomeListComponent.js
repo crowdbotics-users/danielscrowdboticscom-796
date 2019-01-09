@@ -33,8 +33,21 @@ class HomeListComponent extends PureComponent {
     };
   }
 
-  doRedirect(data) {
-    this.props.navigation.navigate("ProfileScreen", { data: data });
+  doRedirect(postdata) {
+    AsyncStorage.getItem("data")
+      .then(data => {
+        if (data != null) {
+          const myData = JSON.parse(data);
+          if(myData.id==postdata.users.id){
+            this.props.navigation.navigate('MyProfileScreen');
+          }else{
+            this.props.navigation.navigate("ProfileScreen", { data: postdata });
+          }
+        } else {
+        }
+      })
+      .done();
+    
   }
 
   doCommentList(data) {
